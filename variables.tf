@@ -22,17 +22,32 @@ variable "vpc_cidr" {
   default     = "10.1.0.0/16"
 }
 
-variable "db_name" {
+variable "keycloak_db_name" {
   description = "The name of the database snapshot."
   type        = string
 }
 
-variable "db_username" {
+variable "keycloak_db_username" {
   description = "The username for the database."
   type        = string
 }
 
-variable "db_password" {
+variable "keycloak_db_password" {
+  description = "The password for the database."
+  type        = string
+}
+
+variable "hub_db_name" {
+  description = "The name of the database snapshot."
+  type        = string
+}
+
+variable "hub_db_username" {
+  description = "The username for the database."
+  type        = string
+}
+
+variable "hub_db_password" {
   description = "The password for the database."
   type        = string
 }

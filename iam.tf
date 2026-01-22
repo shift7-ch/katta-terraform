@@ -48,8 +48,9 @@ resource "aws_iam_policy" "secrets_manager_policy" {
           "secretsmanager:DescribeSecret"
         ],
         "Resource": [
-          aws_secretsmanager_secret.db_credentials.arn,
-          aws_secretsmanager_secret.keycloak_admin.arn
+          aws_secretsmanager_secret.keycloak_db_credentials.arn,
+          aws_secretsmanager_secret.keycloak_admin.arn,
+          aws_secretsmanager_secret.hub_db_credentials.arn
         ]
       }
     ]

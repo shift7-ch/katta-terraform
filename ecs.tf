@@ -1,6 +1,5 @@
 resource "aws_ecr_pull_through_cache_rule" "quay" {
   ecr_repository_prefix = "${var.project}-${terraform.workspace}-quay"
-  # TODO try out ghcr.io
   upstream_registry_url = "quay.io"
 }
 
@@ -32,7 +31,7 @@ resource "aws_security_group" "ecs_cluster_sg" {
   }
 }
 
-resource "aws_ecs_cluster" "keycloak_ecs_cluster" {
+resource "aws_ecs_cluster" "katta_ecs_cluster" {
   name = "${var.project}-${terraform.workspace}-cluster"
 
   tags = {
@@ -92,16 +91,12 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
         },
         {
           name  = "KC_DB_URL"
-          value = "jdbc:postgresql://${aws_db_instance.postgres.endpoint}/${var.db_name}"
+          value = "jdbc:postgresql://${aws_db_instance.postgres.endpoint}/${var.keycloak_db_name}"
         },
         {
           name  = "DB_DATABASE"
-          value = var.db_name
+          value = var.keycloak_db_name
         },
-        # {
-        #   name  = "KC_FEATURES"
-        #   value = "preview"
-        # },
         {
           name  = "KC_HEALTH_ENABLED"
           value = "true"
@@ -110,22 +105,10 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
           name  = "KC_METRICS_ENABLED"
           value = "true"
         },
-        # {
-        #   name  = "KC_CACHE_CONFIG_FILE"
-        #   value = "cache-ispn-jdbc-ping.xml"
-        # },
         {
           name  = "KC_HOSTNAME"
           value = "${var.project}.${terraform.workspace}.catta.cloud"
         },
-        # {
-        #   name  = "KC_HOSTNAME_STRICT"
-        #   value = "true"
-        # },
-        # {
-        #   name  = "KC_HOSTNAME_STRICT_HTTPS"
-        #   value = "true"
-        # }
         {
           name  = "KC_HTTP_ENABLED"
           value = "true"
@@ -146,11 +129,11 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
         },
         {
           name      = "KC_DB_USERNAME"
-          valueFrom = "${aws_secretsmanager_secret.db_credentials.arn}:username::"
+          valueFrom = "${aws_secretsmanager_secret.keycloak_db_credentials.arn}:username::"
         },
         {
           name      = "KC_DB_PASSWORD"
-          valueFrom = "${aws_secretsmanager_secret.db_credentials.arn}:password::"
+          valueFrom = "${aws_secretsmanager_secret.keycloak_db_credentials.arn}:password::"
         }
       ]
       logConfiguration = {
@@ -179,8 +162,8 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
 }
 
 resource "aws_ecs_service" "keycloak_ecs_service" {
-  name                 = "${var.project}-${terraform.workspace}-ecs-service"
-  cluster              = aws_ecs_cluster.keycloak_ecs_cluster.id
+  name                 = "${var.project}-${terraform.workspace}-keycloak-ecs-service"
+  cluster              = aws_ecs_cluster.katta_ecs_cluster.id
   task_definition      = "${aws_ecs_task_definition.keycloak_ecs_task.family}:${max(aws_ecs_task_definition.keycloak_ecs_task.revision, data.aws_ecs_task_definition.keycloak.revision)}"
   launch_type          = "FARGATE"
   scheduling_strategy  = "REPLICA"
@@ -216,6 +199,163 @@ resource "aws_ecs_service" "keycloak_ecs_service" {
   }
 }
 
+# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecs_task_definition
+resource "aws_ecs_task_definition" "katta_server_ecs_task" {
+  family = "katta-server-task"
+
+  requires_compatibilities = ["FARGATE"]
+  network_mode       = "awsvpc"
+  memory             = "2048"
+  cpu                = "1024"
+  execution_role_arn = aws_iam_role.ecsTaskExecutionRole.arn
+  task_role_arn      = aws_iam_role.ecsTaskExecutionRole.arn
+
+  container_definitions = jsonencode([
+    {
+      name      = "${var.project}-${terraform.workspace}-container",
+      image     = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/katta-server:982baf0-amd64"
+      # command = ["start", "--http-access-log-enabled=true", "--log-level=DEBUG"]
+      memory    = 2048
+      cpu       = 1024
+      essential = true
+      portMappings = [
+        {
+          containerPort = 8080
+          protocol      = "tcp"
+        },
+      ]
+      environment = [
+        {
+          name  = "HUB_KEYCLOAK_LOCAL_URL"
+          value = "https://${var.project}.${terraform.workspace}.catta.cloud"
+        },
+        {
+          name  = "HUB_KEYCLOAK_PUBLIC_URL"
+          value = "https://${var.project}.${terraform.workspace}.catta.cloud"
+        },
+        {
+          name  = "HUB_KEYCLOAK_REALM"
+          # TODO make realm modifiable?
+          value = "cryptomator"
+        },
+        {
+          name  = "HUB_KEYCLOAK_SYSTEM_CLIENT_ID"
+          value = "cryptomatorhub-system"
+        },
+        {
+          name  = "HUB_KEYCLOAK_SYNCER_PERIOD"
+          value = "30s"
+        },
+        {
+          name  = "HUB_KEYCLOAK_OIDC_CRYPTOMATOR_CLIENT_ID"
+          value = "cryptomator"
+        },
+        {
+          name  = "HUB_PUBLIC_ROOT_PATH"
+          value = "/"
+        },
+        {
+          name  = "QUARKUS_OIDC_AUTH_SERVER_URL"
+          value = "https://${var.project}.${terraform.workspace}.catta.cloud/realms/cryptomator"
+        },
+        {
+          name  = "QUARKUS_OIDC_TOKEN_ISSUER"
+          value = "https://${var.project}.${terraform.workspace}.catta.cloud/realms/cryptomator"
+        },
+        {
+          name  = "QUARKUS_OIDC_CLIENT_ID"
+          value = "cryptomatorhub"
+        },
+        {
+          name  = "QUARKUS_DATASOURCE_JDBC_URL"
+          value = "jdbc:postgresql://${aws_db_instance.hub_db.endpoint}/${var.hub_db_name}"
+        },
+        {
+          name  = "QUARKUS_HTTP_HEADER__CONTENT_SECURITY_POLICY__VALUE"
+          value = "value: default-src 'self'; connect-src 'self' *.amazonaws.com https://${var.project}.${terraform.workspace}.catta.cloud/; object-src 'none'; child-src 'self'; img-src * data:; frame-ancestors 'none'"
+        },
+      ]
+      secrets = [
+        {
+          name      = "QUARKUS_DATASOURCE_USERNAME"
+          valueFrom = "${aws_secretsmanager_secret.hub_db_credentials.arn}:username::"
+        },
+        {
+          name      = "QUARKUS_DATASOURCE_PASSWORD"
+          valueFrom = "${aws_secretsmanager_secret.hub_db_credentials.arn}:password::"
+        },
+        # TODO generate client secret secret...
+        {
+          name      = "HUB_KEYCLOAK_SYSTEM_CLIENT_SECRET"
+          valueFrom = "${aws_secretsmanager_secret.keycloak_db_credentials.arn}:username::"
+        },
+        {
+          name      = "HUB_KEYCLOAK_OIDC_CRYPTOMATOR_VAULTS_CLIENT_SECRET"
+          valueFrom = "${aws_secretsmanager_secret.keycloak_db_credentials.arn}:password::"
+        }
+      ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = aws_cloudwatch_log_group.keycloak_log_group.name
+          awslogs-region        = "eu-central-1"
+          awslogs-stream-prefix = "keycloak"
+        }
+      }
+      healthCheck = {
+        command = ["CMD-SHELL", "curl --head -fsS https://localhost:8080/q/health/ready >> /var/log/katta-server-health.log 2>&1 || exit 0"]
+        interval    = 5
+        timeout     = 5
+        retries     = 3
+        startPeriod = 10
+      }
+    }
+  ])
+
+  tags = {
+    Name        = "${var.project}-${terraform.workspace}-ecs-task"
+    Project     = var.project
+    Environment = terraform.workspace
+  }
+}
+
+resource "aws_ecs_service" "katta_server_ecs_service" {
+  name                 = "${var.project}-${terraform.workspace}-katta-server-ecs-service"
+  cluster              = aws_ecs_cluster.katta_ecs_cluster.id
+  task_definition      = "${aws_ecs_task_definition.katta_server_ecs_task.family}:${max(aws_ecs_task_definition.katta_server_ecs_task.revision, data.aws_ecs_task_definition.katta_server.revision)}"
+  launch_type          = "FARGATE"
+  scheduling_strategy  = "REPLICA"
+  desired_count        = 1
+  force_new_deployment = true
+
+  availability_zone_rebalancing = "ENABLED"
+  propagate_tags                = "TASK_DEFINITION"
+
+  deployment_circuit_breaker {
+    enable   = true
+    rollback = true
+  }
+
+  network_configuration {
+    subnets          = aws_subnet.private.*.id
+    assign_public_ip = false
+    security_groups = [
+      aws_security_group.ecs_cluster_sg.id,
+    ]
+  }
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.ecs_target_group.arn
+    container_name   = "${var.project}-${terraform.workspace}-container"
+    container_port   = 8080
+  }
+
+  tags = {
+    Name        = "${var.project}-${terraform.workspace}-ecs-task"
+    Project     = var.project
+    Environment = terraform.workspace
+  }
+}
 
 resource "aws_security_group" "vpc_endpoint_sg" {
   name   = "${var.project}-${terraform.workspace}-vpc-endpoint-sg"
@@ -252,7 +392,7 @@ resource "aws_security_group" "vpc_endpoint_sg" {
 resource "aws_appautoscaling_target" "ecs_autoscaling_target" {
   min_capacity       = 1
   max_capacity       = 12
-  resource_id        = "service/${aws_ecs_cluster.keycloak_ecs_cluster.name}/${aws_ecs_service.keycloak_ecs_service.name}"
+  resource_id        = "service/${aws_ecs_cluster.katta_ecs_cluster.name}/${aws_ecs_service.keycloak_ecs_service.name}"
   scalable_dimension = "ecs:service:DesiredCount"
   service_namespace  = "ecs"
 

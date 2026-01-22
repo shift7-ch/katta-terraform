@@ -44,6 +44,8 @@ https://exchangetuts.com/index.php/terraform-fargate-task-definition-requesting-
 
 https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_execution_IAM_role.html
 
+https://repost.aws/knowledge-center/ecs-task-stopped
+
 #### Certs
 
 https://repost.aws/knowledge-center/acm-certificate-pending-validation
@@ -80,7 +82,6 @@ docker push 430118840017.dkr.ecr.eu-central-1.amazonaws.com/cryptomator-keycloak
 aws ecr create-repository --repository-name katta-server --region eu-central-1
 ```
 
-
 ```shell
 aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 430118840017.dkr.ecr.eu-central-1.amazonaws.com/katta-server
 docker pull ghcr.io/shift7-ch/katta-server:982baf0-amd64 --platform linux/amd64 
@@ -90,7 +91,17 @@ docker push 430118840017.dkr.ecr.eu-central-1.amazonaws.com/katta-server:982baf0
 ```
 
 ## TODOs
-
+- [ ] try out ghcr.io upstream registry -> needs authentication https://docs.aws.amazon.com/AmazonECR/latest/userguide/pull-through-cache-creating-rule.html
 - [ ] understand ECS/ECR model
-- [ ] use other than default workspace
+- [ ] use other than default workspace, use katta as project name
 - [ ] add hub
+- [ ] extract dns suffix catta.cloud
+- [ ] separate log group for hub?
+- [ ] costs vpc
+- [ ] realm import 
+
+## Differences to k8s setup
+
+- no URL paths `/kc` for Keycloak and `/<realm>/` for hub instances
+- non-shared Keycloak
+- default realm

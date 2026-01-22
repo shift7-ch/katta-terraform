@@ -16,10 +16,14 @@ data "aws_ecs_task_definition" "keycloak" {
   task_definition = aws_ecs_task_definition.keycloak_ecs_task.family
 }
 
+data "aws_ecs_task_definition" "katta_server" {
+  task_definition = aws_ecs_task_definition.katta_server_ecs_task.family
+}
+
 data "aws_caller_identity" "current" {}
 
-data "aws_secretsmanager_secret_version" "db_credentials" {
-  secret_id = aws_secretsmanager_secret.db_credentials.id
+data "aws_secretsmanager_secret_version" "keycloak_db_credentials" {
+  secret_id = aws_secretsmanager_secret.keycloak_db_credentials.id
 }
 
 data "aws_secretsmanager_secret_version" "keycloak_admin" {
