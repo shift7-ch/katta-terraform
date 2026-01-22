@@ -76,6 +76,19 @@ docker manifest create 430118840017.dkr.ecr.eu-central-1.amazonaws.com/cryptomat
 docker push 430118840017.dkr.ecr.eu-central-1.amazonaws.com/cryptomator-keycloak:26.4.5
 ```
 
+```shell
+aws ecr create-repository --repository-name katta-server --region eu-central-1
+```
+
+
+```shell
+aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 430118840017.dkr.ecr.eu-central-1.amazonaws.com/katta-server
+docker pull ghcr.io/shift7-ch/katta-server:982baf0-amd64 --platform linux/amd64 
+docker tag ghcr.io/shift7-ch/katta-server:982baf0-amd64 430118840017.dkr.ecr.eu-central-1.amazonaws.com/katta-server:982baf0-amd64
+docker manifest create 430118840017.dkr.ecr.eu-central-1.amazonaws.com/katta-server:982baf0-amd64  430118840017.dkr.ecr.eu-central-1.amazonaws.com/katta-server:982baf0-amd64 --amend 
+docker push 430118840017.dkr.ecr.eu-central-1.amazonaws.com/katta-server:982baf0-amd64
+```
+
 ## TODOs
 
 - [ ] understand ECS/ECR model

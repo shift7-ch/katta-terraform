@@ -1,5 +1,6 @@
 resource "aws_ecr_pull_through_cache_rule" "quay" {
   ecr_repository_prefix = "${var.project}-${terraform.workspace}-quay"
+  # TODO try out ghcr.io
   upstream_registry_url = "quay.io"
 }
 
@@ -56,17 +57,16 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
   family = "${var.project}-task"
 
   requires_compatibilities = ["FARGATE"]
-  network_mode = "awsvpc"
-  memory = "2048"
-  cpu = "1024"
+  network_mode       = "awsvpc"
+  memory             = "2048"
+  cpu                = "1024"
   execution_role_arn = aws_iam_role.ecsTaskExecutionRole.arn
   task_role_arn      = aws_iam_role.ecsTaskExecutionRole.arn
 
   container_definitions = jsonencode([
     {
       name      = "${var.project}-${terraform.workspace}-container",
-      # image     = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${var.project}/${terraform.workspace}:latest"
-      image     = "430118840017.dkr.ecr.eu-central-1.amazonaws.com/cryptomator-keycloak:26.4.5"
+      image     = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/cryptomator-keycloak:26.4.5"
       command = ["start", "--http-access-log-enabled=true", "--log-level=DEBUG"]
       memory    = 2048
       cpu       = 1024
@@ -162,7 +162,7 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
         }
       }
       healthCheck = {
-        command     = ["CMD-SHELL", "curl --head -fsS https://localhost:9000/health >> /var/log/keycloak-health.log 2>&1 || exit 0"]
+        command = ["CMD-SHELL", "curl --head -fsS https://localhost:9000/health >> /var/log/keycloak-health.log 2>&1 || exit 0"]
         interval    = 30
         timeout     = 5
         retries     = 3
@@ -179,13 +179,13 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
 }
 
 resource "aws_ecs_service" "keycloak_ecs_service" {
-  name                  = "${var.project}-${terraform.workspace}-ecs-service"
-  cluster               = aws_ecs_cluster.keycloak_ecs_cluster.id
-  task_definition       = "${aws_ecs_task_definition.keycloak_ecs_task.family}:${max(aws_ecs_task_definition.keycloak_ecs_task.revision, data.aws_ecs_task_definition.keycloak.revision)}"
-  launch_type           = "FARGATE"
-  scheduling_strategy   = "REPLICA"
-  desired_count         = 1
-  force_new_deployment  = true
+  name                 = "${var.project}-${terraform.workspace}-ecs-service"
+  cluster              = aws_ecs_cluster.keycloak_ecs_cluster.id
+  task_definition      = "${aws_ecs_task_definition.keycloak_ecs_task.family}:${max(aws_ecs_task_definition.keycloak_ecs_task.revision, data.aws_ecs_task_definition.keycloak.revision)}"
+  launch_type          = "FARGATE"
+  scheduling_strategy  = "REPLICA"
+  desired_count        = 1
+  force_new_deployment = true
 
   availability_zone_rebalancing = "ENABLED"
   propagate_tags                = "TASK_DEFINITION"
@@ -216,28 +216,29 @@ resource "aws_ecs_service" "keycloak_ecs_service" {
   }
 }
 
+
 resource "aws_security_group" "vpc_endpoint_sg" {
-  name        = "${var.project}-${terraform.workspace}-vpc-endpoint-sg"
-  vpc_id      = aws_vpc.keycloak.id
+  name   = "${var.project}-${terraform.workspace}-vpc-endpoint-sg"
+  vpc_id = aws_vpc.keycloak.id
 
   ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
+    from_port = 80
+    to_port   = 80
+    protocol  = "tcp"
     security_groups = [aws_security_group.ecs_cluster_sg.id]
   }
 
   ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
+    from_port = 443
+    to_port   = 443
+    protocol  = "tcp"
     security_groups = [aws_security_group.ecs_cluster_sg.id]
   }
 
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -303,9 +304,9 @@ resource "aws_appautoscaling_policy" "request_scaling_policy" {
 
   target_tracking_scaling_policy_configuration {
     customized_metric_specification {
-      metric_name        = "RequestCountPerTarget"
-      namespace          = "AWS/ApplicationELB"
-      statistic           = "Sum"
+      metric_name = "RequestCountPerTarget"
+      namespace   = "AWS/ApplicationELB"
+      statistic   = "Sum"
       dimensions {
         name  = "LoadBalancer"
         value = aws_lb.public_alb.name
@@ -318,7 +319,7 @@ resource "aws_appautoscaling_policy" "request_scaling_policy" {
       unit = "Count"
     }
 
-    target_value = 300
+    target_value       = 300
     scale_in_cooldown  = 60
     scale_out_cooldown = 60
   }
