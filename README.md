@@ -105,7 +105,7 @@ docker push 430118840017.dkr.ecr.eu-central-1.amazonaws.com/katta-server:982baf0
 ## Troubleshooting
 
 ```shell
-aws secretsmanager list-secrets --region eu-central-1 --output yaml
+aws secretsmanager list-secrets --region eu-central-1 --output yaml --include-planned-deletion
 aws logs tail keycloak-default-hub --region eu-central-1 --output text --since 30s --follow
 ```
 
