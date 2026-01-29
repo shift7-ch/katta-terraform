@@ -102,7 +102,7 @@ resource "aws_lb_listener" "http_listener" {
 
 resource "aws_route53_record" "alb_record" {
   zone_id = aws_route53_zone.subdomain_zone.zone_id
-  name    = "${var.project}.${terraform.workspace}.catta.cloud"
+  name    = "${var.project}.${terraform.workspace}.${var.dns_suffix}"
   type    = "A"
 
   alias {
@@ -129,9 +129,9 @@ resource "aws_route53_record" "cert_validation" {
 }
 
 resource "aws_acm_certificate" "cert" {
-  domain_name       = "${var.project}.${terraform.workspace}.catta.cloud"
+  domain_name       = "${var.project}.${terraform.workspace}.${var.dns_suffix}"
   validation_method = "DNS"
-  subject_alternative_names = ["www.${var.project}.${terraform.workspace}.catta.cloud"]
+  subject_alternative_names = ["www.${var.project}.${terraform.workspace}.${var.dns_suffix}"]
 
   tags = {
     Environment = terraform.workspace

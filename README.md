@@ -94,7 +94,6 @@ docker push 430118840017.dkr.ecr.eu-central-1.amazonaws.com/katta-server:982baf0
 - [_] understand ECS/ECR model
 - [ ] use other than default workspace, use katta as project name
 - [_] add hub
-- [ ] extract dns suffix catta.cloud
 - [ ] costs vpc - is it pulling of images or running idle?
 
 ## Differences to k8s setup

@@ -127,7 +127,7 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
         },
         {
           name  = "KC_HOSTNAME"
-          value = "${var.project}.${terraform.workspace}.catta.cloud"
+          value = "${var.project}.${terraform.workspace}.${var.dns_suffix}"
         },
         {
           name  = "KC_HTTP_ENABLED"
@@ -256,11 +256,11 @@ resource "aws_ecs_task_definition" "katta_server_ecs_task" {
       environment = [
         {
           name  = "HUB_KEYCLOAK_LOCAL_URL"
-          value = "https://${var.project}.${terraform.workspace}.catta.cloud"
+          value = "https://${var.project}.${terraform.workspace}.${var.dns_suffix}"
         },
         {
           name  = "HUB_KEYCLOAK_PUBLIC_URL"
-          value = "https://${var.project}.${terraform.workspace}.catta.cloud"
+          value = "https://${var.project}.${terraform.workspace}.${var.dns_suffix}"
         },
         {
           name = "HUB_KEYCLOAK_REALM"
@@ -285,11 +285,11 @@ resource "aws_ecs_task_definition" "katta_server_ecs_task" {
         },
         {
           name  = "QUARKUS_OIDC_AUTH_SERVER_URL"
-          value = "https://${var.project}.${terraform.workspace}.catta.cloud/realms/cryptomator"
+          value = "https://${var.project}.${terraform.workspace}.${var.dns_suffix}/realms/cryptomator"
         },
         {
           name  = "QUARKUS_OIDC_TOKEN_ISSUER"
-          value = "https://${var.project}.${terraform.workspace}.catta.cloud/realms/cryptomator"
+          value = "https://${var.project}.${terraform.workspace}.${var.dns_suffix}/realms/cryptomator"
         },
         {
           name  = "QUARKUS_OIDC_CLIENT_ID"
@@ -301,7 +301,7 @@ resource "aws_ecs_task_definition" "katta_server_ecs_task" {
         },
         {
           name  = "QUARKUS_HTTP_HEADER__CONTENT_SECURITY_POLICY__VALUE"
-          value = "value: default-src 'self'; connect-src 'self' *.amazonaws.com https://${var.project}.${terraform.workspace}.catta.cloud/; object-src 'none'; child-src 'self'; img-src * data:; frame-ancestors 'none'"
+          value = "value: default-src 'self'; connect-src 'self' *.amazonaws.com https://${var.project}.${terraform.workspace}.${var.dns_suffix}/; object-src 'none'; child-src 'self'; img-src * data:; frame-ancestors 'none'"
         },
       ]
       secrets = [

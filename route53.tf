@@ -1,5 +1,5 @@
 resource "aws_route53_zone" "subdomain_zone" {
-  name = "${var.project}.${terraform.workspace}.catta.cloud"
+  name = "${var.project}.${terraform.workspace}.${var.dns_suffix}"
 
   tags = {
     Name        = "${var.project}.${terraform.workspace}.kata.cloud"
@@ -10,7 +10,7 @@ resource "aws_route53_zone" "subdomain_zone" {
 
 resource "aws_route53_record" "subdomain_delegation" {
   zone_id = data.aws_route53_zone.parent_zone.zone_id
-  name    = "${var.project}.${terraform.workspace}.catta.cloud"
+  name    = "${var.project}.${terraform.workspace}.${var.dns_suffix}"
   type    = "NS"
 
   records = aws_route53_zone.subdomain_zone.name_servers

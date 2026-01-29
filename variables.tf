@@ -10,6 +10,12 @@ variable "environment" {
   default     = "development"
 }
 
+variable "dns_suffix" {
+  description = "DNS suffix."
+  type        = string
+  default     = "catta.cloud"
+}
+
 variable "region" {
   description = "The region to create resources."
   type        = string

@@ -31,6 +31,6 @@ data "aws_secretsmanager_secret_version" "keycloak_admin" {
 }
 
 data "aws_route53_zone" "parent_zone" {
-  name         = "catta.cloud"
+  name         = "${var.dns_suffix}"
   private_zone = false
 }
