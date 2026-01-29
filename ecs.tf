@@ -74,10 +74,10 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
 
   container_definitions = jsonencode([
     {
-      name      = "${var.project}-${terraform.workspace}-container-keycloak",
-      image     = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/cryptomator-keycloak:26.4.5"
+      name  = "${var.project}-${terraform.workspace}-container-keycloak",
+      image = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/cryptomator-keycloak:26.4.5"
       entryPoint = ["/bin/sh"]
-      command   =  [
+      command = [
         "-c",
         "mkdir -p /opt/keycloak/data/import/ && curl https://raw.githubusercontent.com/shift7-ch/katta-server/refs/heads/feature/cipherduck-uvf/backend/src/main/resources/cryptomator-realm.json -o  /opt/keycloak/data/import/cryptomator-realm.json  && /opt/keycloak/bin/kc.sh start --http-access-log-enabled=true --log-level=DEBUG --import-realm"
       ]
@@ -199,7 +199,7 @@ resource "aws_ecs_service" "keycloak_ecs_service" {
   }
 
   network_configuration {
-    subnets          = aws_subnet.private.*.id
+    subnets = aws_subnet.private.*.id
     // public ip required to reach github via public DNS/IP to download realm
     assign_public_ip = true
     security_groups = [
@@ -227,13 +227,13 @@ resource "aws_ecs_task_definition" "katta_server_ecs_task" {
   requires_compatibilities = ["FARGATE"]
   network_mode       = "awsvpc"
   # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-cpu-memory-error.html
-# resources:
-#   requests:
-#   cpu: 25m
-# memory: 128Mi
-# limits:
-# cpu: 1000m
-# memory: 512Mi
+  # resources:
+  #   requests:
+  #   cpu: 25m
+  # memory: 128Mi
+  # limits:
+  # cpu: 1000m
+  # memory: 512Mi
   memory             = "512"
   cpu                = "256"
   execution_role_arn = aws_iam_role.ecsTaskExecutionRole.arn
@@ -242,10 +242,10 @@ resource "aws_ecs_task_definition" "katta_server_ecs_task" {
   container_definitions = jsonencode([
     {
       name      = "${var.project}-${terraform.workspace}-container-katta-server",
-      image     = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/katta-server:982baf0-amd64"
+      image = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/katta-server:982baf0-amd64"
       # command = ["start", "--http-access-log-enabled=true", "--log-level=DEBUG"]
-      memory             = 512
-      cpu                = 256
+      memory    = 512
+      cpu       = 256
       essential = true
       portMappings = [
         {
@@ -263,7 +263,7 @@ resource "aws_ecs_task_definition" "katta_server_ecs_task" {
           value = "https://${var.project}.${terraform.workspace}.catta.cloud"
         },
         {
-          name  = "HUB_KEYCLOAK_REALM"
+          name = "HUB_KEYCLOAK_REALM"
           # TODO make realm modifiable?
           value = "cryptomator"
         },
@@ -365,7 +365,7 @@ resource "aws_ecs_service" "katta_server_ecs_service" {
   }
 
   network_configuration {
-    subnets          = aws_subnet.private.*.id
+    subnets = aws_subnet.private.*.id
     // public ip required to reach keycloak via public DNS/IP
     assign_public_ip = true
     security_groups = [

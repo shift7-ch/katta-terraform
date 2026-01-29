@@ -4,23 +4,23 @@ resource "aws_security_group" "alb_sg" {
   vpc_id      = aws_vpc.keycloak.id
 
   ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
+    from_port = 80
+    to_port   = 80
+    protocol  = "tcp"
     cidr_blocks = ["0.0.0.0/0"] # Allows public access to port 80
   }
 
   ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
+    from_port = 443
+    to_port   = 443
+    protocol  = "tcp"
     cidr_blocks = ["0.0.0.0/0"] # Allows public access to port 443
   }
 
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -35,7 +35,7 @@ resource "aws_lb" "public_alb" {
   name               = "${var.project}-${terraform.workspace}-alb"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = [aws_security_group.alb_sg.id]
+  security_groups = [aws_security_group.alb_sg.id]
   subnets            = aws_subnet.public.*.id
 
   tags = {
@@ -74,8 +74,8 @@ resource "aws_lb_listener" "https_listener" {
   port              = 443
   protocol          = "HTTPS"
 
-  ssl_policy        = "ELBSecurityPolicy-2016-08"  # Update as needed
-  certificate_arn   = aws_acm_certificate_validation.cert_validation.certificate_arn
+  ssl_policy = "ELBSecurityPolicy-2016-08"  # Update as needed
+  certificate_arn = aws_acm_certificate_validation.cert_validation.certificate_arn
 
 
   default_action {
@@ -93,8 +93,8 @@ resource "aws_lb_listener" "http_listener" {
     type = "redirect"
 
     redirect {
-      protocol = "HTTPS"
-      port     = "443"
+      protocol    = "HTTPS"
+      port        = "443"
       status_code = "HTTP_301"
     }
   }
@@ -129,8 +129,8 @@ resource "aws_route53_record" "cert_validation" {
 }
 
 resource "aws_acm_certificate" "cert" {
-  domain_name               = "${var.project}.${terraform.workspace}.catta.cloud"
-  validation_method         = "DNS"
+  domain_name       = "${var.project}.${terraform.workspace}.catta.cloud"
+  validation_method = "DNS"
   subject_alternative_names = ["www.${var.project}.${terraform.workspace}.catta.cloud"]
 
   tags = {
