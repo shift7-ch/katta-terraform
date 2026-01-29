@@ -67,8 +67,8 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
 
   requires_compatibilities = ["FARGATE"]
   network_mode       = "awsvpc"
-  memory             = "2048"
-  cpu                = "1024"
+  memory             = "512"
+  cpu                = "256"
   execution_role_arn = aws_iam_role.ecsTaskExecutionRole.arn
   task_role_arn      = aws_iam_role.ecsTaskExecutionRole.arn
 
@@ -77,8 +77,14 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
       name      = "${var.project}-${terraform.workspace}-container-keycloak",
       image     = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/cryptomator-keycloak:26.4.5"
       command = ["start", "--http-access-log-enabled=true", "--log-level=DEBUG"]
-      memory    = 2048
-      cpu       = 1024
+      # requests:
+      # cpu: 25m
+      # memory: 256Mi
+      # limits:
+      # cpu: 1000m
+      # memory: 1024Mi
+      memory    = 512
+      cpu       = 256
       essential = true
       portMappings = [
         {
@@ -215,8 +221,16 @@ resource "aws_ecs_task_definition" "katta_server_ecs_task" {
 
   requires_compatibilities = ["FARGATE"]
   network_mode       = "awsvpc"
-  memory             = "2048"
-  cpu                = "1024"
+  # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-cpu-memory-error.html
+# resources:
+#   requests:
+#   cpu: 25m
+# memory: 128Mi
+# limits:
+# cpu: 1000m
+# memory: 512Mi
+  memory             = "512"
+  cpu                = "256"
   execution_role_arn = aws_iam_role.ecsTaskExecutionRole.arn
   task_role_arn      = aws_iam_role.ecsTaskExecutionRole.arn
 
@@ -225,8 +239,8 @@ resource "aws_ecs_task_definition" "katta_server_ecs_task" {
       name      = "${var.project}-${terraform.workspace}-container-katta-server",
       image     = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/katta-server:982baf0-amd64"
       # command = ["start", "--http-access-log-enabled=true", "--log-level=DEBUG"]
-      memory    = 2048
-      cpu       = 1024
+      memory             = 512
+      cpu                = 256
       essential = true
       portMappings = [
         {
