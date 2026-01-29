@@ -42,7 +42,17 @@ resource "aws_ecs_cluster" "katta_ecs_cluster" {
 }
 
 resource "aws_cloudwatch_log_group" "keycloak_log_group" {
-  name = "${var.project}-${terraform.workspace}"
+  name = "${var.project}-${terraform.workspace}-keycloak"
+
+  tags = {
+    Name        = "${var.project}-${terraform.workspace}-log-group"
+    Project     = var.project
+    Environment = terraform.workspace
+  }
+}
+
+resource "aws_cloudwatch_log_group" "hub_log_group" {
+  name = "${var.project}-${terraform.workspace}-hub"
 
   tags = {
     Name        = "${var.project}-${terraform.workspace}-log-group"
@@ -64,7 +74,7 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
 
   container_definitions = jsonencode([
     {
-      name      = "${var.project}-${terraform.workspace}-container",
+      name      = "${var.project}-${terraform.workspace}-container-keycloak",
       image     = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/cryptomator-keycloak:26.4.5"
       command = ["start", "--http-access-log-enabled=true", "--log-level=DEBUG"]
       memory    = 2048
@@ -188,7 +198,7 @@ resource "aws_ecs_service" "keycloak_ecs_service" {
 
   load_balancer {
     target_group_arn = aws_lb_target_group.ecs_target_group.arn
-    container_name   = "${var.project}-${terraform.workspace}-container"
+    container_name   = "${var.project}-${terraform.workspace}-container-keycloak"
     container_port   = 8080
   }
 
@@ -212,7 +222,7 @@ resource "aws_ecs_task_definition" "katta_server_ecs_task" {
 
   container_definitions = jsonencode([
     {
-      name      = "${var.project}-${terraform.workspace}-container",
+      name      = "${var.project}-${terraform.workspace}-container-katta-server",
       image     = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/katta-server:982baf0-amd64"
       # command = ["start", "--http-access-log-enabled=true", "--log-level=DEBUG"]
       memory    = 2048
@@ -297,7 +307,7 @@ resource "aws_ecs_task_definition" "katta_server_ecs_task" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-group         = aws_cloudwatch_log_group.keycloak_log_group.name
+          awslogs-group         = aws_cloudwatch_log_group.hub_log_group.name
           awslogs-region        = "eu-central-1"
           awslogs-stream-prefix = "keycloak"
         }
@@ -338,7 +348,7 @@ resource "aws_ecs_service" "katta_server_ecs_service" {
 
   network_configuration {
     subnets          = aws_subnet.private.*.id
-    assign_public_ip = false
+    assign_public_ip = true
     security_groups = [
       aws_security_group.ecs_cluster_sg.id,
     ]
@@ -346,7 +356,7 @@ resource "aws_ecs_service" "katta_server_ecs_service" {
 
   load_balancer {
     target_group_arn = aws_lb_target_group.ecs_target_group.arn
-    container_name   = "${var.project}-${terraform.workspace}-container"
+    container_name   = "${var.project}-${terraform.workspace}-container-katta-server"
     container_port   = 8080
   }
 
