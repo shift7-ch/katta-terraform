@@ -22,11 +22,9 @@ terraform init
 terraform validate
 terraform plan
 terraform apply --auto-approve 
-# preconditions from leftovers previous runs: 
-# - remove protection flag of DB: go to console -> RDS -> modify
-# - delete DB snapshot of the same name 
+# preconditions from leftovers previous run: 
 # - rename secret names (they have a minimum grace period of 7 days before deletion).
-terraform destroy
+terraform destroy --auto-approve 
 ```
 
 ## Sources
@@ -97,8 +95,8 @@ docker push 430118840017.dkr.ecr.eu-central-1.amazonaws.com/katta-server:982baf0
 - [ ] add hub
 - [ ] extract dns suffix catta.cloud
 - [ ] separate log group for hub?
-- [ ] costs vpc
-- [ ] realm import 
+- [ ] costs vpc - is it pulling of images or running idle?
+- [ ] realm import
 
 ## Differences to k8s setup
 

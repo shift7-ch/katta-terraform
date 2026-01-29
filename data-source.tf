@@ -39,8 +39,8 @@ resource "aws_db_instance" "postgres" {
   db_subnet_group_name    = aws_db_subnet_group.private_subnet_group.name
   vpc_security_group_ids  = [aws_security_group.rds_sg.id, aws_security_group.ecs_cluster_sg.id]
   publicly_accessible     = false
-  skip_final_snapshot     = false
-  deletion_protection     = true
+  skip_final_snapshot     = true
+  deletion_protection     = false
   final_snapshot_identifier = "${var.project}-${terraform.workspace}-database-final-snapshot"
   copy_tags_to_snapshot     = true
 
@@ -64,8 +64,8 @@ resource "aws_db_instance" "hub_db" {
   db_subnet_group_name    = aws_db_subnet_group.private_subnet_group.name
   vpc_security_group_ids  = [aws_security_group.rds_sg.id, aws_security_group.ecs_cluster_sg.id]
   publicly_accessible     = false
-  skip_final_snapshot     = false
-  deletion_protection     = true
+  skip_final_snapshot     = true
+  deletion_protection     = false
   final_snapshot_identifier = "${var.project}-${terraform.workspace}-database-final-snapshot"
   copy_tags_to_snapshot     = true
 
