@@ -1,19 +1,19 @@
 variable "project" {
   description = "The project Name where all resources will be launched."
-  type = string
-  default = "keycloak"
+  type        = string
+  default     = "keycloak"
 }
 
 variable "environment" {
   description = "The environment name, defined in environments defined as a environment."
-  type = string
-  default = "development"
+  type        = string
+  default     = "development"
 }
 
 variable "region" {
   description = "The region to create resources."
-  type = string
-  default = "eu-central-1"
+  type        = string
+  default     = "eu-central-1"
 }
 
 variable "vpc_cidr" {
@@ -59,5 +59,15 @@ variable "keycloak_admin_username" {
 
 variable "keycloak_admin_password" {
   description = "The password for the keycloak admin."
+  type        = string
+}
+
+variable "HUB_KEYCLOAK_SYSTEM_CLIENT_SECRET" {
+  description = ""
+  type        = string
+}
+
+variable "HUB_KEYCLOAK_OIDC_CRYPTOMATOR_VAULTS_CLIENT_SECRET" {
+  description = ""
   type        = string
 }

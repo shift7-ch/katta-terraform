@@ -1,6 +1,6 @@
 resource "aws_iam_role" "ecsTaskExecutionRole" {
-  name                = "${var.project}-${terraform.workspace}-execution-task-role"
-  assume_role_policy  = data.aws_iam_policy_document.assume_role_policy.json
+  name               = "${var.project}-${terraform.workspace}-execution-task-role"
+  assume_role_policy = data.aws_iam_policy_document.assume_role_policy.json
 
   tags = {
     Name        = "${var.project}-${terraform.workspace}-iam-ecsTaskExecutionRole-role"
@@ -12,12 +12,12 @@ resource "aws_iam_role" "ecsTaskExecutionRole" {
 resource "aws_iam_policy" "ecr_pullthroughcache_policy" {
   name        = "${var.project}-${terraform.workspace}-ecr-pullthrough-policy"
   description = "Policy to allow ECS task execution role to interact with ECR pull-through cache"
-  policy      = jsonencode({
+  policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
       {
-        Effect   = "Allow",
-        Action   = [
+        Effect = "Allow",
+        Action = [
           "ecr:GetAuthorizationToken",
           "ecr:BatchCheckLayerAvailability",
           "ecr:GetDownloadUrlForLayer",
@@ -38,19 +38,20 @@ resource "aws_iam_policy" "ecr_pullthroughcache_policy" {
 resource "aws_iam_policy" "secrets_manager_policy" {
   name        = "${var.project}-${terraform.workspace}-secrets-manager-policy"
   description = "Policy to allow ECS task execution role to access Secrets Manager secrets"
-  policy      = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
       {
-        "Effect": "Allow",
-        "Action": [
+        "Effect" : "Allow",
+        "Action" : [
           "secretsmanager:GetSecretValue",
           "secretsmanager:DescribeSecret"
         ],
-        "Resource": [
+        "Resource" : [
           aws_secretsmanager_secret.keycloak_db_credentials.arn,
           aws_secretsmanager_secret.keycloak_admin.arn,
-          aws_secretsmanager_secret.hub_db_credentials.arn
+          aws_secretsmanager_secret.hub_db_credentials.arn,
+          aws_secretsmanager_secret.hub_keycloak_credentials.arn,
         ]
       }
     ]
@@ -104,12 +105,12 @@ resource "aws_iam_role_policy" "app_autoscaling_policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "ecsTaskExecutionPolicy_AmazonEC2ContainerServiceforEC2Role" {
-  role        = aws_iam_role.ecsTaskExecutionRole.name
+  role       = aws_iam_role.ecsTaskExecutionRole.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
 }
 
 resource "aws_iam_role_policy_attachment" "ecsTaskExecutionPolicy_AmazonECSTaskExecutionRolePolicy" {
-  role        = aws_iam_role.ecsTaskExecutionRole.name
+  role       = aws_iam_role.ecsTaskExecutionRole.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 

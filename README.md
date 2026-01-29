@@ -23,7 +23,7 @@ terraform validate
 terraform plan
 terraform apply --auto-approve 
 # preconditions from leftovers previous run: 
-# - rename secret names (they have a minimum grace period of 7 days before deletion).
+# - rename secret names (they have a minimum grace period of 7 days before deletion)
 terraform destroy --auto-approve 
 ```
 
@@ -89,17 +89,24 @@ docker push 430118840017.dkr.ecr.eu-central-1.amazonaws.com/katta-server:982baf0
 ```
 
 ## TODOs
-- [ ] try out ghcr.io upstream registry -> needs authentication https://docs.aws.amazon.com/AmazonECR/latest/userguide/pull-through-cache-creating-rule.html
-- [ ] understand ECS/ECR model
+
+- [-] try out ghcr.io upstream registry -> needs authentication https://docs.aws.amazon.com/AmazonECR/latest/userguide/pull-through-cache-creating-rule.html
+- [_] understand ECS/ECR model
 - [ ] use other than default workspace, use katta as project name
-- [ ] add hub
+- [_] add hub
 - [ ] extract dns suffix catta.cloud
-- [ ] separate log group for hub?
 - [ ] costs vpc - is it pulling of images or running idle?
-- [ ] realm import
 
 ## Differences to k8s setup
 
 - no URL paths `/kc` for Keycloak and `/<realm>/` for hub instances
 - non-shared Keycloak
 - default realm
+
+## Troubleshooting
+
+```shell
+aws secretsmanager list-secrets --region eu-central-1 --output yaml
+aws logs tail keycloak-default-hub --region eu-central-1 --output text --since 30s --follow
+```
+

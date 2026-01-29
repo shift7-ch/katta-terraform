@@ -11,3 +11,7 @@ keycloak_admin_password = "TODO"
 hub_db_name = "hub_database"
 hub_db_username = "hub_admin"
 hub_db_password = "TODO"
+
+// must match values in cryptomator-realm.json!
+HUB_KEYCLOAK_SYSTEM_CLIENT_SECRET= "TODO"
+HUB_KEYCLOAK_OIDC_CRYPTOMATOR_VAULTS_CLIENT_SECRET= "TODO"

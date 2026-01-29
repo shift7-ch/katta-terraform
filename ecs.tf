@@ -67,8 +67,8 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
 
   requires_compatibilities = ["FARGATE"]
   network_mode       = "awsvpc"
-  memory             = "1024"
-  cpu                = "256"
+  memory             = "2048"
+  cpu                = "1024"
   execution_role_arn = aws_iam_role.ecsTaskExecutionRole.arn
   task_role_arn      = aws_iam_role.ecsTaskExecutionRole.arn
 
@@ -76,15 +76,19 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
     {
       name      = "${var.project}-${terraform.workspace}-container-keycloak",
       image     = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/cryptomator-keycloak:26.4.5"
-      command = ["start", "--http-access-log-enabled=true", "--log-level=DEBUG"]
+      entryPoint = ["/bin/sh"]
+      command   =  [
+        "-c",
+        "mkdir -p /opt/keycloak/data/import/ && curl https://raw.githubusercontent.com/shift7-ch/katta-server/refs/heads/feature/cipherduck-uvf/backend/src/main/resources/cryptomator-realm.json -o  /opt/keycloak/data/import/cryptomator-realm.json  && /opt/keycloak/bin/kc.sh start --http-access-log-enabled=true --log-level=DEBUG --import-realm"
+      ]
       # requests:
       # cpu: 25m
       # memory: 256Mi
       # limits:
       # cpu: 1000m
       # memory: 1024Mi
-      memory    = 1024
-      cpu       = 256
+      memory    = 2048
+      cpu       = 1024
       essential = true
       portMappings = [
         {
@@ -196,7 +200,8 @@ resource "aws_ecs_service" "keycloak_ecs_service" {
 
   network_configuration {
     subnets          = aws_subnet.private.*.id
-    assign_public_ip = false
+    // public ip required to reach github via public DNS/IP to download realm
+    assign_public_ip = true
     security_groups = [
       aws_security_group.ecs_cluster_sg.id,
     ]
@@ -308,14 +313,13 @@ resource "aws_ecs_task_definition" "katta_server_ecs_task" {
           name      = "QUARKUS_DATASOURCE_PASSWORD"
           valueFrom = "${aws_secretsmanager_secret.hub_db_credentials.arn}:password::"
         },
-        # TODO generate client secret secret...
         {
           name      = "HUB_KEYCLOAK_SYSTEM_CLIENT_SECRET"
-          valueFrom = "${aws_secretsmanager_secret.keycloak_db_credentials.arn}:username::"
+          valueFrom = "${aws_secretsmanager_secret.hub_keycloak_credentials.arn}:HUB_KEYCLOAK_SYSTEM_CLIENT_SECRET::"
         },
         {
           name      = "HUB_KEYCLOAK_OIDC_CRYPTOMATOR_VAULTS_CLIENT_SECRET"
-          valueFrom = "${aws_secretsmanager_secret.keycloak_db_credentials.arn}:password::"
+          valueFrom = "${aws_secretsmanager_secret.hub_keycloak_credentials.arn}:HUB_KEYCLOAK_OIDC_CRYPTOMATOR_VAULTS_CLIENT_SECRET::"
         }
       ]
       logConfiguration = {
@@ -362,6 +366,7 @@ resource "aws_ecs_service" "katta_server_ecs_service" {
 
   network_configuration {
     subnets          = aws_subnet.private.*.id
+    // public ip required to reach keycloak via public DNS/IP
     assign_public_ip = true
     security_groups = [
       aws_security_group.ecs_cluster_sg.id,
