@@ -67,7 +67,7 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
 
   requires_compatibilities = ["FARGATE"]
   network_mode       = "awsvpc"
-  memory             = "512"
+  memory             = "1024"
   cpu                = "256"
   execution_role_arn = aws_iam_role.ecsTaskExecutionRole.arn
   task_role_arn      = aws_iam_role.ecsTaskExecutionRole.arn
@@ -83,7 +83,7 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
       # limits:
       # cpu: 1000m
       # memory: 1024Mi
-      memory    = 512
+      memory    = 1024
       cpu       = 256
       essential = true
       portMappings = [
