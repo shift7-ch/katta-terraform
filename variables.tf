@@ -16,6 +16,18 @@ variable "dns_suffix" {
   default     = "catta.cloud"
 }
 
+variable "keycloak_prefix" {
+  description = "DNS prefix."
+  type        = string
+  default     = "keycloak"
+}
+
+variable "hub_prefix" {
+  description = "DNS prefix."
+  type        = string
+  default     = "hub"
+}
+
 variable "region" {
   description = "The region to create resources."
   type        = string
@@ -77,3 +89,10 @@ variable "HUB_KEYCLOAK_OIDC_CRYPTOMATOR_VAULTS_CLIENT_SECRET" {
   description = ""
   type        = string
 }
+
+variable "secret_suffix" {
+  description = "Use to make secret names unique while there are secrets pending for deletion during minimum grace period (7 days)."
+  type        = string
+  default     = "20260205"
+}
+

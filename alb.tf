@@ -100,9 +100,9 @@ resource "aws_lb_listener" "http_listener" {
   }
 }
 
-resource "aws_route53_record" "alb_record" {
+resource "aws_route53_record" "keycloak_alb" {
   zone_id = aws_route53_zone.subdomain_zone.zone_id
-  name    = "${var.project}.${terraform.workspace}.${var.dns_suffix}"
+  name    = "${var.keycloak_prefix}.${terraform.workspace}.${var.dns_suffix}"
   type    = "A"
 
   alias {
@@ -114,7 +114,7 @@ resource "aws_route53_record" "alb_record" {
 
 resource "aws_route53_record" "cert_validation" {
   for_each = {
-    for dvo in aws_acm_certificate.cert.domain_validation_options : dvo.domain_name => {
+    for dvo in aws_acm_certificate.keycloak_cert.domain_validation_options : dvo.domain_name => {
       name   = dvo.resource_record_name
       type   = dvo.resource_record_type
       record = dvo.resource_record_value
@@ -128,10 +128,21 @@ resource "aws_route53_record" "cert_validation" {
   records = [each.value.record]
 }
 
-resource "aws_acm_certificate" "cert" {
-  domain_name       = "${var.project}.${terraform.workspace}.${var.dns_suffix}"
+resource "aws_acm_certificate" "keycloak_cert" {
+  domain_name       = "${var.keycloak_prefix}.${terraform.workspace}.${var.dns_suffix}"
   validation_method = "DNS"
-  subject_alternative_names = ["www.${var.project}.${terraform.workspace}.${var.dns_suffix}"]
+  subject_alternative_names = ["www.${var.keycloak_prefix}.${terraform.workspace}.${var.dns_suffix}"]
+
+  tags = {
+    Environment = terraform.workspace
+    Project     = var.project
+  }
+}
+
+resource "aws_acm_certificate" "hub_cert" {
+  domain_name       = "${var.hub_prefix}.${terraform.workspace}.${var.dns_suffix}"
+  validation_method = "DNS"
+  subject_alternative_names = ["www.${var.hub_prefix}.${terraform.workspace}.${var.dns_suffix}"]
 
   tags = {
     Environment = terraform.workspace
@@ -140,6 +151,6 @@ resource "aws_acm_certificate" "cert" {
 }
 
 resource "aws_acm_certificate_validation" "cert_validation" {
-  certificate_arn         = aws_acm_certificate.cert.arn
+  certificate_arn         = aws_acm_certificate.keycloak_cert.arn
   validation_record_fqdns = [for record in aws_route53_record.cert_validation : record.fqdn]
 }

@@ -93,8 +93,10 @@ docker push 430118840017.dkr.ecr.eu-central-1.amazonaws.com/katta-server:982baf0
 - [-] try out ghcr.io upstream registry -> needs authentication https://docs.aws.amazon.com/AmazonECR/latest/userguide/pull-through-cache-creating-rule.html
 - [_] understand ECS/ECR model
 - [ ] use other than default workspace, use katta as project name
-- [_] add hub
+- [_] add hub with dns
+- [ ] inject non-default client secrets into realm
 - [ ] costs vpc - is it pulling of images or running idle?
+- [ ] consistent variable naming hub_ or _hub or katta_ or _katta
 
 ## Differences to k8s setup
 

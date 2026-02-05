@@ -1,5 +1,5 @@
 resource "aws_secretsmanager_secret" "keycloak_db_credentials" {
-  name                    = "${var.project}-${terraform.workspace}-keycloak-db-credentials20260229"
+  name                    = "${var.project}-${terraform.workspace}-keycloak-db-credentials${var.secret_suffix}"
   description             = "Database credentials for ${var.project} in ${terraform.workspace}"
   recovery_window_in_days = 7
 
@@ -18,7 +18,7 @@ resource "aws_secretsmanager_secret_version" "keycloak_db_credentials_version" {
 }
 
 resource "aws_secretsmanager_secret" "keycloak_admin" {
-  name                    = "${var.project}-${terraform.workspace}-keycloak-admin20260229"
+  name                    = "${var.project}-${terraform.workspace}-keycloak-admin${var.secret_suffix}"
   description             = "Keycloak admin credentials for ${var.project} in ${terraform.workspace}"
   recovery_window_in_days = 7
 
@@ -38,7 +38,7 @@ resource "aws_secretsmanager_secret_version" "keycloak_admin_version" {
 
 
 resource "aws_secretsmanager_secret" "hub_db_credentials" {
-  name                    = "${var.project}-${terraform.workspace}-hub-db-credentials20260229"
+  name                    = "${var.project}-${terraform.workspace}-hub-db-credentials${var.secret_suffix}"
   description             = "Database credentials for ${var.project} in ${terraform.workspace}"
   recovery_window_in_days = 7
 
@@ -57,7 +57,7 @@ resource "aws_secretsmanager_secret_version" "hub_db_credentials_version" {
 }
 
 resource "aws_secretsmanager_secret" "hub_keycloak_credentials" {
-  name                    = "${var.project}-${terraform.workspace}-hub-keycloak-credentials20260229"
+  name                    = "${var.project}-${terraform.workspace}-hub-keycloak-credentials${var.secret_suffix}"
   description             = "Database credentials for ${var.project} in ${terraform.workspace}"
   recovery_window_in_days = 7
 
