@@ -54,6 +54,9 @@ https://stackoverflow.com/questions/68177630/aws-acm-certificate-state-is-pendin
 dig NS default keycloak.default.catta.cloud
 dig keycloak.default.catta.cloud @8.8.4.4  
 nc .... 5432
+
+# https://apple.stackexchange.com/questions/472013/how-to-check-status-of-dns-resolution-service-and-or-restart-in-macos
+sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder
 ```
 
 #### ECR / ECS
@@ -109,5 +112,6 @@ docker push 430118840017.dkr.ecr.eu-central-1.amazonaws.com/katta-server:982baf0
 ```shell
 aws secretsmanager list-secrets --region eu-central-1 --output yaml --include-planned-deletion
 aws logs tail keycloak-default-hub --region eu-central-1 --output text --since 30s --follow
+aws logs tail keycloak-default-keycloak --region eu-central-1 --output text --since 30s --follow
 ```
 

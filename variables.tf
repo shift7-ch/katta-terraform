@@ -93,6 +93,6 @@ variable "HUB_KEYCLOAK_OIDC_CRYPTOMATOR_VAULTS_CLIENT_SECRET" {
 variable "secret_suffix" {
   description = "Use to make secret names unique while there are secrets pending for deletion during minimum grace period (7 days)."
   type        = string
-  default     = "20260205"
+  default     = "20260205bis"
 }
 

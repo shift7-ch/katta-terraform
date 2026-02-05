@@ -79,7 +79,12 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
       entryPoint = ["/bin/sh"]
       command = [
         "-c",
-        "mkdir -p /opt/keycloak/data/import/ && curl https://raw.githubusercontent.com/shift7-ch/katta-server/refs/heads/feature/cipherduck-uvf/backend/src/main/resources/cryptomator-realm.json -o  /opt/keycloak/data/import/cryptomator-realm.json  && /opt/keycloak/bin/kc.sh start --http-access-log-enabled=true --log-level=DEBUG --import-realm"
+        join("", [
+          "mkdir -p /opt/keycloak/data/import/  && ",
+          "curl https://raw.githubusercontent.com/shift7-ch/katta-server/refs/heads/feature/cipherduck-uvf/backend/src/main/resources/cryptomator-realm.json -o  /opt/keycloak/data/import/cryptomator-realm.json  && ",
+          "sed -i 's|\"redirectUris\": \\[|\"redirectUris\": \\[\"https://${var.hub_prefix}.${terraform.workspace}.${var.dns_suffix}/*\",|g' /opt/keycloak/data/import/cryptomator-realm.json && ",
+          "/opt/keycloak/bin/kc.sh start --http-access-log-enabled=true --log-level=DEBUG --import-realm"
+        ])
       ]
       # requests:
       # cpu: 25m
@@ -127,7 +132,7 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
         },
         {
           name  = "KC_HOSTNAME"
-          value = "${var.project}.${terraform.workspace}.${var.dns_suffix}"
+          value = "${var.keycloak_prefix}.${terraform.workspace}.${var.dns_suffix}"
         },
         {
           name  = "KC_HTTP_ENABLED"
@@ -208,7 +213,7 @@ resource "aws_ecs_service" "keycloak_ecs_service" {
   }
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.ecs_target_group.arn
+    target_group_arn = aws_lb_target_group.keycloak_ecs_target_group.arn
     container_name   = "${var.project}-${terraform.workspace}-container-keycloak"
     container_port   = 8080
   }
@@ -249,22 +254,21 @@ resource "aws_ecs_task_definition" "katta_server_ecs_task" {
       essential = true
       portMappings = [
         {
-          containerPort = 8080
+          containerPort = 8280
           protocol      = "tcp"
         },
       ]
       environment = [
         {
           name  = "HUB_KEYCLOAK_LOCAL_URL"
-          value = "https://${var.project}.${terraform.workspace}.${var.dns_suffix}"
+          value = "https://${var.keycloak_prefix}.${terraform.workspace}.${var.dns_suffix}"
         },
         {
           name  = "HUB_KEYCLOAK_PUBLIC_URL"
-          value = "https://${var.project}.${terraform.workspace}.${var.dns_suffix}"
+          value = "https://${var.keycloak_prefix}.${terraform.workspace}.${var.dns_suffix}"
         },
         {
-          name = "HUB_KEYCLOAK_REALM"
-          # TODO make realm modifiable?
+          name  = "HUB_KEYCLOAK_REALM"
           value = "cryptomator"
         },
         {
@@ -284,12 +288,16 @@ resource "aws_ecs_task_definition" "katta_server_ecs_task" {
           value = "/"
         },
         {
+          name  = "QUARKUS_HTTP_PORT"
+          value = "8280"
+        },
+        {
           name  = "QUARKUS_OIDC_AUTH_SERVER_URL"
-          value = "https://${var.project}.${terraform.workspace}.${var.dns_suffix}/realms/cryptomator"
+          value = "https://${var.keycloak_prefix}.${terraform.workspace}.${var.dns_suffix}/realms/cryptomator"
         },
         {
           name  = "QUARKUS_OIDC_TOKEN_ISSUER"
-          value = "https://${var.project}.${terraform.workspace}.${var.dns_suffix}/realms/cryptomator"
+          value = "https://${var.keycloak_prefix}.${terraform.workspace}.${var.dns_suffix}/realms/cryptomator"
         },
         {
           name  = "QUARKUS_OIDC_CLIENT_ID"
@@ -301,7 +309,7 @@ resource "aws_ecs_task_definition" "katta_server_ecs_task" {
         },
         {
           name  = "QUARKUS_HTTP_HEADER__CONTENT_SECURITY_POLICY__VALUE"
-          value = "value: default-src 'self'; connect-src 'self' *.amazonaws.com https://${var.project}.${terraform.workspace}.${var.dns_suffix}/; object-src 'none'; child-src 'self'; img-src * data:; frame-ancestors 'none'"
+          value = "value: default-src 'self'; connect-src 'self' *.amazonaws.com https://${var.keycloak_prefix}.${terraform.workspace}.${var.dns_suffix}/; object-src 'none'; child-src 'self'; img-src * data:; frame-ancestors 'none'"
         },
       ]
       secrets = [
@@ -331,7 +339,7 @@ resource "aws_ecs_task_definition" "katta_server_ecs_task" {
         }
       }
       healthCheck = {
-        command = ["CMD-SHELL", "curl --head -fsS https://localhost:8080/q/health/ready >> /var/log/katta-server-health.log 2>&1 || exit 0"]
+        command = ["CMD-SHELL", "curl --head -fsS http://localhost:8280/api/config >> /var/log/katta-server-health.log 2>&1 || exit 0"]
         interval    = 5
         timeout     = 5
         retries     = 3
@@ -374,9 +382,9 @@ resource "aws_ecs_service" "katta_server_ecs_service" {
   }
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.ecs_target_group.arn
+    target_group_arn = aws_lb_target_group.hub_ecs_target_group.arn
     container_name   = "${var.project}-${terraform.workspace}-container-katta-server"
-    container_port   = 8080
+    container_port   = 8280
   }
 
   tags = {
@@ -478,12 +486,12 @@ resource "aws_appautoscaling_policy" "request_scaling_policy" {
       statistic   = "Sum"
       dimensions {
         name  = "LoadBalancer"
-        value = aws_lb.public_alb.name
+        value = aws_lb.keycloak_public_alb.name
       }
 
       dimensions {
         name  = "TargetGroup"
-        value = aws_lb_target_group.ecs_target_group.name
+        value = aws_lb_target_group.keycloak_ecs_target_group.name
       }
       unit = "Count"
     }
