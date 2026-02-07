@@ -60,7 +60,7 @@ resource "aws_lb" "hub_public_alb" {
 }
 
 resource "aws_lb_target_group" "keycloak_ecs_target_group" {
-  name        = "${var.keycloak_prefix}-${terraform.workspace}-ecs-tg"
+  name        = "${var.project}-${terraform.workspace}-${var.keycloak_prefix}-ecs-tg"
   port        = 8080
   protocol    = "HTTP"
   vpc_id      = aws_vpc.keycloak.id
@@ -77,14 +77,14 @@ resource "aws_lb_target_group" "keycloak_ecs_target_group" {
   }
 
   tags = {
-    Name        = "${var.keycloak_prefix}.${terraform.workspace}-ecs-tg"
+    Name        = "${var.project}-${terraform.workspace}-${var.keycloak_prefix}-ecs-tg"
     Project     = var.project
     Environment = terraform.workspace
   }
 }
 
 resource "aws_lb_target_group" "hub_ecs_target_group" {
-  name        = "${var.hub_prefix}-${terraform.workspace}-ecs-tg"
+  name        = "${var.project}-${terraform.workspace}-${var.hub_prefix}-ecs-tg"
   port        = 8280
   protocol    = "HTTP"
   vpc_id      = aws_vpc.keycloak.id
@@ -101,7 +101,7 @@ resource "aws_lb_target_group" "hub_ecs_target_group" {
   }
 
   tags = {
-    Name        = "${var.hub_prefix}.${terraform.workspace}-ecs-tg"
+    Name        = "${var.project}-${terraform.workspace}-${var.hub_prefix}-ecs-tg"
     Project     = var.project
     Environment = terraform.workspace
   }

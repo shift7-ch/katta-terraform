@@ -42,20 +42,20 @@ resource "aws_ecs_cluster" "katta_ecs_cluster" {
 }
 
 resource "aws_cloudwatch_log_group" "keycloak_log_group" {
-  name = "${var.project}-${terraform.workspace}-keycloak"
+  name = "${var.project}-${terraform.workspace}-${var.keycloak_prefix}-log-group"
 
   tags = {
-    Name        = "${var.project}-${terraform.workspace}-log-group"
+    Name        = "${var.project}-${terraform.workspace}-${var.keycloak_prefix}-log-group"
     Project     = var.project
     Environment = terraform.workspace
   }
 }
 
 resource "aws_cloudwatch_log_group" "hub_log_group" {
-  name = "${var.project}-${terraform.workspace}-hub"
+  name = "${var.project}-${terraform.workspace}-${var.hub_prefix}-log-group"
 
   tags = {
-    Name        = "${var.project}-${terraform.workspace}-log-group"
+    Name        = "${var.project}-${terraform.workspace}-${var.hub_prefix}-log-group"
     Project     = var.project
     Environment = terraform.workspace
   }
@@ -63,7 +63,7 @@ resource "aws_cloudwatch_log_group" "hub_log_group" {
 
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecs_task_definition
 resource "aws_ecs_task_definition" "keycloak_ecs_task" {
-  family = "${var.project}-task"
+  family = "${var.keycloak_prefix}-task"
 
   requires_compatibilities = ["FARGATE"]
   network_mode       = "awsvpc"
@@ -74,7 +74,7 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
 
   container_definitions = jsonencode([
     {
-      name  = "${var.project}-${terraform.workspace}-container-keycloak",
+      name  = "${var.project}-${terraform.workspace}-container-${var.keycloak_prefix}",
       image = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/cryptomator-keycloak:26.4.5"
       entryPoint = ["/bin/sh"]
       command = [
@@ -187,7 +187,7 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
 }
 
 resource "aws_ecs_service" "keycloak_ecs_service" {
-  name                 = "${var.project}-${terraform.workspace}-keycloak-ecs-service"
+  name                 = "${var.project}-${terraform.workspace}-${var.keycloak_prefix}-ecs-service"
   cluster              = aws_ecs_cluster.katta_ecs_cluster.id
   task_definition      = "${aws_ecs_task_definition.keycloak_ecs_task.family}:${max(aws_ecs_task_definition.keycloak_ecs_task.revision, data.aws_ecs_task_definition.keycloak.revision)}"
   launch_type          = "FARGATE"
@@ -214,7 +214,7 @@ resource "aws_ecs_service" "keycloak_ecs_service" {
 
   load_balancer {
     target_group_arn = aws_lb_target_group.keycloak_ecs_target_group.arn
-    container_name   = "${var.project}-${terraform.workspace}-container-keycloak"
+    container_name   = "${var.project}-${terraform.workspace}-container-${var.keycloak_prefix}"
     container_port   = 8080
   }
 
@@ -227,7 +227,7 @@ resource "aws_ecs_service" "keycloak_ecs_service" {
 
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecs_task_definition
 resource "aws_ecs_task_definition" "katta_server_ecs_task" {
-  family = "katta-server-task"
+  family = "${var.hub_prefix}-task"
 
   requires_compatibilities = ["FARGATE"]
   network_mode       = "awsvpc"
@@ -246,7 +246,7 @@ resource "aws_ecs_task_definition" "katta_server_ecs_task" {
 
   container_definitions = jsonencode([
     {
-      name      = "${var.project}-${terraform.workspace}-container-katta-server",
+      name      = "${var.project}-${terraform.workspace}-container-${var.hub_prefix}",
       image = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/katta-server:982baf0-amd64"
       # command = ["start", "--http-access-log-enabled=true", "--log-level=DEBUG"]
       memory    = 512
@@ -323,11 +323,11 @@ resource "aws_ecs_task_definition" "katta_server_ecs_task" {
         },
         {
           name      = "HUB_KEYCLOAK_SYSTEM_CLIENT_SECRET"
-          valueFrom = "${aws_secretsmanager_secret.hub_keycloak_credentials.arn}:HUB_KEYCLOAK_SYSTEM_CLIENT_SECRET::"
+          valueFrom = "${aws_secretsmanager_secret.hub_oidc_client_secrets_credentials.arn}:HUB_KEYCLOAK_SYSTEM_CLIENT_SECRET::"
         },
         {
           name      = "HUB_KEYCLOAK_OIDC_CRYPTOMATOR_VAULTS_CLIENT_SECRET"
-          valueFrom = "${aws_secretsmanager_secret.hub_keycloak_credentials.arn}:HUB_KEYCLOAK_OIDC_CRYPTOMATOR_VAULTS_CLIENT_SECRET::"
+          valueFrom = "${aws_secretsmanager_secret.hub_oidc_client_secrets_credentials.arn}:HUB_KEYCLOAK_OIDC_CRYPTOMATOR_VAULTS_CLIENT_SECRET::"
         }
       ]
       logConfiguration = {
@@ -356,7 +356,7 @@ resource "aws_ecs_task_definition" "katta_server_ecs_task" {
 }
 
 resource "aws_ecs_service" "katta_server_ecs_service" {
-  name                 = "${var.project}-${terraform.workspace}-katta-server-ecs-service"
+  name                 = "${var.project}-${terraform.workspace}-${var.hub_prefix}-ecs-service"
   cluster              = aws_ecs_cluster.katta_ecs_cluster.id
   task_definition      = "${aws_ecs_task_definition.katta_server_ecs_task.family}:${max(aws_ecs_task_definition.katta_server_ecs_task.revision, data.aws_ecs_task_definition.katta_server.revision)}"
   launch_type          = "FARGATE"
@@ -383,7 +383,7 @@ resource "aws_ecs_service" "katta_server_ecs_service" {
 
   load_balancer {
     target_group_arn = aws_lb_target_group.hub_ecs_target_group.arn
-    container_name   = "${var.project}-${terraform.workspace}-container-katta-server"
+    container_name   = "${var.project}-${terraform.workspace}-container-${var.hub_prefix}"
     container_port   = 8280
   }
 

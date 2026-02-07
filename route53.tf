@@ -2,7 +2,7 @@ resource "aws_route53_zone" "keycloak_subdomain_zone" {
   name = "${var.keycloak_prefix}.${terraform.workspace}.${var.dns_suffix}"
 
   tags = {
-    Name        = "${var.project}.${terraform.workspace}.kata.cloud"
+    Name        = "${var.project}.${terraform.workspace}.${var.dns_suffix}"
     Project     = var.project
     Environment = terraform.workspace
   }
@@ -22,7 +22,7 @@ resource "aws_route53_zone" "hub_subdomain_zone" {
   name = "${var.hub_prefix}.${terraform.workspace}.${var.dns_suffix}"
 
   tags = {
-    Name        = "${var.project}.${terraform.workspace}.kata.cloud"
+    Name        = "${var.project}.${terraform.workspace}.${var.dns_suffix}"
     Project     = var.project
     Environment = terraform.workspace
   }

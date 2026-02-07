@@ -1,5 +1,5 @@
 resource "aws_secretsmanager_secret" "keycloak_db_credentials" {
-  name                    = "${var.project}-${terraform.workspace}-keycloak-db-credentials${var.secret_suffix}"
+  name                    = "${var.project}-${terraform.workspace}-${var.keycloak_prefix}-db-credentials__${var.secret_suffix}"
   description             = "Database credentials for ${var.project} in ${terraform.workspace}"
   recovery_window_in_days = 7
 
@@ -18,7 +18,7 @@ resource "aws_secretsmanager_secret_version" "keycloak_db_credentials_version" {
 }
 
 resource "aws_secretsmanager_secret" "keycloak_admin" {
-  name                    = "${var.project}-${terraform.workspace}-keycloak-admin${var.secret_suffix}"
+  name                    = "${var.project}-${terraform.workspace}-${var.keycloak_prefix}-admin__${var.secret_suffix}"
   description             = "Keycloak admin credentials for ${var.project} in ${terraform.workspace}"
   recovery_window_in_days = 7
 
@@ -38,7 +38,7 @@ resource "aws_secretsmanager_secret_version" "keycloak_admin_version" {
 
 
 resource "aws_secretsmanager_secret" "hub_db_credentials" {
-  name                    = "${var.project}-${terraform.workspace}-hub-db-credentials${var.secret_suffix}"
+  name                    = "${var.project}-${terraform.workspace}-${var.hub_prefix}-db-credentials__${var.secret_suffix}"
   description             = "Database credentials for ${var.project} in ${terraform.workspace}"
   recovery_window_in_days = 7
 
@@ -56,8 +56,8 @@ resource "aws_secretsmanager_secret_version" "hub_db_credentials_version" {
   })
 }
 
-resource "aws_secretsmanager_secret" "hub_keycloak_credentials" {
-  name                    = "${var.project}-${terraform.workspace}-hub-keycloak-credentials${var.secret_suffix}"
+resource "aws_secretsmanager_secret" "hub_oidc_client_secrets_credentials" {
+  name                    = "${var.project}-${terraform.workspace}-${var.hub_prefix}-oidc-client-secrets__${var.secret_suffix}"
   description             = "Database credentials for ${var.project} in ${terraform.workspace}"
   recovery_window_in_days = 7
 
@@ -67,8 +67,8 @@ resource "aws_secretsmanager_secret" "hub_keycloak_credentials" {
   }
 }
 
-resource "aws_secretsmanager_secret_version" "hub_keycloak_credentials_version" {
-  secret_id = aws_secretsmanager_secret.hub_keycloak_credentials.id
+resource "aws_secretsmanager_secret_version" "hub_oidc_client_secrets_credentials_version" {
+  secret_id = aws_secretsmanager_secret.hub_oidc_client_secrets_credentials.id
   secret_string = jsonencode({
     HUB_KEYCLOAK_SYSTEM_CLIENT_SECRET                  = var.HUB_KEYCLOAK_SYSTEM_CLIENT_SECRET
     HUB_KEYCLOAK_OIDC_CRYPTOMATOR_VAULTS_CLIENT_SECRET = var.HUB_KEYCLOAK_OIDC_CRYPTOMATOR_VAULTS_CLIENT_SECRET

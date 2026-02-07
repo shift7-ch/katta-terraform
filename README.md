@@ -18,9 +18,18 @@ https://developer.hashicorp.com/terraform/cli/run
 ```shell
 cp terraform.tfvars{.template,}
 vi terraform.tfvars # enter passwords
+
+terraform workspace list
+# terraform workspace new <your-workspace> 
+
 terraform init
 terraform validate
 terraform plan
+
+export AWS_ACCESS_KEY_ID=...
+export AWS_SECRET_ACCESS_KEY=...
+export AWS_SESSION_TOKEN=...
+
 terraform apply --auto-approve 
 # preconditions from leftovers previous run: 
 # - rename secret names (they have a minimum grace period of 7 days before deletion)
@@ -94,12 +103,10 @@ docker push 430118840017.dkr.ecr.eu-central-1.amazonaws.com/katta-server:982baf0
 ## TODOs
 
 - [-] try out ghcr.io upstream registry -> needs authentication https://docs.aws.amazon.com/AmazonECR/latest/userguide/pull-through-cache-creating-rule.html
-- [_] understand ECS/ECR model
-- [ ] use other than default workspace, use katta as project name
-- [_] add hub with dns
-- [ ] inject non-default client secrets into realm
-- [ ] costs vpc - is it pulling of images or running idle?
-- [ ] consistent variable naming hub_ or _hub or katta_ or _katta
+- [_] understand/document ECS/ECR model - lb/tg etc.
+- [_] costs vpc - is it pulling of images or running idle?
+- [ ] hub should wait for keycloak to be ready - need manual re-deployment for now
+- [ ] test admin cli
 
 ## Differences to k8s setup
 
@@ -115,3 +122,7 @@ aws logs tail keycloak-default-hub --region eu-central-1 --output text --since 3
 aws logs tail keycloak-default-keycloak --region eu-central-1 --output text --since 30s --follow
 ```
 
+## URLs
+
+* https://hub.che.catta.cloud/
+* https://keycloak.che.catta.cloud/
