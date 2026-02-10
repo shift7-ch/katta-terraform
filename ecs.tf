@@ -82,7 +82,7 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
         join("", [
           "mkdir -p /opt/keycloak/data/import/  && ",
           "curl https://raw.githubusercontent.com/shift7-ch/katta-server/refs/heads/feature/cipherduck-uvf/backend/src/main/resources/cryptomator-realm.json -o  /opt/keycloak/data/import/cryptomator-realm.json  && ",
-          "sed -i 's|\"redirectUris\": \\[|\"redirectUris\": \\[\"https://${var.hub_prefix}.${terraform.workspace}.${var.dns_suffix}/*\",|g' /opt/keycloak/data/import/cryptomator-realm.json && ",
+          "sed -i 's|\"redirectUris\": \\[|\"redirectUris\": \\[\"${var.keycloak_action_redirect}\",\"https://${var.hub_prefix}.${terraform.workspace}.${var.dns_suffix}/*\",|g' /opt/keycloak/data/import/cryptomator-realm.json && ",
           "/opt/keycloak/bin/kc.sh start --http-access-log-enabled=true --log-level=DEBUG --import-realm"
         ])
       ]

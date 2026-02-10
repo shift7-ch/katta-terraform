@@ -96,3 +96,9 @@ variable "secret_suffix" {
   default     = ""
 }
 
+variable "keycloak_action_redirect" {
+  description = ""
+  type        = string
+  default     = "x-katta-action:oauth"
+}
+
