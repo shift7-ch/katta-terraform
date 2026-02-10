@@ -2,18 +2,12 @@
 
 ## TL;DR;
 
-TODO still required?
-
-```bash
-aws iam create-role \
-      --role-name ecsTaskExecutionRole \
-      --assume-role-policy-document file://$PWD/ecs-tasks-trust-policy.json
-aws iam attach-role-policy \
-      --role-name ecsTaskExecutionRole \
-      --policy-arn arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
-```
-
 https://developer.hashicorp.com/terraform/cli/run
+
+Sets up hub under the following URLs - change terraform workspace to control the infix `<your-workspace>`:
+* `https://hub.<your-workspace> .catta.cloud/`
+* `https://keycloak.<your-workspace> .catta.cloud/`
+
 
 ```shell
 cp terraform.tfvars{.template,}
@@ -106,7 +100,7 @@ docker push 430118840017.dkr.ecr.eu-central-1.amazonaws.com/katta-server:982baf0
 - [_] understand/document ECS/ECR model - lb/tg etc.
 - [_] costs vpc - is it pulling of images or running idle?
 - [ ] hub should wait for keycloak to be ready - need manual re-deployment for now
-- [ ] test admin cli
+- [_] test admin cli
 
 ## Differences to k8s setup
 
@@ -122,7 +116,3 @@ aws logs tail keycloak-default-hub --region eu-central-1 --output text --since 3
 aws logs tail keycloak-default-keycloak --region eu-central-1 --output text --since 30s --follow
 ```
 
-## URLs
-
-* https://hub.che.catta.cloud/
-* https://keycloak.che.catta.cloud/
