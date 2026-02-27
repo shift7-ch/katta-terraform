@@ -59,7 +59,7 @@ deletion.
 
 1. Destroy environment
     ```shell
-    terraform destroy --auto-approve
+    AWS_USE_DUALSTACK_ENDPOINT=false terraform destroy --auto-approve
     ```
 
 ## Sources
