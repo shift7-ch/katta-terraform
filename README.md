@@ -18,7 +18,7 @@ terraform workspace list
 
 terraform init
 terraform validate
-terraform plan
+AWS_USE_DUALSTACK_ENDPOINT=false terraform plan
 
 export AWS_ACCESS_KEY_ID=...
 export AWS_SECRET_ACCESS_KEY=...
