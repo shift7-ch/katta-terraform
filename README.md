@@ -59,7 +59,7 @@ deletion.
 
 1. Destroy environment
     ```shell
-    terraform apply --auto-approve
+    terraform destroy --auto-approve
     ```
 
 ## Sources
