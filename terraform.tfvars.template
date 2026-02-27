@@ -1,5 +1,6 @@
 project = "katta"
 environment = "development"
+dns_suffix = "TODO"
 region = "eu-central-1"
 vpc_cidr = "10.1.0.0/16"
 keycloak_db_name = "keycloak_database"
