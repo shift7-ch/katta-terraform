@@ -101,6 +101,8 @@ docker push 430118840017.dkr.ecr.eu-central-1.amazonaws.com/katta-server:982baf0
 - [_] costs vpc - is it pulling of images or running idle?
 - [ ] hub should wait for keycloak to be ready - need manual re-deployment for now
 - [_] test admin cli
+- [_] HUB_KEYCLOAK_SYSTEM_CLIENT_SECRET= "TODO"
+- [_] HUB_KEYCLOAK_OIDC_CRYPTOMATOR_VAULTS_CLIENT_SECRET= "TODO"
 
 ## Differences to k8s setup
 
