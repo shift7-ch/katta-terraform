@@ -1,34 +1,66 @@
-# katta-terraform
+# Katta: the secure and easy way to work in teams
 
-## TL;DR;
+Katta bring zero-config storage management and zero-knowledge key management for teams and organizations.
 
-https://developer.hashicorp.com/terraform/cli/run
+## Katta Terraform
 
-Sets up hub under the following URLs - change terraform workspace to control the infix `<your-workspace>`:
-* `https://hub.<your-workspace> .catta.cloud/`
-* `https://keycloak.<your-workspace> .catta.cloud/`
+### TL;DR;
 
+> [Terraform workflow for provisioning infrastructure](https://developer.hashicorp.com/terraform/cli/run)
 
-```shell
-cp terraform.tfvars{.template,}
-vi terraform.tfvars # enter passwords
+Set up Katta Hub in a custom AWS hosted zone. Change terraform workspace to control the infix `<WORKSPACE>`:
 
-terraform workspace list
-# terraform workspace new <your-workspace> 
+* `https://hub.<WORKSPACE>.<DOMAIN>`
+* `https://keycloak.<WORKSPACE>.<DOMAIN>`
 
-terraform init
-terraform validate
-AWS_USE_DUALSTACK_ENDPOINT=false terraform plan
+### Prerequisites
 
-export AWS_ACCESS_KEY_ID=...
-export AWS_SECRET_ACCESS_KEY=...
-export AWS_SESSION_TOKEN=...
+1. Setup AWS CLI and configure credentials in environment
+    ```shell
+    export AWS_ACCESS_KEY_ID=...
+    export AWS_SECRET_ACCESS_KEY=...
+    export AWS_SESSION_TOKEN=...
+    ```
+2. Add hosted zone `DOMAIN`
+    ```shell
+    aws route53 create-hosted-zone --name <DOMAIN> --caller-reference $(date +%s)
+    ```
 
-terraform apply --auto-approve 
-# preconditions from leftovers previous run: 
-# - rename secret names (they have a minimum grace period of 7 days before deletion)
-terraform destroy --auto-approve 
-```
+## Deployment
+
+1. Setup Terraform Workspace
+    ```shell
+    terraform workspace new katta
+    ```
+2. Edit default configuration
+    ```shell
+    cp terraform.tfvars{.template,}
+    vi terraform.tfvars # enter <DOMAIN> and passwords
+    ```
+
+3. Validate environment
+
+    ```shell
+    terraform init
+    terraform validate
+    AWS_USE_DUALSTACK_ENDPOINT=false terraform plan
+    ```
+
+4. Deploy environment
+
+    ```shell
+    AWS_USE_DUALSTACK_ENDPOINT=false terraform apply --auto-approve 
+    ```
+
+## Cleanup
+
+Preconditions from leftovers previous run: Rename secret names, they have a minimum grace period of 7 days before
+deletion.
+
+1. Destroy environment
+    ```shell
+    terraform apply --auto-approve
+    ```
 
 ## Sources
 
