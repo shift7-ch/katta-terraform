@@ -62,29 +62,6 @@ deletion.
     AWS_USE_DUALSTACK_ENDPOINT=false terraform destroy --auto-approve
     ```
 
-## Sources
-
-### Terraform Keycloak ECS
-
-- https://www.dorokhovich.com/blog/deploying-keycloak-aws-ecs-fargate-terraform -> https://github.com/metronom72/keycloak_deployment/tree/main/infra
-- https://medium.com/@yakuphanbilgic3/how-to-install-keycloak-on-aws-using-rds-and-ec2-74081dd42457
-- https://www.geeksforgeeks.org/devops/create-aws-vpc-using-terraform/
-- https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws/latest
-- https://exchangetuts.com/index.php/terraform-fargate-task-definition-requesting-execution-role-1639735450945343
-- https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_execution_IAM_role.html
-- https://repost.aws/knowledge-center/ecs-task-stopped
-
-### Certs
-
-- https://repost.aws/knowledge-center/acm-certificate-pending-validation
-- https://dev.to/aws-builders/how-to-set-up-a-public-hosted-zone-on-amazon-route-53-when-your-domain-is-registered-with-another-584j
-- https://stackoverflow.com/questions/68177630/aws-acm-certificate-state-is-pending-validation-and-not-changing-to-issues
-
-### ECR / ECS
-
-- https://dev.to/oncloud7/from-docker-to-aws-step-by-step-guide-push-to-ecr-and-deploy-on-ecs-3l78
-- https://dev.to/a-k-0047/understanding-ecs-what-are-clusters-services-and-tasks-38eo
-
 ```shell
 aws ecr create-repository --repository-name cryptomator-keycloak --region eu-central-1
 ```
