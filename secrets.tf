@@ -1,5 +1,9 @@
+resource "random_id" "secret_suffix" {
+  byte_length = 8
+}
+
 resource "aws_secretsmanager_secret" "keycloak_db_credentials" {
-  name                    = "${var.project}-${terraform.workspace}-${var.keycloak_prefix}-db-credentials__${var.secret_suffix}"
+  name                    = "${var.project}-${terraform.workspace}-${var.keycloak_prefix}-db-credentials__${random_id.secret_suffix.hex}"
   description             = "Database credentials for ${var.project} in ${terraform.workspace}"
   recovery_window_in_days = 0
 
@@ -18,7 +22,7 @@ resource "aws_secretsmanager_secret_version" "keycloak_db_credentials_version" {
 }
 
 resource "aws_secretsmanager_secret" "keycloak_admin" {
-  name                    = "${var.project}-${terraform.workspace}-${var.keycloak_prefix}-admin__${var.secret_suffix}"
+  name                    = "${var.project}-${terraform.workspace}-${var.keycloak_prefix}-admin__${random_id.secret_suffix.hex}"
   description             = "Keycloak admin credentials for ${var.project} in ${terraform.workspace}"
   recovery_window_in_days = 0
 
@@ -38,7 +42,7 @@ resource "aws_secretsmanager_secret_version" "keycloak_admin_version" {
 
 
 resource "aws_secretsmanager_secret" "hub_db_credentials" {
-  name                    = "${var.project}-${terraform.workspace}-${var.hub_prefix}-db-credentials__${var.secret_suffix}"
+  name                    = "${var.project}-${terraform.workspace}-${var.hub_prefix}-db-credentials__${random_id.secret_suffix.hex}"
   description             = "Database credentials for ${var.project} in ${terraform.workspace}"
   recovery_window_in_days = 0
 
@@ -57,7 +61,7 @@ resource "aws_secretsmanager_secret_version" "hub_db_credentials_version" {
 }
 
 resource "aws_secretsmanager_secret" "hub_oidc_client_secrets_credentials" {
-  name                    = "${var.project}-${terraform.workspace}-${var.hub_prefix}-oidc-client-secrets__${var.secret_suffix}"
+  name                    = "${var.project}-${terraform.workspace}-${var.hub_prefix}-oidc-client-secrets__${random_id.secret_suffix.hex}"
   description             = "Database credentials for ${var.project} in ${terraform.workspace}"
   recovery_window_in_days = 0
 
