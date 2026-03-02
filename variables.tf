@@ -17,13 +17,13 @@ variable "dns_suffix" {
 }
 
 variable "keycloak_prefix" {
-  description = "DNS prefix."
+  description = "DNS prefix for Keycloak service endpoints."
   type        = string
   default     = "keycloak"
 }
 
 variable "hub_prefix" {
-  description = "DNS prefix."
+  description = "DNS prefix for Hub service endpoints."
   type        = string
   default     = "hub"
 }
@@ -41,53 +41,58 @@ variable "vpc_cidr" {
 }
 
 variable "keycloak_db_name" {
-  description = "The name of the database snapshot."
+  description = "The name of the Keycloak database."
   type        = string
 }
 
 variable "keycloak_db_username" {
-  description = "The username for the database."
+  description = "The username for the Keycloak database."
   type        = string
 }
 
 variable "keycloak_db_password" {
-  description = "The password for the database."
+  description = "The password for the Keycloak database."
   type        = string
+  sensitive   = true
 }
 
 variable "hub_db_name" {
-  description = "The name of the database snapshot."
+  description = "The name of the Hub database."
   type        = string
 }
 
 variable "hub_db_username" {
-  description = "The username for the database."
+  description = "The username for the Hub database."
   type        = string
 }
 
 variable "hub_db_password" {
-  description = "The password for the database."
+  description = "The password for the Hub database."
   type        = string
+  sensitive   = true
 }
 
 variable "keycloak_admin_username" {
-  description = "The username for the keycloak admin."
+  description = "The username for the Keycloak admin user."
   type        = string
 }
 
 variable "keycloak_admin_password" {
-  description = "The password for the keycloak admin."
+  description = "The password for the Keycloak admin user."
   type        = string
+  sensitive   = true
 }
 
 variable "HUB_KEYCLOAK_SYSTEM_CLIENT_SECRET" {
-  description = ""
+  description = "The client secret for Hub's Keycloak system client. Must match the value in cryptomator-realm.json."
   type        = string
+  sensitive   = true
 }
 
 variable "HUB_KEYCLOAK_OIDC_CRYPTOMATOR_VAULTS_CLIENT_SECRET" {
-  description = ""
+  description = "The client secret for Hub's Keycloak OIDC Cryptomator Vaults client. Must match the value in cryptomator-realm.json."
   type        = string
+  sensitive   = true
 }
 
 variable "secret_suffix" {
@@ -97,7 +102,7 @@ variable "secret_suffix" {
 }
 
 variable "keycloak_action_redirect" {
-  description = ""
+  description = "The custom URL scheme for Keycloak action redirects desktop application."
   type        = string
   default     = "x-katta-action:oauth"
 }
