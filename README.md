@@ -23,12 +23,24 @@ Set up Katta Hub in a custom AWS hosted zone. Change terraform workspace to cont
     export AWS_SECRET_ACCESS_KEY=
     export AWS_SESSION_TOKEN=
     export AWS_DEFAULT_REGION=
-   
-   
-3. Override Terraform variables
+
+## Deployment
+
+1. Setup Terraform Workspace
+    ```shell
+    terraform workspace new katta
+    ```
+
+2. Override default Terraform configuration
+
+   Defaults can be found in `terraform.tfvars` and can be overridden by environment variables:
+
     ```shell
     export TF_VAR_region=$AWS_DEFAULT_REGION
     export TF_VAR_dns_suffix=example.net
+    export TF_VAR_keycloak_db_password=
+    export TF_VAR_keycloak_admin_password=
+    export TF_VAR_hub_db_password=
     ```
 3. Add hosted zone for domain in AWS Route53
 

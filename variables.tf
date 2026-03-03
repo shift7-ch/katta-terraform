@@ -36,11 +36,13 @@ variable "vpc_cidr" {
 variable "keycloak_db_name" {
   description = "The name of the Keycloak database."
   type        = string
+  default    = "keycloak_database"
 }
 
 variable "keycloak_db_username" {
   description = "The username for the Keycloak database."
   type        = string
+  default     = "keycloak_admin"
 }
 
 variable "keycloak_db_password" {
@@ -52,11 +54,13 @@ variable "keycloak_db_password" {
 variable "hub_db_name" {
   description = "The name of the Hub database."
   type        = string
+  default     = "hub_database"
 }
 
 variable "hub_db_username" {
   description = "The username for the Hub database."
   type        = string
+  default     = "hub_admin"
 }
 
 variable "hub_db_password" {
@@ -68,6 +72,7 @@ variable "hub_db_password" {
 variable "keycloak_admin_username" {
   description = "The username for the Keycloak admin user."
   type        = string
+  default     = "keycloak_admin"
 }
 
 variable "keycloak_admin_password" {
