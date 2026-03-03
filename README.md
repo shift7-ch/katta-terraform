@@ -19,13 +19,21 @@ Set up Katta Hub in a custom AWS hosted zone. Change terraform workspace to cont
 
 2. Setup AWS CLI and configure credentials in environment
     ```shell
-    export AWS_ACCESS_KEY_ID=...
-    export AWS_SECRET_ACCESS_KEY=...
-    export AWS_SESSION_TOKEN=...
-    ```
-3. Add hosted zone `DOMAIN`
+    export AWS_ACCESS_KEY_ID=
+    export AWS_SECRET_ACCESS_KEY=
+    export AWS_SESSION_TOKEN=
+    export AWS_DEFAULT_REGION=
+   
+   
+3. Override Terraform variables
     ```shell
-    aws route53 create-hosted-zone --name <DOMAIN> --caller-reference $(date +%s)
+    export TF_VAR_region=$AWS_DEFAULT_REGION
+    export TF_VAR_dns_suffix=example.net
+    ```
+3. Add hosted zone for domain in AWS Route53
+
+    ```shell
+    aws route53 create-hosted-zone --name $TF_VAR_dns_suffix --caller-reference $(date +%s)
     ```
 
 ## Deployment
