@@ -7,7 +7,6 @@ variable "project" {
 variable "dns_suffix" {
   description = "DNS suffix."
   type        = string
-  default     = "catta.cloud"
 }
 
 variable "keycloak_prefix" {
