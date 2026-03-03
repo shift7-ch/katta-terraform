@@ -42,6 +42,8 @@ Set up Katta Hub in a custom AWS hosted zone. Change terraform workspace to cont
     export TF_VAR_keycloak_db_password=
     export TF_VAR_keycloak_admin_password=
     export TF_VAR_hub_db_password=
+    export TF_VAR_hub_keycloak_system_client_secret=top-secret
+    export TF_VAR_hub_keycloak_oidc_cryptomator_vaults_client_secret=top-secret
     ```
 3. Add hosted zone for domain in AWS Route53
 
