@@ -1,8 +1,3 @@
-resource "aws_ecr_pull_through_cache_rule" "quay" {
-  ecr_repository_prefix = "${terraform.workspace}-quay"
-  upstream_registry_url = "quay.io"
-}
-
 resource "aws_ecr_pull_through_cache_rule" "github" {
   ecr_repository_prefix = "${terraform.workspace}-ghcr"
   upstream_registry_url = "ghcr.io"
