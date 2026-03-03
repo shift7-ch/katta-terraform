@@ -8,10 +8,10 @@ Katta bring zero-config storage management and zero-knowledge key management for
 
 > [Terraform workflow for provisioning infrastructure](https://developer.hashicorp.com/terraform/cli/run)
 
-Set up Katta Hub in a custom AWS hosted zone. Change terraform workspace to control the infix `<WORKSPACE>`:
+Set up Katta Hub in a custom AWS hosted zone. Change terraform workspace to control the infix `<workspace>`:
 
-* `https://hub.<WORKSPACE>.<DOMAIN>`
-* `https://keycloak.<WORKSPACE>.<DOMAIN>`
+* `https://hub.<workspace>.<dns_suffix>`
+* `https://keycloak.<workspace>.<dns_suffix>`
 
 ### Prerequisites
 
