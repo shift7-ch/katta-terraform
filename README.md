@@ -126,7 +126,7 @@ Images are cached in ECR with the prefix `<workspace>-ghcr/` and pulled automati
 ## Troubleshooting
 
 ```shell
-aws logs tail keycloak-default-hub --output text --since 30s --follow
-aws logs tail keycloak-default-keycloak --output text --since 30s --follow
+aws logs tail `terraform workspace show`-hub-log-group --output text --since 30s --follow
+aws logs tail `terraform workspace show`-keycloak-log-group --output text --since 30s --follow
 ```
 
