@@ -92,10 +92,19 @@ deletion.
     AWS_USE_DUALSTACK_ENDPOINT=false terraform destroy --auto-approve
     ```
 
+## Background
+
+### ECR Pull-Through Cache
+
+Container images are automatically pulled from GitHub Container Registry (ghcr.io) via Amazon ECR pull-through cache rules. This eliminates the need to manually pull and push images to ECR.
+
+- Keycloak: `ghcr.io/cryptomator/keycloak:26.4.5`
+- Katta Hub: `ghcr.io/shift7-ch/katta-server:982baf0-amd64`
+
+Images are cached in ECR with the prefix `<project>-<workspace>-ghcr/` and pulled automatically when ECS tasks start.
+
 ## TODOs
 
-- [-] try out ghcr.io upstream registry -> needs
-  authentication https://docs.aws.amazon.com/AmazonECR/latest/userguide/pull-through-cache-creating-rule.html
 - [_] understand/document ECS/ECR model - lb/tg etc.
 - [_] costs vpc - is it pulling of images or running idle?
 - [ ] hub should wait for keycloak to be ready - need manual re-deployment for now
