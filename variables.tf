@@ -31,7 +31,7 @@ variable "hub_prefix" {
 variable "region" {
   description = "The region to create resources."
   type        = string
-  default     = "eu-central-1"
+  default     = "eu-central-1" # Override with TF_VAR_region or set TF_VAR_region=$AWS_DEFAULT_REGION
 }
 
 variable "vpc_cidr" {
