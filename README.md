@@ -117,8 +117,8 @@ Images are cached in ECR with the prefix `<workspace>-ghcr/` and pulled automati
 - [_] costs vpc - is it pulling of images or running idle?
 - [ ] hub should wait for keycloak to be ready - need manual re-deployment for now
 - [_] test admin cli
-- [_] HUB_KEYCLOAK_SYSTEM_CLIENT_SECRET= "TODO"
-- [_] HUB_KEYCLOAK_OIDC_CRYPTOMATOR_VAULTS_CLIENT_SECRET= "TODO"
+- [_] hub_keycloak_system_client_secret= "TODO"
+- [_] hub_keycloak_oidc_cryptomator_vaults_client_secret= "TODO"
 
 ## Differences to k8s setup
 
@@ -129,8 +129,7 @@ Images are cached in ECR with the prefix `<workspace>-ghcr/` and pulled automati
 ## Troubleshooting
 
 ```shell
-aws secretsmanager list-secrets --region eu-central-1 --output yaml --include-planned-deletion
-aws logs tail keycloak-default-hub --region eu-central-1 --output text --since 30s --follow
-aws logs tail keycloak-default-keycloak --region eu-central-1 --output text --since 30s --follow
+aws logs tail keycloak-default-hub --output text --since 30s --follow
+aws logs tail keycloak-default-keycloak --output text --since 30s --follow
 ```
 

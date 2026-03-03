@@ -74,8 +74,8 @@ resource "aws_secretsmanager_secret" "hub_oidc_client_secrets_credentials" {
 resource "aws_secretsmanager_secret_version" "hub_oidc_client_secrets_credentials_version" {
   secret_id = aws_secretsmanager_secret.hub_oidc_client_secrets_credentials.id
   secret_string = jsonencode({
-    HUB_KEYCLOAK_SYSTEM_CLIENT_SECRET                  = var.hub_keycloak_system_client_secret
-    HUB_KEYCLOAK_OIDC_CRYPTOMATOR_VAULTS_CLIENT_SECRET = var.hub_keycloak_oidc_cryptomator_vaults_client_secret
+    hub_keycloak_system_client_secret                  = var.hub_keycloak_system_client_secret
+    hub_keycloak_oidc_cryptomator_vaults_client_secret = var.hub_keycloak_oidc_cryptomator_vaults_client_secret
   })
 }
 
