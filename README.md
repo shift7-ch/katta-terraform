@@ -15,13 +15,15 @@ Set up Katta Hub in a custom AWS hosted zone. Change terraform workspace to cont
 
 ### Prerequisites
 
-1. Setup AWS CLI and configure credentials in environment
+1. Install Docker
+
+2. Setup AWS CLI and configure credentials in environment
     ```shell
     export AWS_ACCESS_KEY_ID=...
     export AWS_SECRET_ACCESS_KEY=...
     export AWS_SESSION_TOKEN=...
     ```
-2. Add hosted zone `DOMAIN`
+3. Add hosted zone `DOMAIN`
     ```shell
     aws route53 create-hosted-zone --name <DOMAIN> --caller-reference $(date +%s)
     ```
@@ -46,7 +48,35 @@ Set up Katta Hub in a custom AWS hosted zone. Change terraform workspace to cont
     AWS_USE_DUALSTACK_ENDPOINT=false terraform plan
     ```
 
-4. Deploy environment
+4. Create Container Registry for Keycloak
+
+   ```shell
+   export KEYCLOAK_REGISTRY_ID=$(aws ecr create-repository --repository-name cryptomator-keycloak --region eu-central-1 --output json | jq -r '.repository.registryId')
+   ```
+
+5. Push Keycloak Image to ECR from GitHub Container Registry
+
+   ```shell
+   docker pull --platform linux/amd64 ghcr.io/cryptomator/keycloak:26.4.5
+   aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin $KEYCLOAK_REGISTRY_ID.dkr.ecr.eu-central-1.amazonaws.com/cryptomator-keycloak
+   docker push $KEYCLOAK_REGISTRY_ID.dkr.ecr.eu-central-1.amazonaws.com/cryptomator-keycloak:26.4.5
+   ```
+
+6. Create Container Registry for Katta Hub
+
+   ```shell
+   export HUB_REGISTRY_ID=$(aws ecr create-repository --repository-name katta-server --region eu-central-1 --output json | jq -r '.repository.registryId')
+   ```
+
+7. Push Katta Hub Image to ECR from GitHub Container Registry
+
+   ```shell
+   docker pull ghcr.io/shift7-ch/katta-server:982baf0-amd64 --platform linux/amd64 
+   aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin $HUB_REGISTRY_ID.dkr.ecr.eu-central-1.amazonaws.com/katta-server
+   docker push $HUB_REGISTRY_ID.dkr.ecr.eu-central-1.amazonaws.com/katta-server:982baf0-amd64
+   ```
+
+8. Deploy environment
 
     ```shell
     AWS_USE_DUALSTACK_ENDPOINT=false terraform apply --auto-approve 
@@ -61,33 +91,6 @@ deletion.
     ```shell
     AWS_USE_DUALSTACK_ENDPOINT=false terraform destroy --auto-approve
     ```
-
-```shell
-aws ecr create-repository --repository-name cryptomator-keycloak --region eu-central-1
-```
-
-```shell
-aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 430118840017.dkr.ecr.eu-central-1.amazonaws.com/cryptomator-keycloak
-# force docker to pull all platforms on MacOS:
-docker pull --platform linux/arm64 ghcr.io/cryptomator/keycloak:26.4.5
-docker pull --platform linux/amd64 ghcr.io/cryptomator/keycloak:26.4.5
-docker pull --platform unknown/unknown ghcr.io/cryptomator/keycloak:26.4.5 
-docker tag ghcr.io/cryptomator/keycloak:26.4.5 430118840017.dkr.ecr.eu-central-1.amazonaws.com/cryptomator-keycloak:26.4.5
-docker manifest create 430118840017.dkr.ecr.eu-central-1.amazonaws.com/cryptomator-keycloak:26.4.5  430118840017.dkr.ecr.eu-central-1.amazonaws.com/cryptomator-keycloak:26.4.5 --amend 
-docker push 430118840017.dkr.ecr.eu-central-1.amazonaws.com/cryptomator-keycloak:26.4.5
-```
-
-```shell
-aws ecr create-repository --repository-name katta-server --region eu-central-1
-```
-
-```shell
-aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 430118840017.dkr.ecr.eu-central-1.amazonaws.com/katta-server
-docker pull ghcr.io/shift7-ch/katta-server:982baf0-amd64 --platform linux/amd64 
-docker tag ghcr.io/shift7-ch/katta-server:982baf0-amd64 430118840017.dkr.ecr.eu-central-1.amazonaws.com/katta-server:982baf0-amd64
-docker manifest create 430118840017.dkr.ecr.eu-central-1.amazonaws.com/katta-server:982baf0-amd64  430118840017.dkr.ecr.eu-central-1.amazonaws.com/katta-server:982baf0-amd64 --amend 
-docker push 430118840017.dkr.ecr.eu-central-1.amazonaws.com/katta-server:982baf0-amd64
-```
 
 ## TODOs
 
