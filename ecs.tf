@@ -328,12 +328,12 @@ resource "aws_ecs_task_definition" "katta_server_ecs_task" {
           valueFrom = "${aws_secretsmanager_secret.hub_db_credentials.arn}:password::"
         },
         {
-          name      = "HUB_KEYCLOAK_SYSTEM_CLIENT_SECRET"
-          valueFrom = "${aws_secretsmanager_secret.hub_oidc_client_secrets_credentials.arn}:HUB_KEYCLOAK_SYSTEM_CLIENT_SECRET::"
+          name      = "hub_keycloak_system_client_secret"
+          valueFrom = "${aws_secretsmanager_secret.hub_oidc_client_secrets_credentials.arn}:hub_keycloak_system_client_secret::"
         },
         {
-          name      = "HUB_KEYCLOAK_OIDC_CRYPTOMATOR_VAULTS_CLIENT_SECRET"
-          valueFrom = "${aws_secretsmanager_secret.hub_oidc_client_secrets_credentials.arn}:HUB_KEYCLOAK_OIDC_CRYPTOMATOR_VAULTS_CLIENT_SECRET::"
+          name      = "hub_keycloak_oidc_cryptomator_vaults_client_secret"
+          valueFrom = "${aws_secretsmanager_secret.hub_oidc_client_secrets_credentials.arn}:hub_keycloak_oidc_cryptomator_vaults_client_secret::"
         }
       ]
       logConfiguration = {
