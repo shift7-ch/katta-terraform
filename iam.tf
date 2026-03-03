@@ -18,12 +18,30 @@ resource "aws_iam_policy" "ecr_pullthroughcache_policy" {
       {
         Effect = "Allow",
         Action = [
-          "ecr:GetAuthorizationToken",
+          "ecr:GetAuthorizationToken"
+        ],
+        Resource = "*"
+      },
+      {
+        Effect = "Allow",
+        Action = [
           "ecr:BatchCheckLayerAvailability",
           "ecr:GetDownloadUrlForLayer",
-          "ecr:DescribeImages"
+          "ecr:BatchGetImage",
+          "ecr:DescribeImages",
+          "ecr:DescribeRepositories",
+          "ecr:ListImages"
         ],
-        Resource = "arn:aws:ecr:${var.region}:${data.aws_caller_identity.current.account_id}:${terraform.workspace}-quay/keycloak"
+        Resource = [
+          "arn:aws:ecr:${var.region}:${data.aws_caller_identity.current.account_id}:*"
+        ]
+      },
+      {
+        Effect = "Allow",
+        Action = [
+          "ecr:CreateRepository"
+        ],
+        Resource = "*"
       }
     ]
   })
