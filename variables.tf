@@ -101,3 +101,10 @@ variable "keycloak_action_redirect" {
   default     = "x-katta-action:oauth"
 }
 
+variable "github_token" {
+  description = "GitHub Personal Access Token for accessing private container registry (optional for public repos)"
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+

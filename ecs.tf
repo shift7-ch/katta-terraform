@@ -3,6 +3,12 @@ resource "aws_ecr_pull_through_cache_rule" "quay" {
   upstream_registry_url = "quay.io"
 }
 
+resource "aws_ecr_pull_through_cache_rule" "github" {
+  ecr_repository_prefix = "${var.project}-${terraform.workspace}-ghcr"
+  upstream_registry_url = "ghcr.io"
+  credential_arn        = aws_secretsmanager_secret.github_token.arn
+}
+
 resource "aws_security_group" "ecs_cluster_sg" {
   name        = "${var.project}-${terraform.workspace}-ecs_cluster_sg"
   description = "Security group for ECS cluster in private subnets"
@@ -75,7 +81,7 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
   container_definitions = jsonencode([
     {
       name  = "${var.project}-${terraform.workspace}-container-${var.keycloak_prefix}",
-      image = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/cryptomator-keycloak:26.4.5"
+      image = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${var.project}-${terraform.workspace}-ghcr/cryptomator/keycloak:26.4.5"
       entryPoint = ["/bin/sh"]
       command = [
         "-c",
@@ -247,7 +253,7 @@ resource "aws_ecs_task_definition" "katta_server_ecs_task" {
   container_definitions = jsonencode([
     {
       name      = "${var.project}-${terraform.workspace}-container-${var.hub_prefix}",
-      image = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/katta-server:982baf0-amd64"
+      image = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${var.project}-${terraform.workspace}-ghcr/shift7-ch/katta-server:982baf0-amd64"
       # command = ["start", "--http-access-log-enabled=true", "--log-level=DEBUG"]
       memory    = 512
       cpu       = 256

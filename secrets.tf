@@ -79,5 +79,20 @@ resource "aws_secretsmanager_secret_version" "hub_oidc_client_secrets_credential
   })
 }
 
+resource "aws_secretsmanager_secret" "github_token" {
+  name                    = "ecr-pullthroughcache/${var.project}-${terraform.workspace}-ghcr"
+  recovery_window_in_days = 0
 
+  tags = {
+    Project     = var.project
+    Environment = terraform.workspace
+  }
+}
 
+resource "aws_secretsmanager_secret_version" "github_token" {
+  secret_id = aws_secretsmanager_secret.github_token.id
+  secret_string = jsonencode({
+    username = "oauth2"
+    secret   = var.github_token
+  })
+}
