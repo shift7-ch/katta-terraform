@@ -4,12 +4,6 @@ variable "project" {
   default     = "katta"
 }
 
-variable "environment" {
-  description = "The environment name, defined in environments defined as a environment."
-  type        = string
-  default     = "development"
-}
-
 variable "dns_suffix" {
   description = "DNS suffix."
   type        = string
