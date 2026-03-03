@@ -171,7 +171,7 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
         logDriver = "awslogs"
         options = {
           awslogs-group         = aws_cloudwatch_log_group.keycloak_log_group.name
-          awslogs-region        = "eu-central-1"
+          awslogs-region        = var.region
           awslogs-stream-prefix = "keycloak"
         }
       }
@@ -340,7 +340,7 @@ resource "aws_ecs_task_definition" "katta_server_ecs_task" {
         logDriver = "awslogs"
         options = {
           awslogs-group         = aws_cloudwatch_log_group.hub_log_group.name
-          awslogs-region        = "eu-central-1"
+          awslogs-region        = var.region
           awslogs-stream-prefix = "keycloak"
         }
       }
