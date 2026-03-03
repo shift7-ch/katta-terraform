@@ -95,12 +95,6 @@ variable "HUB_KEYCLOAK_OIDC_CRYPTOMATOR_VAULTS_CLIENT_SECRET" {
   sensitive   = true
 }
 
-variable "secret_suffix" {
-  description = "Use to make secret names unique while there are secrets pending for deletion during minimum grace period (7 days)."
-  type        = string
-  default     = ""
-}
-
 variable "keycloak_action_redirect" {
   description = "The custom URL scheme for Keycloak action redirects desktop application."
   type        = string
