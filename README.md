@@ -49,19 +49,28 @@ Set up Katta Hub in a custom AWS hosted zone. Change terraform workspace to cont
     aws route53 create-hosted-zone --name $TF_VAR_dns_suffix --caller-reference $(date +%s)
     ```
 
-## Deployment
+4. Add GitHub Personal Access Token
 
-1. Setup Terraform Workspace
-    ```shell
-    terraform workspace new katta
-    ```
-2. Edit default configuration
-    ```shell
-    cp terraform.tfvars{.template,}
-    vi terraform.tfvars # enter <DOMAIN> and passwords
-    ```
+    - AWS ECR pull-through cache requires authentication even for public GitHub Container Registry repositories.
+    - Create a GitHub Personal Access Token with `read:packages` permission using `gh` CLI:
 
-3. Validate environment
+   ```shell
+   # Create a new token specifically for this:
+   gh auth login --scopes read:packages
+   ```
+
+    - Then add the token to environment:
+
+   ```shell
+   export TF_VAR_github_token=$(gh auth token)
+   ```
+
+   Alternatively, create manually via GitHub web UI:
+    - Go to GitHub Settings → Developer settings → Personal access tokens → Tokens (classic)
+    - Generate new token with `read:packages` scope
+    - Add to `terraform.tfvars`: `github_token = "ghp_your_token_here"`
+
+5. Validate environment
 
     ```shell
     terraform init
@@ -69,38 +78,10 @@ Set up Katta Hub in a custom AWS hosted zone. Change terraform workspace to cont
     terraform plan
     ```
 
-4. Create Container Registry for Keycloak
-
-   ```shell
-   export KEYCLOAK_REGISTRY_ID=$(aws ecr create-repository --repository-name cryptomator-keycloak --region eu-central-1 --output json | jq -r '.repository.registryId')
-   ```
-
-5. Push Keycloak Image to ECR from GitHub Container Registry
-
-   ```shell
-   docker pull --platform linux/amd64 ghcr.io/cryptomator/keycloak:26.4.5
-   aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin $KEYCLOAK_REGISTRY_ID.dkr.ecr.eu-central-1.amazonaws.com/cryptomator-keycloak
-   docker push $KEYCLOAK_REGISTRY_ID.dkr.ecr.eu-central-1.amazonaws.com/cryptomator-keycloak:26.4.5
-   ```
-
-6. Create Container Registry for Katta Hub
-
-   ```shell
-   export HUB_REGISTRY_ID=$(aws ecr create-repository --repository-name katta-server --region eu-central-1 --output json | jq -r '.repository.registryId')
-   ```
-
-7. Push Katta Hub Image to ECR from GitHub Container Registry
-
-   ```shell
-   docker pull ghcr.io/shift7-ch/katta-server:982baf0-amd64 --platform linux/amd64 
-   aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin $HUB_REGISTRY_ID.dkr.ecr.eu-central-1.amazonaws.com/katta-server
-   docker push $HUB_REGISTRY_ID.dkr.ecr.eu-central-1.amazonaws.com/katta-server:982baf0-amd64
-   ```
-
-8. Deploy environment
+6. Deploy environment
 
     ```shell
-    AWS_USE_DUALSTACK_ENDPOINT=false terraform apply --auto-approve
+    terraform apply --auto-approve
     ```
 
 ## Cleanup
@@ -110,14 +91,15 @@ deletion.
 
 1. Destroy environment
     ```shell
-    AWS_USE_DUALSTACK_ENDPOINT=false terraform destroy --auto-approve
+    terraform destroy --auto-approve
     ```
 
 ## Background
 
 ### ECR Pull-Through Cache
 
-Container images are automatically pulled from GitHub Container Registry (ghcr.io) via Amazon ECR pull-through cache rules. This eliminates the need to manually pull and push images to ECR.
+Container images are automatically pulled from GitHub Container Registry (ghcr.io) via Amazon ECR pull-through cache
+rules. This eliminates the need to manually pull and push images to ECR.
 
 - Keycloak: `ghcr.io/cryptomator/keycloak:26.4.5`
 - Katta Hub: `ghcr.io/shift7-ch/katta-server:982baf0-amd64`
