@@ -23,6 +23,7 @@ Set up Katta Hub in a custom AWS hosted zone. Change terraform workspace to cont
     export AWS_SECRET_ACCESS_KEY=
     export AWS_SESSION_TOKEN=
     export AWS_DEFAULT_REGION=
+    export AWS_USE_DUALSTACK_ENDPOINT=false
 
 ## Deployment
 
@@ -65,7 +66,7 @@ Set up Katta Hub in a custom AWS hosted zone. Change terraform workspace to cont
     ```shell
     terraform init
     terraform validate
-    AWS_USE_DUALSTACK_ENDPOINT=false terraform plan
+    terraform plan
     ```
 
 4. Create Container Registry for Keycloak
@@ -99,7 +100,7 @@ Set up Katta Hub in a custom AWS hosted zone. Change terraform workspace to cont
 8. Deploy environment
 
     ```shell
-    AWS_USE_DUALSTACK_ENDPOINT=false terraform apply --auto-approve 
+    AWS_USE_DUALSTACK_ENDPOINT=false terraform apply --auto-approve
     ```
 
 ## Cleanup
