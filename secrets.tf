@@ -3,8 +3,8 @@ resource "random_id" "secret_suffix" {
 }
 
 resource "aws_secretsmanager_secret" "keycloak_db_credentials" {
-  name                    = "${var.project}-${terraform.workspace}-${var.keycloak_prefix}-db-credentials__${random_id.secret_suffix.hex}"
-  description             = "Database credentials for ${var.project} in ${terraform.workspace}"
+  name                    = "${terraform.workspace}-${var.keycloak_prefix}-db-credentials__${random_id.secret_suffix.hex}"
+  description             = "Database credentials in ${terraform.workspace}"
   recovery_window_in_days = 7
 
   tags = {
@@ -22,8 +22,8 @@ resource "aws_secretsmanager_secret_version" "keycloak_db_credentials_version" {
 }
 
 resource "aws_secretsmanager_secret" "keycloak_admin" {
-  name                    = "${var.project}-${terraform.workspace}-${var.keycloak_prefix}-admin__${random_id.secret_suffix.hex}"
-  description             = "Keycloak admin credentials for ${var.project} in ${terraform.workspace}"
+  name                    = "${terraform.workspace}-${var.keycloak_prefix}-admin__${random_id.secret_suffix.hex}"
+  description             = "Keycloak admin credentials in ${terraform.workspace}"
   recovery_window_in_days = 7
 
   tags = {
@@ -42,8 +42,8 @@ resource "aws_secretsmanager_secret_version" "keycloak_admin_version" {
 
 
 resource "aws_secretsmanager_secret" "hub_db_credentials" {
-  name                    = "${var.project}-${terraform.workspace}-${var.hub_prefix}-db-credentials__${random_id.secret_suffix.hex}"
-  description             = "Database credentials for ${var.project} in ${terraform.workspace}"
+  name                    = "${terraform.workspace}-${var.hub_prefix}-db-credentials__${random_id.secret_suffix.hex}"
+  description             = "Database credentials in ${terraform.workspace}"
   recovery_window_in_days = 7
 
   tags = {
@@ -61,8 +61,8 @@ resource "aws_secretsmanager_secret_version" "hub_db_credentials_version" {
 }
 
 resource "aws_secretsmanager_secret" "hub_oidc_client_secrets_credentials" {
-  name                    = "${var.project}-${terraform.workspace}-${var.hub_prefix}-oidc-client-secrets__${random_id.secret_suffix.hex}"
-  description             = "Database credentials for ${var.project} in ${terraform.workspace}"
+  name                    = "${terraform.workspace}-${var.hub_prefix}-oidc-client-secrets__${random_id.secret_suffix.hex}"
+  description             = "Database credentials in ${terraform.workspace}"
   recovery_window_in_days = 7
 
   tags = {
@@ -80,7 +80,7 @@ resource "aws_secretsmanager_secret_version" "hub_oidc_client_secrets_credential
 }
 
 resource "aws_secretsmanager_secret" "github_token" {
-  name                    = "ecr-pullthroughcache/${var.project}-${terraform.workspace}-ghcr"
+  name                    = "ecr-pullthroughcache/${terraform.workspace}-ghcr"
   recovery_window_in_days = 0
 
   tags = {

@@ -109,7 +109,7 @@ Container images are automatically pulled from GitHub Container Registry (ghcr.i
 - Keycloak: `ghcr.io/cryptomator/keycloak:26.4.5`
 - Katta Hub: `ghcr.io/shift7-ch/katta-server:982baf0-amd64`
 
-Images are cached in ECR with the prefix `<project>-<workspace>-ghcr/` and pulled automatically when ECS tasks start.
+Images are cached in ECR with the prefix `<workspace>-ghcr/` and pulled automatically when ECS tasks start.
 
 ## TODOs
 

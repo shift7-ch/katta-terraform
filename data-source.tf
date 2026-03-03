@@ -1,5 +1,5 @@
 resource "aws_security_group" "rds_sg" {
-  name        = "${var.project}-${terraform.workspace}-rds-sg"
+  name        = "${terraform.workspace}-rds-sg"
   description = "Security group for RDS instance"
   vpc_id      = aws_vpc.keycloak.id
 
@@ -20,14 +20,14 @@ resource "aws_security_group" "rds_sg" {
   }
 
   tags = {
-    Name        = "${var.project}-${terraform.workspace}-rds-sg"
+    Name        = "${terraform.workspace}-rds-sg"
     Project     = var.project
     Environment = terraform.workspace
   }
 }
 
 resource "aws_db_instance" "postgres" {
-  identifier = "${var.project}-${terraform.workspace}-database"
+  identifier = "${terraform.workspace}-database"
 
   allocated_storage         = 20
   engine                    = "postgres"
@@ -41,18 +41,18 @@ resource "aws_db_instance" "postgres" {
   publicly_accessible       = false
   skip_final_snapshot       = true
   deletion_protection       = false
-  final_snapshot_identifier = "${var.project}-${terraform.workspace}-database-final-snapshot"
+  final_snapshot_identifier = "${terraform.workspace}-database-final-snapshot"
   copy_tags_to_snapshot     = true
 
   tags = {
-    Name        = "${var.project}-${terraform.workspace}-rds-db-instance"
+    Name        = "${terraform.workspace}-rds-db-instance"
     Project     = var.project
     Environment = terraform.workspace
   }
 }
 
 resource "aws_db_instance" "hub_db" {
-  identifier = "${var.project}-${terraform.workspace}-hub-database"
+  identifier = "${terraform.workspace}-hub-database"
 
   allocated_storage         = 5
   engine                    = "postgres"
@@ -66,11 +66,11 @@ resource "aws_db_instance" "hub_db" {
   publicly_accessible       = false
   skip_final_snapshot       = true
   deletion_protection       = false
-  final_snapshot_identifier = "${var.project}-${terraform.workspace}-database-final-snapshot"
+  final_snapshot_identifier = "${terraform.workspace}-database-final-snapshot"
   copy_tags_to_snapshot     = true
 
   tags = {
-    Name        = "${var.project}-${terraform.workspace}-rds-db-instance"
+    Name        = "${terraform.workspace}-rds-db-instance"
     Project     = var.project
     Environment = terraform.workspace
   }

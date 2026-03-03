@@ -1,5 +1,5 @@
 resource "aws_security_group" "alb_sg" {
-  name        = "${var.project}-${terraform.workspace}-alb-sg"
+  name        = "${terraform.workspace}-alb-sg"
   description = "Allow inbound traffic to ALB"
   vpc_id      = aws_vpc.keycloak.id
 
@@ -25,7 +25,7 @@ resource "aws_security_group" "alb_sg" {
   }
 
   tags = {
-    Name        = "${var.project}-${terraform.workspace}-alb-sg"
+    Name        = "${terraform.workspace}-alb-sg"
     Project     = var.project
     Environment = terraform.workspace
   }
@@ -39,7 +39,7 @@ resource "aws_lb" "keycloak_public_alb" {
   subnets            = aws_subnet.public.*.id
 
   tags = {
-    Name        = "${var.project}-${terraform.workspace}-alb"
+    Name        = "${terraform.workspace}-alb"
     Project     = var.project
     Environment = terraform.workspace
   }
@@ -53,14 +53,14 @@ resource "aws_lb" "hub_public_alb" {
   subnets            = aws_subnet.public.*.id
 
   tags = {
-    Name        = "${var.project}-${terraform.workspace}-alb"
+    Name        = "${terraform.workspace}-alb"
     Project     = var.project
     Environment = terraform.workspace
   }
 }
 
 resource "aws_lb_target_group" "keycloak_ecs_target_group" {
-  name        = "${var.project}-${terraform.workspace}-${var.keycloak_prefix}-ecs-tg"
+  name        = "${terraform.workspace}-${var.keycloak_prefix}-ecs-tg"
   port        = 8080
   protocol    = "HTTP"
   vpc_id      = aws_vpc.keycloak.id
@@ -77,14 +77,14 @@ resource "aws_lb_target_group" "keycloak_ecs_target_group" {
   }
 
   tags = {
-    Name        = "${var.project}-${terraform.workspace}-${var.keycloak_prefix}-ecs-tg"
+    Name        = "${terraform.workspace}-${var.keycloak_prefix}-ecs-tg"
     Project     = var.project
     Environment = terraform.workspace
   }
 }
 
 resource "aws_lb_target_group" "hub_ecs_target_group" {
-  name        = "${var.project}-${terraform.workspace}-${var.hub_prefix}-ecs-tg"
+  name        = "${terraform.workspace}-${var.hub_prefix}-ecs-tg"
   port        = 8280
   protocol    = "HTTP"
   vpc_id      = aws_vpc.keycloak.id
@@ -101,7 +101,7 @@ resource "aws_lb_target_group" "hub_ecs_target_group" {
   }
 
   tags = {
-    Name        = "${var.project}-${terraform.workspace}-${var.hub_prefix}-ecs-tg"
+    Name        = "${terraform.workspace}-${var.hub_prefix}-ecs-tg"
     Project     = var.project
     Environment = terraform.workspace
   }
