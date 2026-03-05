@@ -434,7 +434,7 @@ resource "aws_appautoscaling_target" "ecs_autoscaling_target" {
   scalable_dimension = "ecs:service:DesiredCount"
   service_namespace  = "ecs"
 
-  role_arn = aws_iam_role.appAutoscalingRole.arn
+  role_arn = aws_iam_role.app_autoscaling_role.arn
 }
 
 resource "aws_appautoscaling_policy" "cpu_scaling_policy" {

@@ -82,8 +82,8 @@ resource "aws_iam_policy" "secrets_manager_policy" {
   }
 }
 
-resource "aws_iam_role" "appAutoscalingRole" {
-  name = "${terraform.workspace}-appAutoscalingRole"
+resource "aws_iam_role" "app_autoscaling_role" {
+  name = "${terraform.workspace}-app-autoscaling-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -101,7 +101,7 @@ resource "aws_iam_role" "appAutoscalingRole" {
 
 resource "aws_iam_role_policy" "app_autoscaling_policy" {
   name = "${terraform.workspace}-app-autoscaling-policy"
-  role = aws_iam_role.appAutoscalingRole.id
+  role = aws_iam_role.app_autoscaling_role.id
 
   policy = jsonencode({
     Version = "2012-10-17"
