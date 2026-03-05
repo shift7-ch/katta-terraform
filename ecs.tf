@@ -336,7 +336,7 @@ resource "aws_ecs_task_definition" "katta_server_ecs_task" {
         options = {
           awslogs-group         = aws_cloudwatch_log_group.hub_log_group.name
           awslogs-region        = var.region
-          awslogs-stream-prefix = "keycloak"
+          awslogs-stream-prefix = "hub"
         }
       }
       healthCheck = {
