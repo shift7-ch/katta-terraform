@@ -24,6 +24,7 @@ Set up Katta Hub in a custom AWS hosted zone. Change terraform workspace to cont
     export AWS_SESSION_TOKEN=
     export AWS_DEFAULT_REGION=
     export AWS_USE_DUALSTACK_ENDPOINT=false
+    ```
 
 ## Deployment
 
