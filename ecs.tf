@@ -171,7 +171,7 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
         }
       }
       healthCheck = {
-        command = ["CMD-SHELL", "curl --head -fsS https://localhost:9000/health >> /var/log/keycloak-health.log 2>&1 || exit 0"]
+        command = ["CMD-SHELL", "curl --head -fsS https://localhost:9000/health >> /var/log/keycloak-health.log 2>&1 || exit 1"]
         interval    = 30
         timeout     = 5
         retries     = 3
