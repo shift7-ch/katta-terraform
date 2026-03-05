@@ -100,9 +100,8 @@ variable "keycloak_action_redirect" {
 }
 
 variable "github_token" {
-  description = "GitHub Personal Access Token for accessing private container registry (optional for public repos)"
+  description = "GitHub Personal Access Token for authenticating to GitHub Container Registry (required for both public and private repos)"
   type        = string
   sensitive   = true
-  default     = ""
 }
 
