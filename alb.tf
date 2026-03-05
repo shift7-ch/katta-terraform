@@ -122,7 +122,7 @@ resource "aws_lb_listener" "keycloak_https_listener" {
   port              = 443
   protocol          = "HTTPS"
 
-  ssl_policy = "ELBSecurityPolicy-2016-08"  # Update as needed
+  ssl_policy = "ELBSecurityPolicy-TLS13-1-2-2021-06"
   certificate_arn = aws_acm_certificate_validation.keycloak_cert_validation.certificate_arn
 
 
@@ -137,7 +137,7 @@ resource "aws_lb_listener" "hub_https_listener" {
   port              = 443
   protocol          = "HTTPS"
 
-  ssl_policy = "ELBSecurityPolicy-2016-08"  # Update as needed
+  ssl_policy = "ELBSecurityPolicy-TLS13-1-2-2021-06"
   certificate_arn = aws_acm_certificate_validation.hub_cert_validation.certificate_arn
 
 
