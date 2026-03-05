@@ -340,7 +340,7 @@ resource "aws_ecs_task_definition" "katta_server_ecs_task" {
         }
       }
       healthCheck = {
-        command = ["CMD-SHELL", "curl --head -fsS http://localhost:8280/api/config >> /var/log/katta-server-health.log 2>&1 || exit 0"]
+        command = ["CMD-SHELL", "curl --head -fsS http://localhost:8280/api/config >> /var/log/katta-server-health.log 2>&1"]
         interval    = 5
         timeout     = 5
         retries     = 3
