@@ -89,6 +89,9 @@ Set up Katta Hub in a custom AWS hosted zone. Change terraform workspace to cont
     terraform apply --auto-approve
     ```
 
+7. Open `https://hub.<workspace>.<dns_suffix>` in browser to login with the [default credentials](https://github.com/shift7-ch/katta-clientlib?tab=readme-ov-file#users) with `admin` role.
+
+
 ## Cleanup
 
 Preconditions from leftovers previous run: Rename secret names, they have a minimum grace period of 7 days before
@@ -116,7 +119,6 @@ Images are cached in ECR with the prefix `<workspace>-ghcr/` and pulled automati
 - [_] understand/document ECS/ECR model - lb/tg etc.
 - [_] costs vpc - is it pulling of images or running idle?
 - [ ] hub should wait for keycloak to be ready - need manual re-deployment for now
-- [_] test admin cli
 - [_] hub_keycloak_system_client_secret= "TODO"
 - [_] hub_keycloak_oidc_cryptomator_vaults_client_secret= "TODO"
 
