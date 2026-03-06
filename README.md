@@ -51,8 +51,9 @@ Set up Katta Hub in a custom AWS hosted zone. Change terraform workspace to cont
     ```shell
     aws route53 create-hosted-zone --name $TF_VAR_dns_suffix --caller-reference $(date +%s)
     ```
-   
-   **Warning**: For domain validation to work in AWS Certificate Manager you must ensure the name servers set in the hosted zone match the name servers set in the domain registrar. This also applies to domains managed in Route53. 
+
+   **Warning**: For domain validation to work in AWS Certificate Manager you must ensure the name servers set in the
+   hosted zone match the name servers set in the domain registrar. This also applies to domains managed in Route53.
 
 4. Add GitHub Personal Access Token
 
@@ -89,8 +90,12 @@ Set up Katta Hub in a custom AWS hosted zone. Change terraform workspace to cont
     terraform apply --auto-approve
     ```
 
-7. Open `https://hub.<workspace>.<dns_suffix>` in browser to login with the [default credentials](https://github.com/shift7-ch/katta-clientlib?tab=readme-ov-file#users) with `admin` role.
+7.Login in Web Browser
 
+* Open `https://hub.<workspace>.<dns_suffix>` in browser to login to _Katta Hub_ with
+  the [default credentials](https://github.com/shift7-ch/katta-clientlib?tab=readme-ov-file#users) with `admin` role.
+* Open `https://keycloak.<workspace>.<dns_suffix>` in browser to login to _Katta Keycloak_ with the admin user (default
+  `keycloak_admin`) and password as `$TF_VAR_keycloak_admin_password`.
 
 ## Cleanup
 
