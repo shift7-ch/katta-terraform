@@ -81,9 +81,8 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
       command = [
         "-c",
         join("", [
-          "mkdir -p /opt/keycloak/data/import/  && ",
-          "curl https://raw.githubusercontent.com/shift7-ch/katta-server/refs/heads/feature/cipherduck-uvf/backend/src/main/resources/cryptomator-realm.json -o  /opt/keycloak/data/import/cryptomator-realm.json  && ",
-          "sed -i 's|\"redirectUris\": \\[|\"redirectUris\": \\[\"${var.keycloak_action_redirect}\",\"https://${var.hub_prefix}.${terraform.workspace}.${var.dns_suffix}/*\",|g' /opt/keycloak/data/import/cryptomator-realm.json && ",
+          "mkdir -p /opt/keycloak/data/import/ && ",
+          "echo $CRYPTOMATOR_REALM_JSON | base64 -d > /opt/keycloak/data/import/cryptomator-realm.json && ",
           "/opt/keycloak/bin/kc.sh start --http-access-log-enabled=true --log-level=DEBUG --import-realm"
         ])
       ]
@@ -111,6 +110,10 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
         }
       ]
       environment = [
+        {
+          name  = "CRYPTOMATOR_REALM_JSON"
+          value = local.cryptomator_realm_base64
+        },
         {
           name  = "KC_DB"
           value = "postgres"

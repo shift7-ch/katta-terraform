@@ -29,10 +29,3 @@
 #hub_db_username=
 # The password for the Hub database
 #hub_db_password=
-
-# Hub Keycloak OAuth Client Secrets
-# IMPORTANT: These must match values in cryptomator-realm.json!
-# Client secret for Hub's Keycloak system client
-#hub_keycloak_system_client_secret=
-# Client secret for Hub's Keycloak OIDC Cryptomator Vaults client
-#hub_keycloak_oidc_cryptomator_vaults_client_secret=

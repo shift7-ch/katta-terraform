@@ -81,18 +81,6 @@ variable "keycloak_admin_password" {
   sensitive   = true
 }
 
-variable "hub_keycloak_system_client_secret" {
-  description = "The client secret for Hub's Keycloak system client. Must match the value in cryptomator-realm.json."
-  type        = string
-  sensitive   = true
-}
-
-variable "hub_keycloak_oidc_cryptomator_vaults_client_secret" {
-  description = "The client secret for Hub's Keycloak OIDC Cryptomator Vaults client. Must match the value in cryptomator-realm.json."
-  type        = string
-  sensitive   = true
-}
-
 variable "keycloak_action_redirect" {
   description = "The custom URL scheme for Keycloak action redirects desktop application."
   type        = string
