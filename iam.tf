@@ -123,7 +123,7 @@ resource "aws_iam_role_policy" "app_autoscaling_policy" {
 }
 
 resource "aws_iam_policy" "ecr_ECSFargateAllowExecuteCommand" {
-  count  = var.ecs_enable_execute_command ? 1 : 0
+  count       = var.ecs_enable_execute_command ? 1 : 0
   name        = "${terraform.workspace}-ecr-ECSFargateAllowExecuteCommand"
   description = "Policy to allow ECS task execution role to to execute command."
   policy = jsonencode({
@@ -173,4 +173,5 @@ resource "aws_iam_role_policy_attachment" "ecsTaskExecutionPolicy_AWSServiceRole
 resource "aws_iam_role_policy_attachment" "ecsTaskExecutionPolicy_ecr_ECSFargateAllowExecuteCommand" {
   role       = aws_iam_role.ecsTaskExecutionRole.name
   policy_arn = aws_iam_policy.ecr_ECSFargateAllowExecuteCommand[0].arn
+  count      = var.ecs_enable_execute_command ? 1 : 0
 }

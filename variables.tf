@@ -109,6 +109,6 @@ variable "hub_version" {
 variable "ecs_enable_execute_command" {
   description = "Enable ExecuteCommand to connecting to ecs services for debugging."
   type        = bool
-  default     = true
+  default     = false
 }
 

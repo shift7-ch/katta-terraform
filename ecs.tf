@@ -174,11 +174,11 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
         }
       }
       healthCheck = {
-        command     = ["CMD-SHELL", "curl -v --fail http://localhost:9000/health >> /var/log/keycloak-health.log 2>&1"]
-        interval    = 60
+        command     = ["CMD-SHELL", "curl -v --fail http://localhost:9000/health"]
+        interval    = 30
         timeout     = 5
         retries     = 3
-        startPeriod = 120
+        startPeriod = 60
       },
       linuxParameters = {
         initProcessEnabled = var.ecs_enable_execute_command
@@ -348,7 +348,7 @@ resource "aws_ecs_task_definition" "katta_server_ecs_task" {
         }
       }
       healthCheck = {
-        command     = ["CMD-SHELL", "curl -v --fail http://localhost:8280/api/config >> /var/log/katta-server-health.log 2>&1"]
+        command     = ["CMD-SHELL", "curl -v --fail http://localhost:8280/api/config"]
         interval    = 5
         timeout     = 5
         retries     = 3
