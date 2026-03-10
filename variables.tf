@@ -36,7 +36,7 @@ variable "vpc_cidr" {
 variable "keycloak_db_name" {
   description = "The name of the Keycloak database."
   type        = string
-  default    = "keycloak_database"
+  default     = "keycloak_database"
 }
 
 variable "keycloak_db_username" {
@@ -93,3 +93,14 @@ variable "github_token" {
   sensitive   = true
 }
 
+variable "keycloak_version" {
+  description = "Docker image tag for ghcr.io/cryptomator/keycloak."
+  type        = string
+  default     = "26.4.5"
+}
+
+variable "hub_version" {
+  description = "Docker image tag for ghcr.io/shift7-ch/katta-server."
+  type        = string
+  default     = "982baf0-amd64"
+}

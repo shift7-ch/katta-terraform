@@ -76,7 +76,7 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
   container_definitions = jsonencode([
     {
       name  = "${terraform.workspace}-container-${var.keycloak_prefix}",
-      image = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${terraform.workspace}-ghcr/cryptomator/keycloak:26.4.5"
+      image = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${terraform.workspace}-ghcr/cryptomator/keycloak:${var.keycloak_version}"
       entryPoint = ["/bin/sh"]
       command = [
         "-c",
@@ -251,7 +251,7 @@ resource "aws_ecs_task_definition" "katta_server_ecs_task" {
   container_definitions = jsonencode([
     {
       name      = "${terraform.workspace}-container-${var.hub_prefix}",
-      image = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${terraform.workspace}-ghcr/shift7-ch/katta-server:982baf0-amd64"
+      image = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${terraform.workspace}-ghcr/shift7-ch/katta-server:${var.hub_version}"
       # command = ["start", "--http-access-log-enabled=true", "--log-level=DEBUG"]
       memory    = 512
       cpu       = 256
