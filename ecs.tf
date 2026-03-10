@@ -174,11 +174,11 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
         }
       }
       healthCheck = {
-        command = ["CMD-SHELL", "curl --head -fsS https://localhost:9000/health >> /var/log/keycloak-health.log 2>&1 || exit 1"]
+        command = ["CMD-SHELL", "curl --head -fsS http://localhost:9000/health >> /var/log/keycloak-health.log 2>&1"]
         interval    = 30
         timeout     = 5
         retries     = 3
-        startPeriod = 240
+        startPeriod = 60
       }
     }
   ])
@@ -357,6 +357,7 @@ resource "aws_ecs_task_definition" "katta_server_ecs_task" {
     Project     = var.project
     Environment = terraform.workspace
   }
+  depends_on = [aws_ecs_service.keycloak_ecs_service]
 }
 
 resource "aws_ecs_service" "katta_server_ecs_service" {
