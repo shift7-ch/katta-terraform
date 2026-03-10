@@ -174,11 +174,11 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
         }
       }
       healthCheck = {
-        command = ["CMD-SHELL", "curl --head -fsS http://localhost:9000/health >> /var/log/keycloak-health.log 2>&1"]
-        interval    = 30
+        command = ["CMD-SHELL", "curl -v --fail http://127.0.0.1:8080/realms/cryptomator/.well-known/openid-configuration"]
+        interval    = 60
         timeout     = 5
         retries     = 3
-        startPeriod = 60
+        startPeriod = 120
       }
     }
   ])
