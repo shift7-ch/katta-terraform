@@ -122,6 +122,33 @@ resource "aws_iam_role_policy" "app_autoscaling_policy" {
   })
 }
 
+resource "aws_iam_policy" "ecr_ECSFargateAllowExecuteCommand" {
+  count  = var.ecs_enable_execute_command ? 1 : 0
+  name        = "${terraform.workspace}-ecr-ECSFargateAllowExecuteCommand"
+  description = "Policy to allow ECS task execution role to to execute command."
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "ssmmessages:CreateControlChannel",
+          "ssmmessages:CreateDataChannel",
+          "ssmmessages:OpenControlChannel",
+          "ssmmessages:OpenDataChannel"
+        ],
+        Resource = "*"
+      }
+    ]
+  })
+
+  tags = {
+    Name        = "${terraform.workspace}-ecr-pullthrough-policy"
+    Project     = var.project
+    Environment = terraform.workspace
+  }
+}
+
 resource "aws_iam_role_policy_attachment" "ecsTaskExecutionPolicy_AmazonEC2ContainerServiceforEC2Role" {
   role       = aws_iam_role.ecsTaskExecutionRole.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
@@ -140,4 +167,10 @@ resource "aws_iam_role_policy_attachment" "ecsTaskExecutionPolicy_AWSServiceRole
 resource "aws_iam_role_policy_attachment" "ecsTaskExecutionPolicy_AWSServiceRoleForSecretManager" {
   role       = aws_iam_role.ecsTaskExecutionRole.name
   policy_arn = aws_iam_policy.secrets_manager_policy.arn
+}
+
+
+resource "aws_iam_role_policy_attachment" "ecsTaskExecutionPolicy_ecr_ECSFargateAllowExecuteCommand" {
+  role       = aws_iam_role.ecsTaskExecutionRole.name
+  policy_arn = aws_iam_policy.ecr_ECSFargateAllowExecuteCommand[0].arn
 }

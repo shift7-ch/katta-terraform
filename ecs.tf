@@ -67,16 +67,16 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
   family = "${var.keycloak_prefix}-task"
 
   requires_compatibilities = ["FARGATE"]
-  network_mode       = "awsvpc"
-  memory             = "2048"
-  cpu                = "1024"
-  execution_role_arn = aws_iam_role.ecsTaskExecutionRole.arn
-  task_role_arn      = aws_iam_role.ecsTaskExecutionRole.arn
+  network_mode             = "awsvpc"
+  memory                   = "2048"
+  cpu                      = "1024"
+  execution_role_arn       = aws_iam_role.ecsTaskExecutionRole.arn
+  task_role_arn            = aws_iam_role.ecsTaskExecutionRole.arn
 
   container_definitions = jsonencode([
     {
-      name  = "${terraform.workspace}-container-${var.keycloak_prefix}",
-      image = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${terraform.workspace}-ghcr/cryptomator/keycloak:${var.keycloak_version}"
+      name       = "${terraform.workspace}-container-${var.keycloak_prefix}",
+      image      = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${terraform.workspace}-ghcr/cryptomator/keycloak:${var.keycloak_version}"
       entryPoint = ["/bin/sh"]
       command = [
         "-c",
@@ -174,11 +174,14 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
         }
       }
       healthCheck = {
-        command = ["CMD-SHELL", "curl -v --fail http://127.0.0.1:8080/realms/cryptomator/.well-known/openid-configuration"]
+        command     = ["CMD-SHELL", "curl -v --fail http://localhost:9000/health >> /var/log/keycloak-health.log 2>&1"]
         interval    = 60
         timeout     = 5
         retries     = 3
         startPeriod = 120
+      },
+      linuxParameters = {
+        initProcessEnabled = var.ecs_enable_execute_command
       }
     }
   ])
@@ -198,6 +201,8 @@ resource "aws_ecs_service" "keycloak_ecs_service" {
   scheduling_strategy  = "REPLICA"
   desired_count        = 1
   force_new_deployment = true
+  enable_execute_command = var.ecs_enable_execute_command
+  wait_for_steady_state = true
 
   availability_zone_rebalancing = "ENABLED"
   propagate_tags                = "TASK_DEFINITION"
@@ -234,7 +239,7 @@ resource "aws_ecs_task_definition" "katta_server_ecs_task" {
   family = "${var.hub_prefix}-task"
 
   requires_compatibilities = ["FARGATE"]
-  network_mode       = "awsvpc"
+  network_mode             = "awsvpc"
   # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-cpu-memory-error.html
   # resources:
   #   requests:
@@ -250,7 +255,7 @@ resource "aws_ecs_task_definition" "katta_server_ecs_task" {
 
   container_definitions = jsonencode([
     {
-      name      = "${terraform.workspace}-container-${var.hub_prefix}",
+      name  = "${terraform.workspace}-container-${var.hub_prefix}",
       image = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${terraform.workspace}-ghcr/shift7-ch/katta-server:${var.hub_version}"
       # command = ["start", "--http-access-log-enabled=true", "--log-level=DEBUG"]
       memory    = 512
@@ -343,11 +348,14 @@ resource "aws_ecs_task_definition" "katta_server_ecs_task" {
         }
       }
       healthCheck = {
-        command = ["CMD-SHELL", "curl --head -fsS http://localhost:8280/api/config >> /var/log/katta-server-health.log 2>&1"]
+        command     = ["CMD-SHELL", "curl -v --fail http://localhost:8280/api/config >> /var/log/katta-server-health.log 2>&1"]
         interval    = 5
         timeout     = 5
         retries     = 3
         startPeriod = 10
+      },
+      linuxParameters = {
+        initProcessEnabled = var.ecs_enable_execute_command
       }
     }
   ])
@@ -368,6 +376,8 @@ resource "aws_ecs_service" "katta_server_ecs_service" {
   scheduling_strategy  = "REPLICA"
   desired_count        = 1
   force_new_deployment = true
+  enable_execute_command = var.ecs_enable_execute_command
+  wait_for_steady_state = true
 
   availability_zone_rebalancing = "ENABLED"
   propagate_tags                = "TASK_DEFINITION"
@@ -404,23 +414,23 @@ resource "aws_security_group" "vpc_endpoint_sg" {
   vpc_id = aws_vpc.keycloak.id
 
   ingress {
-    from_port = 80
-    to_port   = 80
-    protocol  = "tcp"
+    from_port       = 80
+    to_port         = 80
+    protocol        = "tcp"
     security_groups = [aws_security_group.ecs_cluster_sg.id]
   }
 
   ingress {
-    from_port = 443
-    to_port   = 443
-    protocol  = "tcp"
+    from_port       = 443
+    to_port         = 443
+    protocol        = "tcp"
     security_groups = [aws_security_group.ecs_cluster_sg.id]
   }
 
   egress {
-    from_port = 0
-    to_port   = 0
-    protocol  = "-1"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -453,7 +463,7 @@ resource "aws_appautoscaling_policy" "cpu_scaling_policy" {
       predefined_metric_type = "ECSServiceAverageCPUUtilization"
     }
 
-    target_value = 60.0  # Target CPU utilization percentage
+    target_value       = 60.0 # Target CPU utilization percentage
     scale_in_cooldown  = 60
     scale_out_cooldown = 60
   }
@@ -471,7 +481,7 @@ resource "aws_appautoscaling_policy" "memory_scaling_policy" {
       predefined_metric_type = "ECSServiceAverageMemoryUtilization"
     }
 
-    target_value = 70.0  # Target Memory utilization percentage
+    target_value       = 70.0 # Target Memory utilization percentage
     scale_in_cooldown  = 60
     scale_out_cooldown = 60
   }

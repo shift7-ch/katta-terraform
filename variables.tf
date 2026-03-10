@@ -105,3 +105,10 @@ variable "hub_version" {
   # TODO temporary workaround while waiting for fix https://github.com/shift7-ch/katta-server/pull/107
   default     = "cc8d14c-amd64"
 }
+
+variable "ecs_enable_execute_command" {
+  description = "Enable ExecuteCommand to connecting to ecs services for debugging."
+  type        = bool
+  default     = true
+}
+

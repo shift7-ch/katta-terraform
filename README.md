@@ -140,3 +140,40 @@ aws logs tail `terraform workspace show`-hub-log-group --output text --since 30s
 aws logs tail `terraform workspace show`-keycloak-log-group --output text --since 30s --follow
 ```
 
+## Debugging
+
+Enable execute command with variable `ecs_enable_execute_command`.
+
+```shell
+# TF_VAR_region
+WORKSPACE=$(terraform workspace show)
+# inspect services
+aws ecs describe-services --region ${TF_VAR_region} --cluster ${WORKSPACE}-cluster --service ${WORKSPACE}-keycloak-ecs-service
+aws ecs describe-services --region ${TF_VAR_region} --cluster ${WORKSPACE}-cluster --service ${WORKSPACE}-hub-ecs-service
+# list task
+aws ecs list-tasks --region ${TF_VAR_region} --cluster ${WORKSPACE}-cluster
+#{
+#    "taskArns": [
+#        "arn:aws:ecs:eu-central-1:430118840017:task/che-cluster/8bd3030e916a47e08cd579bc70009737",
+#        "arn:aws:ecs:eu-central-1:430118840017:task/che-cluster/fb33d05b480f4cc19cb4299190b916d5"
+#    ]
+#}
+# inspect tasks
+aws ecs describe-tasks --region ${TF_VAR_region} --cluster ${WORKSPACE}-cluster --task 8bd3030e916a47e08cd579bc70009737 
+aws ecs describe-tasks --region ${TF_VAR_region} --cluster ${WORKSPACE}-cluster --task fb33d05b480f4cc19cb4299190b916d5 
+# debug containers:
+aws ecs execute-command \
+--region ${TF_VAR_region} \
+--cluster ${WORKSPACE}-cluster \
+--task fb33d05b480f4cc19cb4299190b916d5 \
+--container che-container-keycloak \
+--interactive \
+--command "/bin/sh"
+aws ecs execute-command \
+--region ${TF_VAR_region} \
+--cluster che-cluster \
+--task 8bd3030e916a47e08cd579bc70009737 \
+--container ${WORKSPACE}-container-hub \
+--interactive \
+--command "/bin/sh"
+```
