@@ -102,5 +102,6 @@ variable "keycloak_version" {
 variable "hub_version" {
   description = "Docker image tag for ghcr.io/shift7-ch/katta-server."
   type        = string
-  default     = "982baf0-amd64"
+  # TODO temporary workaround while waiting for fix https://github.com/shift7-ch/katta-server/pull/107
+  default     = "cc8d14c-amd64"
 }
