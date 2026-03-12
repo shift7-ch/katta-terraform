@@ -125,14 +125,12 @@ Images are cached in ECR with the prefix `<workspace>-ghcr/` and pulled automati
 - non-shared Keycloak
 - default realm
 
-## Troubleshooting
+## Debugging
 
 ```shell
 aws logs tail `terraform workspace show`-hub-log-group --output text --since 30s --follow
 aws logs tail `terraform workspace show`-keycloak-log-group --output text --since 30s --follow
 ```
-
-## Debugging
 
 Enable execute command with variable `ecs_enable_execute_command`.
 
@@ -146,8 +144,8 @@ aws ecs describe-services --region ${TF_VAR_region} --cluster ${WORKSPACE}-clust
 aws ecs list-tasks --region ${TF_VAR_region} --cluster ${WORKSPACE}-cluster
 #{
 #    "taskArns": [
-#        "arn:aws:ecs:eu-central-1:430118840017:task/che-cluster/8bd3030e916a47e08cd579bc70009737",
-#        "arn:aws:ecs:eu-central-1:430118840017:task/che-cluster/fb33d05b480f4cc19cb4299190b916d5"
+#        "arn:aws:ecs:<region>:<account ID>:task/che-cluster/8bd3030e916a47e08cd579bc70009737",
+#        "arn:aws:ecs:<region>:<account ID>:task/che-cluster/fb33d05b480f4cc19cb4299190b916d5"
 #    ]
 #}
 # inspect tasks
@@ -169,3 +167,25 @@ aws ecs execute-command \
 --interactive \
 --command "/bin/sh"
 ```
+
+## Troubleshooting
+
+If you see
+
+```log
+│ Error: reading Secrets Manager Secret Version (arn:aws:secretsmanager:<region>:<account ID>:secret:<workspace>-keycloak-db-credentials__0ab91adcd3d1806f-rr8fX1|AWSCURRENT): couldn't find resource
+│ 
+│   with data.aws_secretsmanager_secret_version.keycloak_db_credentials,
+│   on data.tf line 25, in data "aws_secretsmanager_secret_version" "keycloak_db_credentials":
+│   25: data "aws_secretsmanager_secret_version" "keycloak_db_credentials" {
+│ 
+╵
+╷
+│ Error: reading Secrets Manager Secret Version (arn:aws:secretsmanager:<region>:<account ID>:secret:<workspace>-keycloak-admin__0ab91adcd3d1806f-YhZBpV|AWSCURRENT): couldn't find resource
+│ 
+│   with data.aws_secretsmanager_secret_version.keycloak_admin,
+│   on data.tf line 29, in data "aws_secretsmanager_secret_version" "keycloak_admin":
+│   29: data "aws_secretsmanager_secret_version" "keycloak_admin" {
+```
+
+just apply again.
