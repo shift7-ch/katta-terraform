@@ -70,18 +70,6 @@ resource "aws_vpc_endpoint" "ecr_secretsmanager" {
   }
 }
 
-resource "aws_vpc_endpoint" "s3" {
-  vpc_id            = aws_vpc.katta.id
-  service_name      = "com.amazonaws.${var.region}.s3"
-  vpc_endpoint_type = "Gateway"
-  route_table_ids   = [aws_route_table.private_subnet.id]
-
-  tags = {
-    Name        = "${terraform.workspace}-s3-endpoint"
-    Project     = var.project
-    Environment = terraform.workspace
-  }
-}
 
 resource "aws_subnet" "public" {
   count = length(data.aws_availability_zones.available.names)
