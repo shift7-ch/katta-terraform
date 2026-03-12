@@ -22,16 +22,6 @@ data "aws_ecs_task_definition" "katta_server" {
 
 data "aws_caller_identity" "current" {}
 
-data "aws_secretsmanager_secret_version" "keycloak_db_credentials" {
-  secret_id  = aws_secretsmanager_secret.keycloak_db_credentials.id
-  depends_on = [aws_secretsmanager_secret_version.keycloak_db_credentials_version]
-}
-
-data "aws_secretsmanager_secret_version" "keycloak_admin" {
-  secret_id  = aws_secretsmanager_secret.keycloak_admin.id
-  depends_on = [aws_secretsmanager_secret_version.keycloak_admin_version]
-}
-
 data "aws_route53_zone" "parent_zone" {
   name         = var.dns_suffix
   private_zone = false
