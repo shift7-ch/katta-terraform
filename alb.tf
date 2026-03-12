@@ -91,10 +91,10 @@ resource "aws_lb_target_group" "hub_ecs_target_group" {
   target_type = "ip"
 
   health_check {
-    path                = "/api/config"
+    path                = "/q/health/ready"
     interval            = 30
     timeout             = 5
-    healthy_threshold   = 3
+    healthy_threshold   = 2
     unhealthy_threshold = 3
     matcher             = "200"
     protocol            = "HTTP"

@@ -385,11 +385,11 @@ resource "aws_ecs_task_definition" "katta_server_ecs_task" {
         }
       }
       healthCheck = {
-        command     = ["CMD-SHELL", "curl -v --fail http://localhost:8280/api/config"]
-        interval    = 5
+        command     = ["CMD-SHELL", "curl -v --fail http://localhost:8280/q/health/ready"]
+        interval    = 10
         timeout     = 5
         retries     = 3
-        startPeriod = 10
+        startPeriod = 30
       },
       linuxParameters = {
         initProcessEnabled = var.ecs_enable_execute_command
