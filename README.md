@@ -188,7 +188,7 @@ If you see
 │   29: data "aws_secretsmanager_secret_version" "keycloak_admin" {
 ```
 
-or 
+or
 
 ```log
 │ Error: creating ECR Pull Through Cache Rule (<workspace>-ghcr): operation error ECR: CreatePullThroughCacheRule, https response error StatusCode: 400, RequestID: a68d37af-19e7-4b59-b6f9-c4e8a2685bc6, SecretNotFoundException: The ARN of the secret specified in the pull through cache rule was not found. Update the pull through cache rule with a valid secret ARN and try again.

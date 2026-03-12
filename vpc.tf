@@ -15,7 +15,7 @@ resource "aws_vpc_endpoint" "ecr_api" {
   service_name        = "com.amazonaws.${var.region}.ecr.api"
   vpc_endpoint_type   = "Interface"
   subnet_ids          = aws_subnet.private[*].id
-  security_group_ids = [aws_security_group.vpc_endpoint_sg.id]
+  security_group_ids  = [aws_security_group.vpc_endpoint_sg.id]
   private_dns_enabled = true
 
   tags = {
@@ -30,7 +30,7 @@ resource "aws_vpc_endpoint" "ecr_dkr" {
   service_name        = "com.amazonaws.${var.region}.ecr.dkr"
   vpc_endpoint_type   = "Interface"
   subnet_ids          = aws_subnet.private[*].id
-  security_group_ids = [aws_security_group.vpc_endpoint_sg.id]
+  security_group_ids  = [aws_security_group.vpc_endpoint_sg.id]
   private_dns_enabled = true
 
   tags = {
@@ -45,7 +45,7 @@ resource "aws_vpc_endpoint" "ecr_logs" {
   service_name        = "com.amazonaws.${var.region}.logs"
   vpc_endpoint_type   = "Interface"
   subnet_ids          = aws_subnet.private[*].id
-  security_group_ids = [aws_security_group.vpc_endpoint_sg.id]
+  security_group_ids  = [aws_security_group.vpc_endpoint_sg.id]
   private_dns_enabled = true
 
   tags = {
@@ -60,7 +60,7 @@ resource "aws_vpc_endpoint" "ecr_secretsmanager" {
   service_name        = "com.amazonaws.${var.region}.secretsmanager"
   vpc_endpoint_type   = "Interface"
   subnet_ids          = aws_subnet.private[*].id
-  security_group_ids = [aws_security_group.vpc_endpoint_sg.id]
+  security_group_ids  = [aws_security_group.vpc_endpoint_sg.id]
   private_dns_enabled = true
 
   tags = {
@@ -74,7 +74,7 @@ resource "aws_vpc_endpoint" "s3" {
   vpc_id            = aws_vpc.keycloak.id
   service_name      = "com.amazonaws.${var.region}.s3"
   vpc_endpoint_type = "Gateway"
-  route_table_ids = [aws_route_table.private_subnet.id]
+  route_table_ids   = [aws_route_table.private_subnet.id]
 
   tags = {
     Name        = "${terraform.workspace}-s3-endpoint"
@@ -87,7 +87,7 @@ resource "aws_subnet" "public" {
   count = length(data.aws_availability_zones.available.names)
 
   vpc_id                  = aws_vpc.keycloak.id
-  cidr_block = cidrsubnet(var.vpc_cidr, 4, count.index)
+  cidr_block              = cidrsubnet(var.vpc_cidr, 4, count.index)
   availability_zone       = data.aws_availability_zones.available.names[count.index]
   map_public_ip_on_launch = true
 
@@ -113,7 +113,7 @@ resource "aws_subnet" "private" {
   count = length(data.aws_availability_zones.available.names)
 
   vpc_id            = aws_vpc.keycloak.id
-  cidr_block = cidrsubnet(var.vpc_cidr, 4, count.index + length(data.aws_availability_zones.available.names))
+  cidr_block        = cidrsubnet(var.vpc_cidr, 4, count.index + length(data.aws_availability_zones.available.names))
   availability_zone = data.aws_availability_zones.available.names[count.index]
 
   tags = {

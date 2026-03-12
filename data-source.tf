@@ -4,10 +4,10 @@ resource "aws_security_group" "rds_sg" {
   vpc_id      = aws_vpc.keycloak.id
 
   ingress {
-    description = "Allow PostgreSQL traffic from ECS tasks"
-    from_port   = 5432
-    to_port     = 5432
-    protocol    = "tcp"
+    description     = "Allow PostgreSQL traffic from ECS tasks"
+    from_port       = 5432
+    to_port         = 5432
+    protocol        = "tcp"
     security_groups = [aws_security_group.ecs_cluster_sg.id]
   }
 
@@ -37,7 +37,7 @@ resource "aws_db_instance" "postgres" {
   username                  = jsondecode(aws_secretsmanager_secret_version.keycloak_db_credentials_version.secret_string).username
   password                  = jsondecode(aws_secretsmanager_secret_version.keycloak_db_credentials_version.secret_string).password
   db_subnet_group_name      = aws_db_subnet_group.private_subnet_group.name
-  vpc_security_group_ids = [aws_security_group.rds_sg.id, aws_security_group.ecs_cluster_sg.id]
+  vpc_security_group_ids    = [aws_security_group.rds_sg.id, aws_security_group.ecs_cluster_sg.id]
   publicly_accessible       = false
   skip_final_snapshot       = true
   deletion_protection       = false
@@ -62,7 +62,7 @@ resource "aws_db_instance" "hub_db" {
   username                  = jsondecode(aws_secretsmanager_secret_version.hub_db_credentials_version.secret_string).username
   password                  = jsondecode(aws_secretsmanager_secret_version.hub_db_credentials_version.secret_string).password
   db_subnet_group_name      = aws_db_subnet_group.private_subnet_group.name
-  vpc_security_group_ids = [aws_security_group.rds_sg.id, aws_security_group.ecs_cluster_sg.id]
+  vpc_security_group_ids    = [aws_security_group.rds_sg.id, aws_security_group.ecs_cluster_sg.id]
   publicly_accessible       = false
   skip_final_snapshot       = true
   deletion_protection       = false
