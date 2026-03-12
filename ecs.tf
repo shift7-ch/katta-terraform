@@ -2,6 +2,8 @@ resource "aws_ecr_pull_through_cache_rule" "github" {
   ecr_repository_prefix = "${terraform.workspace}-ghcr"
   upstream_registry_url = "ghcr.io"
   credential_arn        = aws_secretsmanager_secret.github_token.arn
+
+  depends_on = [aws_secretsmanager_secret_version.github_token]
 }
 
 # Pre-populate ECR pull through cache to ensure images are available before ECS service starts
