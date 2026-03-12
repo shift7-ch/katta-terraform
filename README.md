@@ -173,24 +173,6 @@ aws ecs execute-command \
 
 To resovle the following errors run `terraform apply` again:
 
-* Error: reading Secrets Manager Secret Version
-
-```log
-│ Error: reading Secrets Manager Secret Version (arn:aws:secretsmanager:<region>:<account ID>:secret:<workspace>-keycloak-db-credentials__0ab91adcd3d1806f-rr8fX1|AWSCURRENT): couldn't find resource
-│ 
-│   with data.aws_secretsmanager_secret_version.keycloak_db_credentials,
-│   on data.tf line 25, in data "aws_secretsmanager_secret_version" "keycloak_db_credentials":
-│   25: data "aws_secretsmanager_secret_version" "keycloak_db_credentials" {
-│ 
-╵
-╷
-│ Error: reading Secrets Manager Secret Version (arn:aws:secretsmanager:<region>:<account ID>:secret:<workspace>-keycloak-admin__0ab91adcd3d1806f-YhZBpV|AWSCURRENT): couldn't find resource
-│ 
-│   with data.aws_secretsmanager_secret_version.keycloak_admin,
-│   on data.tf line 29, in data "aws_secretsmanager_secret_version" "keycloak_admin":
-│   29: data "aws_secretsmanager_secret_version" "keycloak_admin" {
-```
-
 * Error: creating ECR Pull Through Cache Rule
 
 ```log
