@@ -4,6 +4,37 @@ resource "aws_ecr_pull_through_cache_rule" "github" {
   credential_arn        = aws_secretsmanager_secret.github_token.arn
 }
 
+# Pre-populate ECR pull through cache to ensure images are available before ECS service starts
+resource "null_resource" "prepopulate_ecr_cache" {
+  # Trigger on changes to image versions or cache rule
+  triggers = {
+    keycloak_image = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${terraform.workspace}-ghcr/cryptomator/keycloak:${var.keycloak_version}"
+    hub_image      = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${terraform.workspace}-ghcr/shift7-ch/katta-server:${var.hub_version}"
+    cache_rule     = aws_ecr_pull_through_cache_rule.github.id
+  }
+
+  provisioner "local-exec" {
+    command = <<-EOT
+      set -e
+      echo "Authenticating with ECR..."
+      aws ecr get-login-password --region ${var.region} | docker login --username AWS --password-stdin ${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com
+
+      echo "Pre-pulling Keycloak image to populate ECR cache..."
+      docker pull ${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${terraform.workspace}-ghcr/cryptomator/keycloak:${var.keycloak_version} || echo "Failed to pull Keycloak image, cache may populate on first ECS task start"
+
+      echo "Pre-pulling Hub image to populate ECR cache..."
+      docker pull ${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${terraform.workspace}-ghcr/shift7-ch/katta-server:${var.hub_version} || echo "Failed to pull Hub image, cache may populate on first ECS task start"
+
+      echo "ECR cache pre-population complete"
+    EOT
+  }
+
+  depends_on = [
+    aws_ecr_pull_through_cache_rule.github,
+    aws_secretsmanager_secret_version.github_token
+  ]
+}
+
 resource "aws_security_group" "ecs_cluster_sg" {
   name        = "${terraform.workspace}-ecs_cluster_sg"
   description = "Security group for ECS cluster in private subnets"
@@ -191,6 +222,8 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
     Project     = var.project
     Environment = terraform.workspace
   }
+
+  depends_on = [null_resource.prepopulate_ecr_cache]
 }
 
 resource "aws_ecs_service" "keycloak_ecs_service" {
@@ -365,7 +398,10 @@ resource "aws_ecs_task_definition" "katta_server_ecs_task" {
     Project     = var.project
     Environment = terraform.workspace
   }
-  depends_on = [aws_ecs_service.keycloak_ecs_service]
+  depends_on = [
+    null_resource.prepopulate_ecr_cache,
+    aws_ecs_service.keycloak_ecs_service
+  ]
 }
 
 resource "aws_ecs_service" "katta_server_ecs_service" {
