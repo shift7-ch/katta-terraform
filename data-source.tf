@@ -41,7 +41,6 @@ resource "aws_db_instance" "postgres" {
   publicly_accessible       = false
   skip_final_snapshot       = true
   deletion_protection       = false
-  final_snapshot_identifier = "${terraform.workspace}-database-final-snapshot"
   copy_tags_to_snapshot     = true
 
   tags = {
@@ -66,7 +65,6 @@ resource "aws_db_instance" "hub_db" {
   publicly_accessible       = false
   skip_final_snapshot       = true
   deletion_protection       = false
-  final_snapshot_identifier = "${terraform.workspace}-database-final-snapshot"
   copy_tags_to_snapshot     = true
 
   tags = {
