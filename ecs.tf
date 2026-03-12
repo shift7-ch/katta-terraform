@@ -210,8 +210,8 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
         command     = ["CMD-SHELL", "curl -v --fail http://localhost:9000/health"]
         interval    = 30
         timeout     = 5
-        retries     = 3
-        startPeriod = 60
+        retries     = 5
+        startPeriod = 120
       },
       linuxParameters = {
         initProcessEnabled = var.ecs_enable_execute_command
@@ -239,7 +239,7 @@ resource "aws_ecs_service" "keycloak_ecs_service" {
   enable_execute_command = var.ecs_enable_execute_command
   wait_for_steady_state  = true
 
-  health_check_grace_period_seconds = 120
+  health_check_grace_period_seconds = 300
 
   availability_zone_rebalancing = "ENABLED"
   propagate_tags                = "TASK_DEFINITION"
