@@ -157,12 +157,12 @@ aws ecs execute-command \
 --region ${TF_VAR_region} \
 --cluster ${WORKSPACE}-cluster \
 --task fb33d05b480f4cc19cb4299190b916d5 \
---container che-container-keycloak \
+--container ${WORKSPACE}-container-keycloak \
 --interactive \
 --command "/bin/sh"
 aws ecs execute-command \
 --region ${TF_VAR_region} \
---cluster che-cluster \
+--cluster ${WORKSPACE}-cluster \
 --task 8bd3030e916a47e08cd579bc70009737 \
 --container ${WORKSPACE}-container-hub \
 --interactive \
