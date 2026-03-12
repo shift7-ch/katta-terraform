@@ -105,6 +105,13 @@ locals {
         )),
         secret = try(client.secret, null),
       }) :
+      client.clientId == "cryptomator" ? merge(client, {
+        redirectUris = toset(concat(
+          [var.keycloak_action_redirect, "https://${var.hub_prefix}.${terraform.workspace}.${var.dns_suffix}/*"],
+          client.redirectUris
+        )),
+        secret = try(client.secret, null),
+      }) :
       client.clientId == "cryptomatorvaults" ? merge(client, {
         secret       = var.hub_keycloak_oidc_cryptomator_vaults_client_secret,
         redirectUris = try(toset(client.redirectUris), null),
