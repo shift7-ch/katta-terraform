@@ -239,6 +239,8 @@ resource "aws_ecs_service" "keycloak_ecs_service" {
   enable_execute_command = var.ecs_enable_execute_command
   wait_for_steady_state  = true
 
+  health_check_grace_period_seconds = 120
+
   availability_zone_rebalancing = "ENABLED"
   propagate_tags                = "TASK_DEFINITION"
 
@@ -416,6 +418,8 @@ resource "aws_ecs_service" "katta_server_ecs_service" {
   force_new_deployment   = true
   enable_execute_command = var.ecs_enable_execute_command
   wait_for_steady_state  = true
+
+  health_check_grace_period_seconds = 60
 
   availability_zone_rebalancing = "ENABLED"
   propagate_tags                = "TASK_DEFINITION"
