@@ -35,7 +35,7 @@ Set up Katta Hub in a custom AWS hosted zone. Change terraform workspace to cont
 
 2. Override default Terraform configuration
 
-   Defaults can be found in `terraform.tfvars` and can be overridden by environment variables:
+   Defaults can be found in `terraform.tfvars.template`. Either copy to `terraform.tfvars` (not under version control) or overridden by environment variables:
 
     ```shell
     export TF_VAR_region=$AWS_DEFAULT_REGION
@@ -118,14 +118,6 @@ rules. This eliminates the need to manually pull and push images to ECR.
 - Katta Hub: `ghcr.io/shift7-ch/katta-server:982baf0-amd64`
 
 Images are cached in ECR with the prefix `<workspace>-ghcr/` and pulled automatically when ECS tasks start.
-
-## TODOs
-
-- [_] understand/document ECS/ECR model - lb/tg etc.
-- [_] costs vpc - is it pulling of images or running idle?
-- [ ] hub should wait for keycloak to be ready - need manual re-deployment for now
-- [_] hub_keycloak_system_client_secret= "TODO"
-- [_] hub_keycloak_oidc_cryptomator_vaults_client_secret= "TODO"
 
 ## Differences to k8s setup
 
