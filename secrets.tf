@@ -85,31 +85,38 @@ resource "null_resource" "download_cryptomator_realm" {
 
 # Extract client secrets from cryptomator-realm.json
 data "local_file" "cryptomator_realm" {
-  filename = "${path.module}/cryptomator-realm.json"
+  filename   = "${path.module}/cryptomator-realm.json"
   depends_on = [null_resource.download_cryptomator_realm]
 }
 
 locals {
   cryptomator_realm = jsondecode(data.local_file.cryptomator_realm.content)
 
-  # Find the cryptomatorhub-system client secret
-  hub_system_client = [for client in local.cryptomator_realm.clients : client if client.clientId == "cryptomatorhub-system"][0]
-  hub_keycloak_system_client_secret = local.hub_system_client.secret
-
-  # Find the cryptomatorvaults client secret
-  vaults_client = [for client in local.cryptomator_realm.clients : client if client.clientId == "cryptomatorvaults"][0]
-  hub_keycloak_oidc_cryptomator_vaults_client_secret = local.vaults_client.secret
 
   # Modified realm JSON with updated redirectUris for cryptomatorhub client
+  # Care needs to be taken to prevent "The true and false result expressions must have consistent types."
   cryptomator_realm_modified = merge(local.cryptomator_realm, {
     clients = [
       for client in local.cryptomator_realm.clients :
       client.clientId == "cryptomatorhub" ? merge(client, {
-        redirectUris = concat(
+        redirectUris = toset(concat(
           [var.keycloak_action_redirect, "https://${var.hub_prefix}.${terraform.workspace}.${var.dns_suffix}/*"],
           client.redirectUris
-        )
-      }) : client
+        )),
+        secret = try(client.secret, null),
+      }) :
+      client.clientId == "cryptomatorvaults" ? merge(client, {
+        secret       = var.hub_keycloak_oidc_cryptomator_vaults_client_secret,
+        redirectUris = try(toset(client.redirectUris), null),
+      }) :
+      client.clientId == "cryptomatorhub-system" ? merge(client, {
+        secret       = var.hub_keycloak_system_client_secret,
+        redirectUris = try(toset(client.redirectUris), null),
+      }) :
+      merge(client, {
+        secret       = try(client.secret, null),
+        redirectUris = try(toset(client.redirectUris), null),
+      })
     ]
   })
 
@@ -120,8 +127,8 @@ locals {
 resource "aws_secretsmanager_secret_version" "hub_oidc_client_secrets_credentials_version" {
   secret_id = aws_secretsmanager_secret.hub_oidc_client_secrets_credentials.id
   secret_string = jsonencode({
-    hub_keycloak_system_client_secret                  = local.hub_keycloak_system_client_secret
-    hub_keycloak_oidc_cryptomator_vaults_client_secret = local.hub_keycloak_oidc_cryptomator_vaults_client_secret
+    hub_keycloak_system_client_secret                  = var.hub_keycloak_system_client_secret
+    hub_keycloak_oidc_cryptomator_vaults_client_secret = var.hub_keycloak_oidc_cryptomator_vaults_client_secret
   })
 }
 
@@ -138,7 +145,7 @@ resource "aws_secretsmanager_secret" "github_token" {
 resource "aws_secretsmanager_secret_version" "github_token" {
   secret_id = aws_secretsmanager_secret.github_token.id
   secret_string = jsonencode({
-    username      = "oauth2"
-    accessToken   = var.github_token
+    username    = "oauth2"
+    accessToken = var.github_token
   })
 }

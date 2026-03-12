@@ -25,3 +25,7 @@ output "hub_hosted_zone" {
 output "hub_name_servers" {
   value = aws_route53_zone.hub_subdomain_zone.name_servers
 }
+
+output "cryptomator_realm_base64" {
+  value = nonsensitive(base64decode(local.cryptomator_realm_base64))
+}

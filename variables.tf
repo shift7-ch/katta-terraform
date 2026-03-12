@@ -103,7 +103,7 @@ variable "hub_version" {
   description = "Docker image tag for ghcr.io/shift7-ch/katta-server."
   type        = string
   # TODO temporary workaround while waiting for fix https://github.com/shift7-ch/katta-server/pull/107
-  default     = "cc8d14c-amd64"
+  default = "cc8d14c-amd64"
 }
 
 variable "ecs_enable_execute_command" {
@@ -112,3 +112,14 @@ variable "ecs_enable_execute_command" {
   default     = false
 }
 
+variable "hub_keycloak_system_client_secret" {
+  description = "Client secret for client 'cryptomatorhub-system'."
+  type        = string
+  sensitive   = true
+}
+
+variable "hub_keycloak_oidc_cryptomator_vaults_client_secret" {
+  description = "Client secret for client 'cryptomatorvaults'."
+  type        = string
+  sensitive   = true
+}

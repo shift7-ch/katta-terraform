@@ -29,3 +29,8 @@
 #hub_db_username=
 # The password for the Hub database
 #hub_db_password=
+
+# Client secret for client "cryptomatorhub-system"
+# hub_keycloak_system_client_secret=
+# Client secret for client "cryptomatorvaults"
+# hub_keycloak_oidc_cryptomator_vaults_client_secret=
