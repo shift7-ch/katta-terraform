@@ -4,23 +4,23 @@ resource "aws_security_group" "alb_sg" {
   vpc_id      = aws_vpc.keycloak.id
 
   ingress {
-    from_port = 80
-    to_port   = 80
-    protocol  = "tcp"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"] # Allows public access to port 80
   }
 
   ingress {
-    from_port = 443
-    to_port   = 443
-    protocol  = "tcp"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"] # Allows public access to port 443
   }
 
   egress {
-    from_port = 0
-    to_port   = 0
-    protocol  = "-1"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -35,7 +35,7 @@ resource "aws_lb" "keycloak_public_alb" {
   name               = "${var.keycloak_prefix}-${terraform.workspace}-alb"
   internal           = false
   load_balancer_type = "application"
-  security_groups = [aws_security_group.alb_sg.id]
+  security_groups    = [aws_security_group.alb_sg.id]
   subnets            = aws_subnet.public.*.id
 
   tags = {
@@ -49,7 +49,7 @@ resource "aws_lb" "hub_public_alb" {
   name               = "${var.hub_prefix}-${terraform.workspace}-alb"
   internal           = false
   load_balancer_type = "application"
-  security_groups = [aws_security_group.alb_sg.id]
+  security_groups    = [aws_security_group.alb_sg.id]
   subnets            = aws_subnet.public.*.id
 
   tags = {
@@ -122,7 +122,7 @@ resource "aws_lb_listener" "keycloak_https_listener" {
   port              = 443
   protocol          = "HTTPS"
 
-  ssl_policy = "ELBSecurityPolicy-TLS13-1-2-2021-06"
+  ssl_policy      = "ELBSecurityPolicy-TLS13-1-2-2021-06"
   certificate_arn = aws_acm_certificate_validation.keycloak_cert_validation.certificate_arn
 
 
@@ -137,7 +137,7 @@ resource "aws_lb_listener" "hub_https_listener" {
   port              = 443
   protocol          = "HTTPS"
 
-  ssl_policy = "ELBSecurityPolicy-TLS13-1-2-2021-06"
+  ssl_policy      = "ELBSecurityPolicy-TLS13-1-2-2021-06"
   certificate_arn = aws_acm_certificate_validation.hub_cert_validation.certificate_arn
 
 
@@ -147,8 +147,23 @@ resource "aws_lb_listener" "hub_https_listener" {
   }
 }
 
-resource "aws_lb_listener" "http_listener" {
+resource "aws_lb_listener" "keycloak_http_listener" {
   load_balancer_arn = aws_lb.keycloak_public_alb.arn
+  port              = 80
+  protocol          = "HTTP"
+
+  default_action {
+    type = "redirect"
+
+    redirect {
+      protocol    = "HTTPS"
+      port        = "443"
+      status_code = "HTTP_301"
+    }
+  }
+}
+resource "aws_lb_listener" "hub_http_listener" {
+  load_balancer_arn = aws_lb.hub_public_alb.arn
   port              = 80
   protocol          = "HTTP"
 
@@ -220,8 +235,8 @@ resource "aws_route53_record" "hub_cert_validation" {
 }
 
 resource "aws_acm_certificate" "keycloak_cert" {
-  domain_name       = "${var.keycloak_prefix}.${terraform.workspace}.${var.dns_suffix}"
-  validation_method = "DNS"
+  domain_name               = "${var.keycloak_prefix}.${terraform.workspace}.${var.dns_suffix}"
+  validation_method         = "DNS"
   subject_alternative_names = ["www.${var.keycloak_prefix}.${terraform.workspace}.${var.dns_suffix}"]
 
   tags = {
@@ -231,8 +246,8 @@ resource "aws_acm_certificate" "keycloak_cert" {
 }
 
 resource "aws_acm_certificate" "hub_cert" {
-  domain_name       = "${var.hub_prefix}.${terraform.workspace}.${var.dns_suffix}"
-  validation_method = "DNS"
+  domain_name               = "${var.hub_prefix}.${terraform.workspace}.${var.dns_suffix}"
+  validation_method         = "DNS"
   subject_alternative_names = ["www.${var.hub_prefix}.${terraform.workspace}.${var.dns_suffix}"]
 
   tags = {
