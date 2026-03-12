@@ -40,7 +40,7 @@ resource "null_resource" "prepopulate_ecr_cache" {
 resource "aws_security_group" "ecs_cluster_sg" {
   name        = "${terraform.workspace}-ecs_cluster_sg"
   description = "Security group for ECS cluster in private subnets"
-  vpc_id      = aws_vpc.keycloak.id
+  vpc_id      = aws_vpc.katta.id
 
   ingress {
     description = "Allow communication within ECS tasks"
@@ -455,7 +455,7 @@ resource "aws_ecs_service" "katta_server_ecs_service" {
 
 resource "aws_security_group" "vpc_endpoint_sg" {
   name   = "${terraform.workspace}-vpc-endpoint-sg"
-  vpc_id = aws_vpc.keycloak.id
+  vpc_id = aws_vpc.katta.id
 
   ingress {
     from_port       = 80

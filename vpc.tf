@@ -1,4 +1,4 @@
-resource "aws_vpc" "keycloak" {
+resource "aws_vpc" "katta" {
   cidr_block           = var.vpc_cidr
   enable_dns_support   = true
   enable_dns_hostnames = true
@@ -11,7 +11,7 @@ resource "aws_vpc" "keycloak" {
 }
 
 resource "aws_vpc_endpoint" "ecr_api" {
-  vpc_id              = aws_vpc.keycloak.id
+  vpc_id              = aws_vpc.katta.id
   service_name        = "com.amazonaws.${var.region}.ecr.api"
   vpc_endpoint_type   = "Interface"
   subnet_ids          = aws_subnet.private[*].id
@@ -26,7 +26,7 @@ resource "aws_vpc_endpoint" "ecr_api" {
 }
 
 resource "aws_vpc_endpoint" "ecr_dkr" {
-  vpc_id              = aws_vpc.keycloak.id
+  vpc_id              = aws_vpc.katta.id
   service_name        = "com.amazonaws.${var.region}.ecr.dkr"
   vpc_endpoint_type   = "Interface"
   subnet_ids          = aws_subnet.private[*].id
@@ -41,7 +41,7 @@ resource "aws_vpc_endpoint" "ecr_dkr" {
 }
 
 resource "aws_vpc_endpoint" "ecr_logs" {
-  vpc_id              = aws_vpc.keycloak.id
+  vpc_id              = aws_vpc.katta.id
   service_name        = "com.amazonaws.${var.region}.logs"
   vpc_endpoint_type   = "Interface"
   subnet_ids          = aws_subnet.private[*].id
@@ -56,7 +56,7 @@ resource "aws_vpc_endpoint" "ecr_logs" {
 }
 
 resource "aws_vpc_endpoint" "ecr_secretsmanager" {
-  vpc_id              = aws_vpc.keycloak.id
+  vpc_id              = aws_vpc.katta.id
   service_name        = "com.amazonaws.${var.region}.secretsmanager"
   vpc_endpoint_type   = "Interface"
   subnet_ids          = aws_subnet.private[*].id
@@ -71,7 +71,7 @@ resource "aws_vpc_endpoint" "ecr_secretsmanager" {
 }
 
 resource "aws_vpc_endpoint" "s3" {
-  vpc_id            = aws_vpc.keycloak.id
+  vpc_id            = aws_vpc.katta.id
   service_name      = "com.amazonaws.${var.region}.s3"
   vpc_endpoint_type = "Gateway"
   route_table_ids   = [aws_route_table.private_subnet.id]
@@ -86,7 +86,7 @@ resource "aws_vpc_endpoint" "s3" {
 resource "aws_subnet" "public" {
   count = length(data.aws_availability_zones.available.names)
 
-  vpc_id                  = aws_vpc.keycloak.id
+  vpc_id                  = aws_vpc.katta.id
   cidr_block              = cidrsubnet(var.vpc_cidr, 4, count.index)
   availability_zone       = data.aws_availability_zones.available.names[count.index]
   map_public_ip_on_launch = true
@@ -100,7 +100,7 @@ resource "aws_subnet" "public" {
 }
 
 resource "aws_internet_gateway" "public_igw" {
-  vpc_id = aws_vpc.keycloak.id
+  vpc_id = aws_vpc.katta.id
 
   tags = {
     Name        = "${terraform.workspace}-internet-gateway"
@@ -112,7 +112,7 @@ resource "aws_internet_gateway" "public_igw" {
 resource "aws_subnet" "private" {
   count = length(data.aws_availability_zones.available.names)
 
-  vpc_id            = aws_vpc.keycloak.id
+  vpc_id            = aws_vpc.katta.id
   cidr_block        = cidrsubnet(var.vpc_cidr, 4, count.index + length(data.aws_availability_zones.available.names))
   availability_zone = data.aws_availability_zones.available.names[count.index]
 
@@ -125,7 +125,7 @@ resource "aws_subnet" "private" {
 }
 
 resource "aws_route_table" "private_subnet" {
-  vpc_id = aws_vpc.keycloak.id
+  vpc_id = aws_vpc.katta.id
 
   route {
     cidr_block = "0.0.0.0/0"
@@ -147,7 +147,7 @@ resource "aws_route_table_association" "private_subnets" {
 }
 
 resource "aws_route_table" "public_subnet" {
-  vpc_id = aws_vpc.keycloak.id
+  vpc_id = aws_vpc.katta.id
 
   tags = {
     Name        = "${terraform.workspace}-public-table"

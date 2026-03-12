@@ -1,7 +1,7 @@
 resource "aws_security_group" "alb_sg" {
   name        = "${terraform.workspace}-alb-sg"
   description = "Allow inbound traffic to ALB"
-  vpc_id      = aws_vpc.keycloak.id
+  vpc_id      = aws_vpc.katta.id
 
   ingress {
     from_port   = 80
@@ -63,7 +63,7 @@ resource "aws_lb_target_group" "keycloak_ecs_target_group" {
   name        = "${terraform.workspace}-${var.keycloak_prefix}-ecs-tg"
   port        = 8080
   protocol    = "HTTP"
-  vpc_id      = aws_vpc.keycloak.id
+  vpc_id      = aws_vpc.katta.id
   target_type = "ip"
 
   health_check {
@@ -88,7 +88,7 @@ resource "aws_lb_target_group" "hub_ecs_target_group" {
   name        = "${terraform.workspace}-${var.hub_prefix}-ecs-tg"
   port        = 8280
   protocol    = "HTTP"
-  vpc_id      = aws_vpc.keycloak.id
+  vpc_id      = aws_vpc.katta.id
   target_type = "ip"
 
   health_check {

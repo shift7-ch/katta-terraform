@@ -1,7 +1,7 @@
 resource "aws_security_group" "rds_sg" {
   name        = "${terraform.workspace}-rds-sg"
   description = "Security group for RDS instance"
-  vpc_id      = aws_vpc.keycloak.id
+  vpc_id      = aws_vpc.katta.id
 
   ingress {
     description     = "Allow PostgreSQL traffic from ECS tasks"
