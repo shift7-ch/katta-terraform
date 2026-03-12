@@ -67,7 +67,8 @@ resource "aws_lb_target_group" "keycloak_ecs_target_group" {
   target_type = "ip"
 
   health_check {
-    path                = "/health/ready"
+    path                = "/health"
+    port                = "9000"
     interval            = 30
     timeout             = 5
     healthy_threshold   = 2
