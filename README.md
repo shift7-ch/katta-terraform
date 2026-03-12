@@ -35,7 +35,8 @@ Set up Katta Hub in a custom AWS hosted zone. Change terraform workspace to cont
 
 2. Override default Terraform configuration
 
-   Defaults can be found in `terraform.tfvars.template`. Either copy to `terraform.tfvars` (not under version control) or overridden by environment variables:
+   Defaults can be found in `terraform.tfvars.template`. Either copy to `terraform.tfvars` (not under version control)
+   or overridden by environment variables:
 
     ```shell
     export TF_VAR_region=$AWS_DEFAULT_REGION
@@ -170,7 +171,9 @@ aws ecs execute-command \
 
 ## Troubleshooting
 
-If you see
+To resovle the following errors run `terraform apply` again:
+
+* Error: reading Secrets Manager Secret Version
 
 ```log
 │ Error: reading Secrets Manager Secret Version (arn:aws:secretsmanager:<region>:<account ID>:secret:<workspace>-keycloak-db-credentials__0ab91adcd3d1806f-rr8fX1|AWSCURRENT): couldn't find resource
@@ -188,7 +191,7 @@ If you see
 │   29: data "aws_secretsmanager_secret_version" "keycloak_admin" {
 ```
 
-or
+* Error: creating ECR Pull Through Cache Rule
 
 ```log
 │ Error: creating ECR Pull Through Cache Rule (<workspace>-ghcr): operation error ECR: CreatePullThroughCacheRule, https response error StatusCode: 400, RequestID: a68d37af-19e7-4b59-b6f9-c4e8a2685bc6, SecretNotFoundException: The ARN of the secret specified in the pull through cache rule was not found. Update the pull through cache rule with a valid secret ARN and try again.
@@ -197,5 +200,3 @@ or
 │   on ecs.tf line 1, in resource "aws_ecr_pull_through_cache_rule" "github":
 │    1: resource "aws_ecr_pull_through_cache_rule" "github" {
 ```
-
-just apply again.
