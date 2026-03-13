@@ -449,6 +449,8 @@ resource "aws_ecs_service" "katta_server_ecs_service" {
     Project     = var.project
     Environment = terraform.workspace
   }
+
+  depends_on = [aws_ecs_service.keycloak_ecs_service]
 }
 
 resource "aws_security_group" "vpc_endpoint_sg" {
