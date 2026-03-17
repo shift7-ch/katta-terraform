@@ -246,7 +246,7 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
 resource "aws_ecs_service" "keycloak_ecs_service" {
   name                   = "${terraform.workspace}-${var.keycloak_prefix}-ecs-service"
   cluster                = aws_ecs_cluster.katta_ecs_cluster.id
-  task_definition        = "${aws_ecs_task_definition.keycloak_ecs_task.family}:${max(aws_ecs_task_definition.keycloak_ecs_task.revision, data.aws_ecs_task_definition.keycloak.revision)}"
+  task_definition        = "${aws_ecs_task_definition.keycloak_ecs_task.family}:${aws_ecs_task_definition.keycloak_ecs_task.revision}"
   launch_type            = "FARGATE"
   scheduling_strategy    = "REPLICA"
   desired_count          = 1
@@ -450,7 +450,7 @@ resource "aws_ecs_task_definition" "katta_server_ecs_task" {
 resource "aws_ecs_service" "katta_server_ecs_service" {
   name                   = "${terraform.workspace}-${var.hub_prefix}-ecs-service"
   cluster                = aws_ecs_cluster.katta_ecs_cluster.id
-  task_definition        = "${aws_ecs_task_definition.katta_server_ecs_task.family}:${max(aws_ecs_task_definition.katta_server_ecs_task.revision, data.aws_ecs_task_definition.katta_server.revision)}"
+  task_definition        = "${aws_ecs_task_definition.katta_server_ecs_task.family}:${aws_ecs_task_definition.katta_server_ecs_task.revision}"
   launch_type            = "FARGATE"
   scheduling_strategy    = "REPLICA"
   desired_count          = 1
