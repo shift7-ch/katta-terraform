@@ -68,8 +68,22 @@ resource "aws_security_group" "ecs_cluster_sg" {
 resource "aws_ecs_cluster" "katta_ecs_cluster" {
   name = "${terraform.workspace}-cluster"
 
+  service_connect_defaults {
+    namespace = aws_service_discovery_http_namespace.katta_service_connect.arn
+  }
+
   tags = {
     Name        = "${terraform.workspace}-ecs-cluster"
+    Project     = var.project
+    Environment = terraform.workspace
+  }
+}
+
+resource "aws_service_discovery_http_namespace" "katta_service_connect" {
+  name = "${terraform.workspace}-katta-services"
+
+  tags = {
+    Name        = "${terraform.workspace}-service-connect-namespace"
     Project     = var.project
     Environment = terraform.workspace
   }
@@ -134,6 +148,7 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
           protocol      = "tcp"
         },
         {
+          name          = "keycloak"
           containerPort = 8080
           protocol      = "tcp"
         },
@@ -264,6 +279,30 @@ resource "aws_ecs_service" "keycloak_ecs_service" {
     container_port   = 8080
   }
 
+  service_connect_configuration {
+    enabled   = true
+    namespace = aws_service_discovery_http_namespace.katta_service_connect.arn
+
+    service {
+      port_name      = "keycloak"
+      discovery_name = "keycloak"
+
+      client_alias {
+        port     = 8080
+        dns_name = "keycloak"
+      }
+    }
+
+    log_configuration {
+      log_driver = "awslogs"
+      options = {
+        awslogs-group         = aws_cloudwatch_log_group.keycloak_log_group.name
+        awslogs-region        = var.region
+        awslogs-stream-prefix = "service-connect"
+      }
+    }
+  }
+
   tags = {
     Name        = "${terraform.workspace}-ecs-task"
     Project     = var.project
@@ -307,7 +346,7 @@ resource "aws_ecs_task_definition" "katta_server_ecs_task" {
       environment = [
         {
           name  = "HUB_KEYCLOAK_LOCAL_URL"
-          value = "https://${var.keycloak_prefix}.${terraform.workspace}.${var.dns_suffix}"
+          value = "http://keycloak:8080"
         },
         {
           name  = "HUB_KEYCLOAK_PUBLIC_URL"
@@ -442,6 +481,20 @@ resource "aws_ecs_service" "katta_server_ecs_service" {
     target_group_arn = aws_lb_target_group.hub_ecs_target_group.arn
     container_name   = "${terraform.workspace}-container-${var.hub_prefix}"
     container_port   = 8280
+  }
+
+  service_connect_configuration {
+    enabled   = true
+    namespace = aws_service_discovery_http_namespace.katta_service_connect.arn
+
+    log_configuration {
+      log_driver = "awslogs"
+      options = {
+        awslogs-group         = aws_cloudwatch_log_group.hub_log_group.name
+        awslogs-region        = var.region
+        awslogs-stream-prefix = "service-connect"
+      }
+    }
   }
 
   tags = {
