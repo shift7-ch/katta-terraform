@@ -169,38 +169,6 @@ aws ecs execute-command \
 --command "/bin/sh"
 ```
 
-## Troubleshooting
-
-If you see
-
-```log
-│ Error: reading Secrets Manager Secret Version (arn:aws:secretsmanager:<region>:<account ID>:secret:<workspace>-keycloak-db-credentials__0ab91adcd3d1806f-rr8fX1|AWSCURRENT): couldn't find resource
-│ 
-│   with data.aws_secretsmanager_secret_version.keycloak_db_credentials,
-│   on data.tf line 25, in data "aws_secretsmanager_secret_version" "keycloak_db_credentials":
-│   25: data "aws_secretsmanager_secret_version" "keycloak_db_credentials" {
-│ 
-╵
-╷
-│ Error: reading Secrets Manager Secret Version (arn:aws:secretsmanager:<region>:<account ID>:secret:<workspace>-keycloak-admin__0ab91adcd3d1806f-YhZBpV|AWSCURRENT): couldn't find resource
-│ 
-│   with data.aws_secretsmanager_secret_version.keycloak_admin,
-│   on data.tf line 29, in data "aws_secretsmanager_secret_version" "keycloak_admin":
-│   29: data "aws_secretsmanager_secret_version" "keycloak_admin" {
-```
-
-or
-
-```log
-│ Error: creating ECR Pull Through Cache Rule (<workspace>-ghcr): operation error ECR: CreatePullThroughCacheRule, https response error StatusCode: 400, RequestID: a68d37af-19e7-4b59-b6f9-c4e8a2685bc6, SecretNotFoundException: The ARN of the secret specified in the pull through cache rule was not found. Update the pull through cache rule with a valid secret ARN and try again.
-│ 
-│   with aws_ecr_pull_through_cache_rule.github,
-│   on ecs.tf line 1, in resource "aws_ecr_pull_through_cache_rule" "github":
-│    1: resource "aws_ecr_pull_through_cache_rule" "github" {
-```
-
-just apply again.
-
 ## Resources
 
 Initial terraform script from [source](https://github.com/metronom72/keycloak_deployment/tree/main/infra).
