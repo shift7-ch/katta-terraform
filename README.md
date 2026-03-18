@@ -33,7 +33,10 @@ Set up Katta Hub in a custom AWS hosted zone. Change terraform workspace to cont
     terraform workspace new katta
     ```
 
-2. Override default Terraform configuration
+2. Register a domain `example.net` in AWS Route53 to be used. A subdomain `hub.katta.example.net` and
+   `keycloak.katta.example.net` will be created for the Katta deployment.
+
+3. Override default Terraform configuration
 
    Defaults can be found in `terraform.tfvars.template`. Either copy to `terraform.tfvars` (not under version control)
    or overridden by environment variables:
@@ -47,16 +50,16 @@ Set up Katta Hub in a custom AWS hosted zone. Change terraform workspace to cont
     export TF_VAR_hub_keycloak_system_client_secret=top-secret
     export TF_VAR_hub_keycloak_oidc_cryptomator_vaults_client_secret=top-secret
     ```
-3. Add hosted zone for domain in AWS Route53 if missing:
+4. Add hosted zone for domain in AWS Route53 if missing:
 
     ```shell
     aws route53 create-hosted-zone --name $TF_VAR_dns_suffix --caller-reference $(date +%s)
     ```
 
-   **Warning**: For domain validation to work in AWS Certificate Manager you must ensure the name servers set in the
-   hosted zone match the name servers set in the domain registrar. This also applies to domains managed in Route53.
+   **Warning**: For domain validation to work in AWS Certificate Manager, you must ensure the name servers set in the
+   hosted zone match the name servers set in the Route53 domain registration.
 
-4. Add GitHub Personal Access Token
+5. Add GitHub Personal Access Token
 
     - AWS ECR pull-through cache requires authentication even for public GitHub Container Registry repositories.
     - Create a GitHub Personal Access Token with `read:packages` permission using `gh` CLI:
@@ -77,7 +80,7 @@ Set up Katta Hub in a custom AWS hosted zone. Change terraform workspace to cont
     - Generate new token with `read:packages` scope
     - Add to `terraform.tfvars`: `github_token = "ghp_your_token_here"`
 
-5. Validate environment
+6. Validate environment
 
     ```shell
     terraform init
@@ -85,7 +88,7 @@ Set up Katta Hub in a custom AWS hosted zone. Change terraform workspace to cont
     terraform plan
     ```
 
-6. Deploy environment
+7. Deploy environment
 
     ```shell
     terraform apply --auto-approve
