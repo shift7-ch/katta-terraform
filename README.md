@@ -130,11 +130,22 @@ Images are cached in ECR with the prefix `<workspace>-ghcr/` and pulled automati
 
 ## Troubleshooting
 
+### Wait for ACM validation
+```
+aws_acm_certificate_validation.keycloak_cert_validation: Still creating... [4m41s elapsed]
+aws_acm_certificate_validation.hub_cert_validation: Still creating... [4m40s elapsed]
+```
+
+Ensure the name server entries for the [hosted zone](#deployment) match the name servers in the domain registration in Route 53.
+
+### Tail Logs
+
 ```shell
 aws logs tail `terraform workspace show`-hub-log-group --output text --since 30s --follow
 aws logs tail `terraform workspace show`-keycloak-log-group --output text --since 30s --follow
 ```
 
+### Debug ECS tasks
 Enable execute command with variable `ecs_enable_execute_command`.
 
 ```shell
