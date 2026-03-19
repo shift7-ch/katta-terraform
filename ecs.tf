@@ -43,11 +43,11 @@ resource "aws_security_group" "ecs_cluster_sg" {
   vpc_id      = aws_vpc.katta.id
 
   ingress {
-    description = "Allow communication within ECS tasks"
+    description = "Allow communication to ECS tasks only from ALB"
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    security_groups = [aws_security_group.alb_sg.id]
   }
 
   egress {
@@ -474,6 +474,7 @@ resource "aws_ecs_service" "katta_server_ecs_service" {
     assign_public_ip = true
     security_groups = [
       aws_security_group.ecs_cluster_sg.id,
+      aws_security_group.vpc_endpoint_sg.id
     ]
   }
 
