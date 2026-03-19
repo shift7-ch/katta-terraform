@@ -8,16 +8,16 @@ Katta bring zero-config storage management and zero-knowledge key management for
 
 > [Terraform workflow for provisioning infrastructure](https://developer.hashicorp.com/terraform/cli/run)
 
-Set up Katta Hub in a custom AWS hosted zone. Change terraform workspace to control the infix `<workspace>`:
-
-* `https://hub.<workspace>.<dns_suffix>`
-* `https://keycloak.<workspace>.<dns_suffix>`
+Set up Katta Hub in a custom AWS hosted zone. 
 
 ### Prerequisites
 
-1. Install Docker
+1. Register a domain `<dns_suffix>` such as `example.net` in AWS Route53 to be used. A subdomain `hub.katta.example.net` and
+   `keycloak.katta.example.net` will be created for the Katta deployment when applying Terraform.
 
-2. Setup AWS CLI and configure credentials in environment
+2. Install Docker
+
+3. Setup AWS CLI and configure credentials in environment
     ```shell
     export AWS_ACCESS_KEY_ID=
     export AWS_SECRET_ACCESS_KEY=
@@ -32,11 +32,12 @@ Set up Katta Hub in a custom AWS hosted zone. Change terraform workspace to cont
     ```shell
     terraform workspace new katta
     ```
+   The workspace name determines the infix `<workspace>` in the subdomains created:
+   
+   * `https://hub.<workspace>.<dns_suffix>`
+   * `https://keycloak.<workspace>.<dns_suffix>`
 
-2. Register a domain `example.net` in AWS Route53 to be used. A subdomain `hub.katta.example.net` and
-   `keycloak.katta.example.net` will be created for the Katta deployment.
-
-3. Override default Terraform configuration
+2. Override default Terraform configuration
 
    Defaults can be found in `terraform.tfvars.template`. Either copy to `terraform.tfvars` (not under version control)
    or overridden by environment variables:
@@ -50,7 +51,7 @@ Set up Katta Hub in a custom AWS hosted zone. Change terraform workspace to cont
     export TF_VAR_hub_keycloak_system_client_secret=top-secret
     export TF_VAR_hub_keycloak_oidc_cryptomator_vaults_client_secret=top-secret
     ```
-4. Add hosted zone for domain in AWS Route53 if missing:
+3. Add hosted zone for domain in AWS Route53 if missing:
 
     ```shell
     aws route53 create-hosted-zone --name $TF_VAR_dns_suffix --caller-reference $(date +%s)
@@ -59,7 +60,7 @@ Set up Katta Hub in a custom AWS hosted zone. Change terraform workspace to cont
    **Warning**: For domain validation to work in AWS Certificate Manager, you must ensure the name servers set in the
    hosted zone match the name servers set in the Route53 domain registration.
 
-5. Add GitHub Personal Access Token
+4. Add GitHub Personal Access Token
 
     - AWS ECR pull-through cache requires authentication even for public GitHub Container Registry repositories.
     - Create a GitHub Personal Access Token with `read:packages` permission using `gh` CLI:
@@ -80,7 +81,7 @@ Set up Katta Hub in a custom AWS hosted zone. Change terraform workspace to cont
     - Generate new token with `read:packages` scope
     - Add to `terraform.tfvars`: `github_token = "ghp_your_token_here"`
 
-6. Validate environment
+5. Validate environment
 
     ```shell
     terraform init
@@ -88,13 +89,13 @@ Set up Katta Hub in a custom AWS hosted zone. Change terraform workspace to cont
     terraform plan
     ```
 
-7. Deploy environment
+6. Deploy environment
 
     ```shell
     terraform apply --auto-approve
     ```
 
-8. Login in Web Browser
+7. Login in Web Browser
 
 * Open `https://hub.<workspace>.<dns_suffix>` in browser to login to _Katta Hub_ with
   the [default credentials](https://github.com/shift7-ch/katta-clientlib?tab=readme-ov-file#users) with `admin` role.
