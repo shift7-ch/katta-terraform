@@ -1,6 +1,6 @@
 # Katta: the secure and easy way to work in teams
 
-Katta bring zero-config storage management and zero-knowledge key management for teams and organizations.
+Katta brings zero-config storage management and zero-knowledge key management for teams and organizations.
 
 ## Katta Terraform
 

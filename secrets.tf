@@ -62,7 +62,7 @@ resource "aws_secretsmanager_secret_version" "hub_db_credentials_version" {
 
 resource "aws_secretsmanager_secret" "hub_oidc_client_secrets_credentials" {
   name                    = "${terraform.workspace}-${var.hub_prefix}-oidc-client-secrets__${random_id.secret_suffix.hex}"
-  description             = "Database credentials in ${terraform.workspace}"
+  description             = "OIDC client secrets in ${terraform.workspace}"
   recovery_window_in_days = 7
 
   tags = {
