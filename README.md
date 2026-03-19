@@ -15,7 +15,9 @@ Set up Katta Hub in a custom AWS hosted zone.
 1. Register a domain `<dns_suffix>` such as `example.net` in AWS Route53 to be used. A subdomain `hub.katta.example.net` and
    `keycloak.katta.example.net` will be created for the Katta deployment when applying Terraform.
 
-2. Setup [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) and configure credentials in environment
+2. Install [Docker](https://docs.docker.com/desktop/setup/install/mac-install/).
+
+3. Setup [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) and configure credentials in environment:
     ```shell
     export AWS_ACCESS_KEY_ID=
     export AWS_SECRET_ACCESS_KEY=
