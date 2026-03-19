@@ -94,7 +94,7 @@ Set up Katta Hub in a custom AWS hosted zone. Change terraform workspace to cont
     terraform apply --auto-approve
     ```
 
-7.Login in Web Browser
+8. Login in Web Browser
 
 * Open `https://hub.<workspace>.<dns_suffix>` in browser to login to _Katta Hub_ with
   the [default credentials](https://github.com/shift7-ch/katta-clientlib?tab=readme-ov-file#users) with `admin` role.
