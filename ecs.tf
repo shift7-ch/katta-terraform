@@ -21,6 +21,8 @@ resource "null_resource" "prepopulate_ecr_cache" {
       echo "Authenticating with ECR..."
       aws ecr get-login-password --region ${var.region} | docker login --username AWS --password-stdin ${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com
 
+      docker ps || echo "Docker daemon not running, cache may populate on first ECS task start"
+
       echo "Pre-pulling Keycloak image to populate ECR cache..."
       docker pull ${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${terraform.workspace}-ghcr/cryptomator/keycloak:${var.keycloak_version} || echo "Failed to pull Keycloak image, cache may populate on first ECS task start"
 
