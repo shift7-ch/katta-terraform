@@ -95,11 +95,11 @@ Set up Katta Hub in a custom AWS hosted zone.
     terraform apply --auto-approve
     ```
 
-7. Login in Web Browser
+7. Log in via Web Browser
 
-* Open `https://hub.<workspace>.<dns_suffix>` in browser to login to _Katta Hub_ with
+* Open `https://hub.<workspace>.<dns_suffix>` in browser to log in to _Katta Hub_ with
   the [default credentials](https://github.com/shift7-ch/katta-clientlib?tab=readme-ov-file#users) with `admin` role.
-* Open `https://keycloak.<workspace>.<dns_suffix>` in browser to login to _Katta Keycloak_ with the admin user (default
+* Open `https://keycloak.<workspace>.<dns_suffix>` in browser to log in to _Katta Keycloak_ with the admin user (default
   `keycloak_admin`) and password as `$TF_VAR_keycloak_admin_password`.
 
 ## Cleanup
