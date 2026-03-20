@@ -125,7 +125,7 @@ resource "aws_iam_role_policy" "app_autoscaling_policy" {
 resource "aws_iam_policy" "ecr_ECSFargateAllowExecuteCommand" {
   count       = var.ecs_enable_execute_command ? 1 : 0
   name        = "${terraform.workspace}-ecr-ECSFargateAllowExecuteCommand"
-  description = "Policy to allow ECS task execution role to to execute command."
+  description = "Policy to allow ECS task execution role to execute command."
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
