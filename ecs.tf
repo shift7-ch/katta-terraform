@@ -268,8 +268,7 @@ resource "aws_ecs_service" "keycloak_ecs_service" {
 
   network_configuration {
     subnets = aws_subnet.private.*.id
-    // public ip required to reach github via public DNS/IP to download realm
-    assign_public_ip = true
+    assign_public_ip = false
     security_groups = [
       aws_security_group.ecs_cluster_sg.id,
     ]
@@ -472,8 +471,7 @@ resource "aws_ecs_service" "katta_server_ecs_service" {
 
   network_configuration {
     subnets = aws_subnet.private.*.id
-    // public ip required to reach keycloak via public DNS/IP
-    assign_public_ip = true
+    assign_public_ip = false
     security_groups = [
       aws_security_group.ecs_cluster_sg.id,
       aws_security_group.vpc_endpoint_sg.id

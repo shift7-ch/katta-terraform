@@ -112,12 +112,27 @@ resource "aws_subnet" "private" {
   }
 }
 
+resource "aws_eip" "nat" {
+  tags = {
+    Name        = "${terraform.workspace}-nat-eip"
+    Project     = var.project
+    Environment = terraform.workspace
+  }
+}
+resource "aws_nat_gateway" "private_nat" {
+  allocation_id = aws_eip.nat.id
+  subnet_id     = aws_subnet.public[0].id
+  tags = {
+    Name        = "${terraform.workspace}-nat-gateway"
+    Project     = var.project
+    Environment = terraform.workspace
+  }
+}
 resource "aws_route_table" "private_subnet" {
   vpc_id = aws_vpc.katta.id
-
   route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.public_igw.id
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.private_nat.id
   }
 
   tags = {
