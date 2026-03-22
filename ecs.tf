@@ -348,7 +348,7 @@ resource "aws_ecs_task_definition" "katta_server_ecs_task" {
       environment = [
         {
           name  = "HUB_KEYCLOAK_LOCAL_URL"
-          value = "http://keycloak:8080"
+          value = "https://${var.keycloak_prefix}.${terraform.workspace}.${var.dns_suffix}"
         },
         {
           name  = "HUB_KEYCLOAK_PUBLIC_URL"
