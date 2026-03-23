@@ -203,85 +203,87 @@ terramaid run -s "Security Groups" --include-types "aws_security_group" --includ
 
 ```mermaid
 flowchart TD
-    subgraph Overview
-        data_aws_availability_zones_available["data.aws_availability_zones.available"]
-        data_aws_caller_identity_current["data.aws_caller_identity.current"]
-        data_local_file_cryptomator_realm["data.local_file.cryptomator_realm"]
-        aws_db_instance_hub_db["aws_db_instance.hub_db"]
-        aws_db_instance_postgres["aws_db_instance.postgres"]
-        aws_db_subnet_group_private_subnet_group["aws_db_subnet_group.private_subnet_group"]
-        aws_db_subnet_group_public_subnet_group["aws_db_subnet_group.public_subnet_group"]
-        aws_ecr_pull_through_cache_rule_github["aws_ecr_pull_through_cache_rule.github"]
-        aws_ecs_cluster_katta_ecs_cluster["aws_ecs_cluster.katta_ecs_cluster"]
-        aws_ecs_service_katta_server_ecs_service["aws_ecs_service.katta_server_ecs_service"]
-        aws_ecs_service_keycloak_ecs_service["aws_ecs_service.keycloak_ecs_service"]
-        aws_ecs_task_definition_katta_server_ecs_task["aws_ecs_task_definition.katta_server_ecs_task"]
-        aws_ecs_task_definition_keycloak_ecs_task["aws_ecs_task_definition.keycloak_ecs_task"]
-        aws_internet_gateway_public_igw["aws_internet_gateway.public_igw"]
-        aws_lb_hub_public_alb["aws_lb.hub_public_alb"]
-        aws_lb_keycloak_public_alb["aws_lb.keycloak_public_alb"]
-        aws_lb_listener_hub_http_listener["aws_lb_listener.hub_http_listener"]
-        aws_lb_listener_hub_https_listener["aws_lb_listener.hub_https_listener"]
-        aws_lb_listener_keycloak_http_listener["aws_lb_listener.keycloak_http_listener"]
-        aws_lb_listener_keycloak_https_listener["aws_lb_listener.keycloak_https_listener"]
-        aws_lb_target_group_hub_ecs_target_group["aws_lb_target_group.hub_ecs_target_group"]
-        aws_lb_target_group_keycloak_ecs_target_group["aws_lb_target_group.keycloak_ecs_target_group"]
-        aws_route_internet_access["aws_route.internet_access"]
-        aws_route_table_private_subnet["aws_route_table.private_subnet"]
-        aws_route_table_public_subnet["aws_route_table.public_subnet"]
-        aws_route_table_association_private_subnets["aws_route_table_association.private_subnets"]
-        aws_route_table_association_public_subnets["aws_route_table_association.public_subnets"]
-        aws_service_discovery_http_namespace_katta_service_connect["aws_service_discovery_http_namespace.katta_service_connect"]
-        aws_subnet_private["aws_subnet.private"]
-        aws_subnet_public["aws_subnet.public"]
-        aws_vpc_katta["aws_vpc.katta"]
-        aws_vpc_endpoint_ecr_api["aws_vpc_endpoint.ecr_api"]
-        aws_vpc_endpoint_ecr_dkr["aws_vpc_endpoint.ecr_dkr"]
-        aws_vpc_endpoint_ecr_logs["aws_vpc_endpoint.ecr_logs"]
-        aws_vpc_endpoint_ecr_secretsmanager["aws_vpc_endpoint.ecr_secretsmanager"]
-        random_id_secret_suffix["random_id.secret_suffix"]
-    end
-    aws_db_instance_hub_db --> aws_db_subnet_group_private_subnet_group
-    aws_db_instance_postgres --> aws_db_subnet_group_private_subnet_group
-    aws_db_subnet_group_private_subnet_group --> aws_subnet_private
-    aws_db_subnet_group_public_subnet_group --> aws_subnet_public
-    aws_ecs_cluster_katta_ecs_cluster --> aws_service_discovery_http_namespace_katta_service_connect
-    aws_ecs_service_katta_server_ecs_service --> aws_ecs_task_definition_katta_server_ecs_task
-    aws_ecs_service_katta_server_ecs_service --> aws_lb_target_group_hub_ecs_target_group
-    aws_ecs_service_keycloak_ecs_service --> aws_ecs_cluster_katta_ecs_cluster
-    aws_ecs_service_keycloak_ecs_service --> aws_ecs_task_definition_keycloak_ecs_task
-    aws_ecs_service_keycloak_ecs_service --> aws_lb_target_group_keycloak_ecs_target_group
-    aws_ecs_task_definition_katta_server_ecs_task --> aws_db_instance_hub_db
-    aws_ecs_task_definition_katta_server_ecs_task --> aws_ecs_service_keycloak_ecs_service
-    aws_ecs_task_definition_keycloak_ecs_task --> data_local_file_cryptomator_realm
-    aws_ecs_task_definition_keycloak_ecs_task --> aws_db_instance_postgres
-    aws_internet_gateway_public_igw --> aws_vpc_katta
-    aws_lb_hub_public_alb --> aws_subnet_public
-    aws_lb_keycloak_public_alb --> aws_subnet_public
-    aws_lb_listener_hub_http_listener --> aws_lb_hub_public_alb
-    aws_lb_listener_hub_https_listener --> aws_lb_hub_public_alb
-    aws_lb_listener_hub_https_listener --> aws_lb_target_group_hub_ecs_target_group
-    aws_lb_listener_keycloak_http_listener --> aws_lb_keycloak_public_alb
-    aws_lb_listener_keycloak_https_listener --> aws_lb_keycloak_public_alb
-    aws_lb_listener_keycloak_https_listener --> aws_lb_target_group_keycloak_ecs_target_group
-    aws_lb_target_group_hub_ecs_target_group --> aws_vpc_katta
-    aws_lb_target_group_keycloak_ecs_target_group --> aws_vpc_katta
-    aws_route_internet_access --> aws_internet_gateway_public_igw
-    aws_route_internet_access --> aws_route_table_public_subnet
-    aws_route_table_private_subnet --> aws_internet_gateway_public_igw
-    aws_route_table_public_subnet --> aws_vpc_katta
-    aws_route_table_association_private_subnets --> aws_route_table_private_subnet
-    aws_route_table_association_private_subnets --> aws_subnet_private
-    aws_route_table_association_public_subnets --> aws_route_table_public_subnet
-    aws_route_table_association_public_subnets --> aws_subnet_public
-    aws_subnet_private --> data_aws_availability_zones_available
-    aws_subnet_private --> aws_vpc_katta
-    aws_subnet_public --> data_aws_availability_zones_available
-    aws_subnet_public --> aws_vpc_katta
-    aws_vpc_endpoint_ecr_api --> aws_subnet_private
-    aws_vpc_endpoint_ecr_dkr --> aws_subnet_private
-    aws_vpc_endpoint_ecr_logs --> aws_subnet_private
-    aws_vpc_endpoint_ecr_secretsmanager --> aws_subnet_private
+   subgraph Overview
+      data_aws_availability_zones_available["data.aws_availability_zones.available"]
+      data_aws_caller_identity_current["data.aws_caller_identity.current"]
+      data_local_file_cryptomator_realm["data.local_file.cryptomator_realm"]
+      aws_db_instance_hub_db["aws_db_instance.hub_db"]
+      aws_db_instance_postgres["aws_db_instance.postgres"]
+      aws_db_subnet_group_private_subnet_group["aws_db_subnet_group.private_subnet_group"]
+      aws_ecr_pull_through_cache_rule_github["aws_ecr_pull_through_cache_rule.github"]
+      aws_ecs_cluster_katta_ecs_cluster["aws_ecs_cluster.katta_ecs_cluster"]
+      aws_ecs_service_katta_server_ecs_service["aws_ecs_service.katta_server_ecs_service"]
+      aws_ecs_service_keycloak_ecs_service["aws_ecs_service.keycloak_ecs_service"]
+      aws_ecs_task_definition_katta_server_ecs_task["aws_ecs_task_definition.katta_server_ecs_task"]
+      aws_ecs_task_definition_keycloak_ecs_task["aws_ecs_task_definition.keycloak_ecs_task"]
+      aws_eip_nat["aws_eip.nat"]
+      aws_internet_gateway_public_igw["aws_internet_gateway.public_igw"]
+      aws_lb_hub_public_alb["aws_lb.hub_public_alb"]
+      aws_lb_keycloak_public_alb["aws_lb.keycloak_public_alb"]
+      aws_lb_listener_hub_http_listener["aws_lb_listener.hub_http_listener"]
+      aws_lb_listener_hub_https_listener["aws_lb_listener.hub_https_listener"]
+      aws_lb_listener_keycloak_http_listener["aws_lb_listener.keycloak_http_listener"]
+      aws_lb_listener_keycloak_https_listener["aws_lb_listener.keycloak_https_listener"]
+      aws_lb_target_group_hub_ecs_target_group["aws_lb_target_group.hub_ecs_target_group"]
+      aws_lb_target_group_keycloak_ecs_target_group["aws_lb_target_group.keycloak_ecs_target_group"]
+      aws_nat_gateway_private_nat["aws_nat_gateway.private_nat"]
+      aws_route_internet_access["aws_route.internet_access"]
+      aws_route_table_private_subnet["aws_route_table.private_subnet"]
+      aws_route_table_public_subnet["aws_route_table.public_subnet"]
+      aws_route_table_association_private_subnets["aws_route_table_association.private_subnets"]
+      aws_route_table_association_public_subnets["aws_route_table_association.public_subnets"]
+      aws_service_discovery_http_namespace_katta_service_connect["aws_service_discovery_http_namespace.katta_service_connect"]
+      aws_subnet_private["aws_subnet.private"]
+      aws_subnet_public["aws_subnet.public"]
+      aws_vpc_katta["aws_vpc.katta"]
+      aws_vpc_endpoint_ecr_api["aws_vpc_endpoint.ecr_api"]
+      aws_vpc_endpoint_ecr_dkr["aws_vpc_endpoint.ecr_dkr"]
+      aws_vpc_endpoint_ecr_logs["aws_vpc_endpoint.ecr_logs"]
+      aws_vpc_endpoint_ecr_secretsmanager["aws_vpc_endpoint.ecr_secretsmanager"]
+      random_id_secret_suffix["random_id.secret_suffix"]
+   end
+   aws_db_instance_hub_db --> aws_db_subnet_group_private_subnet_group
+   aws_db_instance_postgres --> aws_db_subnet_group_private_subnet_group
+   aws_db_subnet_group_private_subnet_group --> aws_subnet_private
+   aws_ecs_cluster_katta_ecs_cluster --> aws_service_discovery_http_namespace_katta_service_connect
+   aws_ecs_service_katta_server_ecs_service --> aws_ecs_task_definition_katta_server_ecs_task
+   aws_ecs_service_katta_server_ecs_service --> aws_lb_target_group_hub_ecs_target_group
+   aws_ecs_service_keycloak_ecs_service --> aws_ecs_cluster_katta_ecs_cluster
+   aws_ecs_service_keycloak_ecs_service --> aws_ecs_task_definition_keycloak_ecs_task
+   aws_ecs_service_keycloak_ecs_service --> aws_lb_target_group_keycloak_ecs_target_group
+   aws_ecs_task_definition_katta_server_ecs_task --> aws_db_instance_hub_db
+   aws_ecs_task_definition_katta_server_ecs_task --> aws_ecs_service_keycloak_ecs_service
+   aws_ecs_task_definition_keycloak_ecs_task --> data_local_file_cryptomator_realm
+   aws_ecs_task_definition_keycloak_ecs_task --> aws_db_instance_postgres
+   aws_internet_gateway_public_igw --> aws_vpc_katta
+   aws_lb_hub_public_alb --> aws_subnet_public
+   aws_lb_keycloak_public_alb --> aws_subnet_public
+   aws_lb_listener_hub_http_listener --> aws_lb_hub_public_alb
+   aws_lb_listener_hub_https_listener --> aws_lb_hub_public_alb
+   aws_lb_listener_hub_https_listener --> aws_lb_target_group_hub_ecs_target_group
+   aws_lb_listener_keycloak_http_listener --> aws_lb_keycloak_public_alb
+   aws_lb_listener_keycloak_https_listener --> aws_lb_keycloak_public_alb
+   aws_lb_listener_keycloak_https_listener --> aws_lb_target_group_keycloak_ecs_target_group
+   aws_lb_target_group_hub_ecs_target_group --> aws_vpc_katta
+   aws_lb_target_group_keycloak_ecs_target_group --> aws_vpc_katta
+   aws_nat_gateway_private_nat --> aws_eip_nat
+   aws_nat_gateway_private_nat --> aws_subnet_public
+   aws_route_internet_access --> aws_internet_gateway_public_igw
+   aws_route_internet_access --> aws_route_table_public_subnet
+   aws_route_table_private_subnet --> aws_nat_gateway_private_nat
+   aws_route_table_public_subnet --> aws_vpc_katta
+   aws_route_table_association_private_subnets --> aws_route_table_private_subnet
+   aws_route_table_association_private_subnets --> aws_subnet_private
+   aws_route_table_association_public_subnets --> aws_route_table_public_subnet
+   aws_route_table_association_public_subnets --> aws_subnet_public
+   aws_subnet_private --> data_aws_availability_zones_available
+   aws_subnet_private --> aws_vpc_katta
+   aws_subnet_public --> data_aws_availability_zones_available
+   aws_subnet_public --> aws_vpc_katta
+   aws_vpc_endpoint_ecr_api --> aws_subnet_private
+   aws_vpc_endpoint_ecr_dkr --> aws_subnet_private
+   aws_vpc_endpoint_ecr_logs --> aws_subnet_private
+   aws_vpc_endpoint_ecr_secretsmanager --> aws_subnet_private
 ```
 
 ### Security Groups
