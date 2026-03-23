@@ -45,10 +45,10 @@ resource "aws_security_group" "ecs_cluster_sg" {
   vpc_id      = aws_vpc.katta.id
 
   ingress {
-    description = "Allow communication to ECS tasks only from ALB"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
+    description     = "Allow communication to ECS tasks only from ALB"
+    from_port       = 0
+    to_port         = 0
+    protocol        = "-1"
     security_groups = [aws_security_group.alb_sg.id]
   }
 
@@ -267,7 +267,7 @@ resource "aws_ecs_service" "keycloak_ecs_service" {
   }
 
   network_configuration {
-    subnets = aws_subnet.private.*.id
+    subnets          = aws_subnet.private.*.id
     assign_public_ip = false
     security_groups = [
       aws_security_group.ecs_cluster_sg.id,
@@ -470,11 +470,10 @@ resource "aws_ecs_service" "katta_server_ecs_service" {
   }
 
   network_configuration {
-    subnets = aws_subnet.private.*.id
+    subnets          = aws_subnet.private.*.id
     assign_public_ip = false
     security_groups = [
       aws_security_group.ecs_cluster_sg.id,
-      aws_security_group.vpc_endpoint_sg.id
     ]
   }
 
