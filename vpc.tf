@@ -172,19 +172,6 @@ resource "aws_route_table_association" "public_subnets" {
   route_table_id = aws_route_table.public_subnet.id
 }
 
-resource "aws_db_subnet_group" "public_subnet_group" {
-  name        = "${terraform.workspace}-public-subnet-group"
-  description = "Public subnet group"
-  subnet_ids  = aws_subnet.public[*].id
-
-  tags = {
-    Name        = "${terraform.workspace}-public-subnet-group"
-    Project     = var.project
-    Environment = terraform.workspace
-    Type        = "public"
-  }
-}
-
 resource "aws_db_subnet_group" "private_subnet_group" {
   name        = "${terraform.workspace}-private-subnet-group"
   description = "Private subnet group"
