@@ -288,44 +288,43 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    subgraph Security Groups
-        aws_db_instance_hub_db["aws_db_instance.hub_db"]
-        aws_db_instance_postgres["aws_db_instance.postgres"]
-        aws_ecs_cluster_katta_ecs_cluster["aws_ecs_cluster.katta_ecs_cluster"]
-        aws_ecs_service_katta_server_ecs_service["aws_ecs_service.katta_server_ecs_service"]
-        aws_ecs_service_keycloak_ecs_service["aws_ecs_service.keycloak_ecs_service"]
-        aws_ecs_task_definition_katta_server_ecs_task["aws_ecs_task_definition.katta_server_ecs_task"]
-        aws_ecs_task_definition_keycloak_ecs_task["aws_ecs_task_definition.keycloak_ecs_task"]
-        aws_lb_hub_public_alb["aws_lb.hub_public_alb"]
-        aws_lb_keycloak_public_alb["aws_lb.keycloak_public_alb"]
-        aws_security_group_alb_sg["aws_security_group.alb_sg"]
-        aws_security_group_ecs_cluster_sg["aws_security_group.ecs_cluster_sg"]
-        aws_security_group_rds_sg["aws_security_group.rds_sg"]
-        aws_security_group_vpc_endpoint_sg["aws_security_group.vpc_endpoint_sg"]
-        aws_vpc_katta["aws_vpc.katta"]
-        aws_vpc_endpoint_ecr_api["aws_vpc_endpoint.ecr_api"]
-        aws_vpc_endpoint_ecr_dkr["aws_vpc_endpoint.ecr_dkr"]
-        aws_vpc_endpoint_ecr_logs["aws_vpc_endpoint.ecr_logs"]
-        aws_vpc_endpoint_ecr_secretsmanager["aws_vpc_endpoint.ecr_secretsmanager"]
-    end
-    aws_db_instance_hub_db --> aws_security_group_rds_sg
-    aws_db_instance_postgres --> aws_security_group_rds_sg
-    aws_ecs_service_katta_server_ecs_service --> aws_ecs_task_definition_katta_server_ecs_task
-    aws_ecs_service_katta_server_ecs_service --> aws_security_group_vpc_endpoint_sg
-    aws_ecs_service_keycloak_ecs_service --> aws_ecs_cluster_katta_ecs_cluster
-    aws_ecs_service_keycloak_ecs_service --> aws_ecs_task_definition_keycloak_ecs_task
-    aws_ecs_task_definition_katta_server_ecs_task --> aws_db_instance_hub_db
-    aws_ecs_task_definition_katta_server_ecs_task --> aws_ecs_service_keycloak_ecs_service
-    aws_ecs_task_definition_keycloak_ecs_task --> aws_db_instance_postgres
-    aws_lb_hub_public_alb --> aws_security_group_alb_sg
-    aws_lb_keycloak_public_alb --> aws_security_group_alb_sg
-    aws_security_group_alb_sg --> aws_vpc_katta
-    aws_security_group_ecs_cluster_sg --> aws_security_group_alb_sg
-    aws_security_group_rds_sg --> aws_security_group_ecs_cluster_sg
-    aws_security_group_vpc_endpoint_sg --> aws_security_group_ecs_cluster_sg
-    aws_vpc_endpoint_ecr_api --> aws_security_group_vpc_endpoint_sg
-    aws_vpc_endpoint_ecr_dkr --> aws_security_group_vpc_endpoint_sg
-    aws_vpc_endpoint_ecr_logs --> aws_security_group_vpc_endpoint_sg
-    aws_vpc_endpoint_ecr_secretsmanager --> aws_security_group_vpc_endpoint_sg
+   subgraph Security Groups
+      aws_db_instance_hub_db["aws_db_instance.hub_db"]
+      aws_db_instance_postgres["aws_db_instance.postgres"]
+      aws_ecs_cluster_katta_ecs_cluster["aws_ecs_cluster.katta_ecs_cluster"]
+      aws_ecs_service_katta_server_ecs_service["aws_ecs_service.katta_server_ecs_service"]
+      aws_ecs_service_keycloak_ecs_service["aws_ecs_service.keycloak_ecs_service"]
+      aws_ecs_task_definition_katta_server_ecs_task["aws_ecs_task_definition.katta_server_ecs_task"]
+      aws_ecs_task_definition_keycloak_ecs_task["aws_ecs_task_definition.keycloak_ecs_task"]
+      aws_lb_hub_public_alb["aws_lb.hub_public_alb"]
+      aws_lb_keycloak_public_alb["aws_lb.keycloak_public_alb"]
+      aws_security_group_alb_sg["aws_security_group.alb_sg"]
+      aws_security_group_ecs_cluster_sg["aws_security_group.ecs_cluster_sg"]
+      aws_security_group_rds_sg["aws_security_group.rds_sg"]
+      aws_security_group_vpc_endpoint_sg["aws_security_group.vpc_endpoint_sg"]
+      aws_vpc_katta["aws_vpc.katta"]
+      aws_vpc_endpoint_ecr_api["aws_vpc_endpoint.ecr_api"]
+      aws_vpc_endpoint_ecr_dkr["aws_vpc_endpoint.ecr_dkr"]
+      aws_vpc_endpoint_ecr_logs["aws_vpc_endpoint.ecr_logs"]
+      aws_vpc_endpoint_ecr_secretsmanager["aws_vpc_endpoint.ecr_secretsmanager"]
+   end
+   aws_db_instance_hub_db --> aws_security_group_rds_sg
+   aws_db_instance_postgres --> aws_security_group_rds_sg
+   aws_ecs_service_katta_server_ecs_service --> aws_ecs_task_definition_katta_server_ecs_task
+   aws_ecs_service_keycloak_ecs_service --> aws_ecs_cluster_katta_ecs_cluster
+   aws_ecs_service_keycloak_ecs_service --> aws_ecs_task_definition_keycloak_ecs_task
+   aws_ecs_task_definition_katta_server_ecs_task --> aws_db_instance_hub_db
+   aws_ecs_task_definition_katta_server_ecs_task --> aws_ecs_service_keycloak_ecs_service
+   aws_ecs_task_definition_keycloak_ecs_task --> aws_db_instance_postgres
+   aws_lb_hub_public_alb --> aws_security_group_alb_sg
+   aws_lb_keycloak_public_alb --> aws_security_group_alb_sg
+   aws_security_group_alb_sg --> aws_vpc_katta
+   aws_security_group_ecs_cluster_sg --> aws_security_group_alb_sg
+   aws_security_group_rds_sg --> aws_security_group_ecs_cluster_sg
+   aws_security_group_vpc_endpoint_sg --> aws_security_group_ecs_cluster_sg
+   aws_vpc_endpoint_ecr_api --> aws_security_group_vpc_endpoint_sg
+   aws_vpc_endpoint_ecr_dkr --> aws_security_group_vpc_endpoint_sg
+   aws_vpc_endpoint_ecr_logs --> aws_security_group_vpc_endpoint_sg
+   aws_vpc_endpoint_ecr_secretsmanager --> aws_security_group_vpc_endpoint_sg
 ```
 
