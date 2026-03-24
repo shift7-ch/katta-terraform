@@ -94,7 +94,7 @@ variable "github_token" {
 }
 
 variable "keycloak_version" {
-  description = "Docker image tag for ghcr.io/cryptomator/keycloak."
+  description = "Docker image tag for ghcr.io/shift-7/keycloak."
   type        = string
   default     = "26.5.5"
 }
@@ -102,8 +102,7 @@ variable "keycloak_version" {
 variable "hub_version" {
   description = "Docker image tag for ghcr.io/shift7-ch/katta-server."
   type        = string
-  # TODO temporary workaround while waiting for fix https://github.com/shift7-ch/katta-server/pull/107
-  default = "42a2c61-amd64"
+  default = "12546cd-amd64"
 }
 
 variable "ecs_enable_execute_command" {

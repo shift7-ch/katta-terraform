@@ -78,8 +78,7 @@ resource "null_resource" "download_cryptomator_realm" {
   }
 
   provisioner "local-exec" {
-    # TODO temporary workaround while waiting for fix https://github.com/shift7-ch/katta-server/pull/107
-    command = "curl -fsSL https://raw.githubusercontent.com/shift7-ch/katta-server/refs/heads/feature/fix-cryptomatorhub/backend/src/main/resources/cryptomator-realm.json -o ${path.module}/cryptomator-realm.json"
+    command = "curl -fsSL https://raw.githubusercontent.com/shift7-ch/katta-server/refs/heads/feature/cipherduck-uvf/backend/src/main/resources/cryptomator-realm.json -o ${path.module}/cryptomator-realm.json"
   }
 }
 

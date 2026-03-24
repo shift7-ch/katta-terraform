@@ -10,7 +10,7 @@ resource "aws_ecr_pull_through_cache_rule" "github" {
 resource "null_resource" "prepopulate_ecr_cache" {
   # Trigger on changes to image versions or cache rule
   triggers = {
-    keycloak_image = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${terraform.workspace}-ghcr/cryptomator/keycloak:${var.keycloak_version}"
+    keycloak_image = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${terraform.workspace}-ghcr/shift7-ch/keycloak:${var.keycloak_version}"
     hub_image      = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${terraform.workspace}-ghcr/shift7-ch/katta-server:${var.hub_version}"
     cache_rule     = aws_ecr_pull_through_cache_rule.github.id
   }
@@ -24,7 +24,7 @@ resource "null_resource" "prepopulate_ecr_cache" {
       docker ps || echo "Docker daemon not running, cache may populate on first ECS task start"
 
       echo "Pre-pulling Keycloak image to populate ECR cache..."
-      docker pull ${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${terraform.workspace}-ghcr/cryptomator/keycloak:${var.keycloak_version} || echo "Failed to pull Keycloak image, cache may populate on first ECS task start"
+      docker pull ${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${terraform.workspace}-ghcr/shift7-ch/keycloak:${var.keycloak_version} || echo "Failed to pull Keycloak image, cache may populate on first ECS task start"
 
       echo "Pre-pulling Hub image to populate ECR cache..."
       docker pull ${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${terraform.workspace}-ghcr/shift7-ch/katta-server:${var.hub_version} || echo "Failed to pull Hub image, cache may populate on first ECS task start"
@@ -125,7 +125,7 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
   container_definitions = jsonencode([
     {
       name       = "${terraform.workspace}-container-${var.keycloak_prefix}",
-      image      = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${terraform.workspace}-ghcr/cryptomator/keycloak:${var.keycloak_version}"
+      image = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${terraform.workspace}-ghcr/shift7-ch/keycloak:${var.keycloak_version}"
       entryPoint = ["/bin/sh"]
       command = [
         "-c",
