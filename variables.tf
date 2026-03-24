@@ -102,7 +102,7 @@ variable "keycloak_version" {
 variable "hub_version" {
   description = "Docker image tag for ghcr.io/shift7-ch/katta-server."
   type        = string
-  default = "12546cd-amd64"
+  default = "fc29bff-amd64"
 }
 
 variable "ecs_enable_execute_command" {
