@@ -161,6 +161,10 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
       ]
       environment = [
         {
+          name  = "CRYPTOMATOR_REALM_JSON"
+          value = local.cryptomator_realm_base64
+        },
+        {
           name  = "KC_DB"
           value = "postgres"
         },
@@ -191,12 +195,6 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
         {
           name  = "KC_PROXY_HEADERS"
           value = "xforwarded"
-        }
-      ]
-      secrets = [
-        {
-          name      = "CRYPTOMATOR_REALM_JSON"
-          valueFrom = var.cryptomator_realm_secret_arn
         }
       ]
       secrets = [
