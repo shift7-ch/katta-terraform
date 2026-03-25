@@ -1,0 +1,36 @@
+# GitHub Personal Access Token not required for public repositories
+#github_token=
+
+# DNS suffix for service endpoints
+#dns_suffix=
+# The AWS region to create resources
+#region=
+# The CIDR block for the VPC
+#vpc_cidr=
+
+# Keycloak Database Configuration
+# The name of the Keycloak database
+#keycloak_db_name=
+# The username for the Keycloak database
+#keycloak_db_username=
+# The password for the Keycloak database
+#keycloak_db_password=
+
+# Keycloak Admin Configuration
+# The username for the Keycloak admin user
+#keycloak_admin_username=
+# The password for the Keycloak admin user
+#keycloak_admin_password=
+
+# Hub Database Configuration
+# The name of the Hub database
+#hub_db_name=
+# The username for the Hub database
+#hub_db_username=
+# The password for the Hub database
+#hub_db_password=
+
+# Client secret for client "cryptomatorhub-system"
+# hub_keycloak_system_client_secret=
+# Client secret for client "cryptomatorvaults"
+# hub_keycloak_oidc_cryptomator_vaults_client_secret=
