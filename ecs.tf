@@ -24,10 +24,10 @@ resource "null_resource" "prepopulate_ecr_cache" {
       docker ps || echo "Docker daemon not running, cache may populate on first ECS task start"
 
       echo "Pre-pulling Keycloak image to populate ECR cache..."
-      docker pull ${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${terraform.workspace}-ghcr/shift7-ch/keycloak:${var.keycloak_version} || echo "Failed to pull Keycloak image, cache may populate on first ECS task start"
+      docker pull ${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${terraform.workspace}-ghcr/shift7-ch/keycloak:${var.keycloak_version} --platform linux/amd64 || echo "Failed to pull Keycloak image, cache may populate on first ECS task start"
 
       echo "Pre-pulling Hub image to populate ECR cache..."
-      docker pull ${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${terraform.workspace}-ghcr/shift7-ch/katta-server:${var.hub_version} || echo "Failed to pull Hub image, cache may populate on first ECS task start"
+      docker pull ${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${terraform.workspace}-ghcr/shift7-ch/katta-server:${var.hub_version} --platform linux/amd64 || echo "Failed to pull Hub image, cache may populate on first ECS task start"
 
       echo "ECR cache pre-population complete"
     EOT
