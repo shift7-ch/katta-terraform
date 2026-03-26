@@ -395,7 +395,7 @@ resource "aws_ecs_task_definition" "katta_server_ecs_task" {
         },
         {
           name  = "QUARKUS_HTTP_HEADER__CONTENT_SECURITY_POLICY__VALUE"
-          value = "value: default-src 'self'; connect-src 'self' *.amazonaws.com https://${var.keycloak_prefix}.${terraform.workspace}.${var.dns_suffix}/; object-src 'none'; child-src 'self'; img-src * data:; frame-ancestors 'none'"
+          value = "value: default-src 'self'; connect-src 'self' *.amazonaws.com api.katta.cloud https://${var.keycloak_prefix}.${terraform.workspace}.${var.dns_suffix}/; object-src 'none'; child-src 'self'; img-src * data:; frame-ancestors 'none'"
         },
       ]
       secrets = [
