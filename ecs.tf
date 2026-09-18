@@ -462,9 +462,12 @@ resource "aws_ecs_task_definition" "katta_server_ecs_task" {
     Project     = var.project
     Environment = terraform.workspace
   }
+  # secrets are resolved on task start, so their values must exist before the task is deployed
   depends_on = [
     null_resource.prepopulate_ecr_cache,
-    aws_ecs_service.keycloak_ecs_service
+    aws_ecs_service.keycloak_ecs_service,
+    aws_secretsmanager_secret_version.hub_db_credentials_version,
+    aws_secretsmanager_secret_version.hub_oidc_client_secrets_credentials_version
   ]
 }
 
