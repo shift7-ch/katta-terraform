@@ -48,6 +48,7 @@ Set up Katta Hub in a custom AWS hosted zone.
     export TF_VAR_keycloak_db_password=
     export TF_VAR_keycloak_admin_password=
     export TF_VAR_hub_db_password=
+    export TF_VAR_hub_admin_password=
     export TF_VAR_hub_keycloak_system_client_secret=top-secret
     export TF_VAR_hub_keycloak_oidc_cryptomator_vaults_client_secret=top-secret
     ```
@@ -97,8 +98,8 @@ Set up Katta Hub in a custom AWS hosted zone.
 
 7. Log in via Web Browser
 
-* Open `https://hub.<workspace>.<dns_suffix>` in browser to log in to _Katta Hub_ with
-  the [default credentials](https://github.com/shift7-ch/katta-clientlib?tab=readme-ov-file#users) with `admin` role.
+* Open `https://hub.<workspace>.<dns_suffix>` in browser to log in to _Katta Hub_ with the admin user (default `admin`)
+  and password as `$TF_VAR_hub_admin_password`. You must change the password on first login.
 * Open `https://keycloak.<workspace>.<dns_suffix>` in browser to log in to _Katta Keycloak_ with the admin user (default
   `keycloak_admin`) and password as `$TF_VAR_keycloak_admin_password`.
 
@@ -128,7 +129,12 @@ Images are cached in ECR with the prefix `<workspace>-ghcr/` and pulled automati
 
 - no URL paths `/kc` for Keycloak and `/<realm>/` for hub instances
 - non-shared Keycloak
-- default realm
+- realm rendered with the Helm provider from the realm template
+  `_realm.tpl` of the
+  Katta Server Helm chart in version `katta_chart_version` (pinned to a pre-release build until Katta Server is released,
+  set to `null` for the latest release). Secrets are rendered as placeholders `HUB_ADMIN_PASSWORD`,
+  `HUB_KEYCLOAK_SYSTEM_CLIENT_SECRET` and `HUB_KEYCLOAK_OIDC_CRYPTOMATOR_VAULTS_CLIENT_SECRET`, which Keycloak resolves on
+  import from Secrets Manager.
 
 ## Troubleshooting
 
@@ -206,7 +212,7 @@ flowchart TD
    subgraph Overview
       data_aws_availability_zones_available["data.aws_availability_zones.available"]
       data_aws_caller_identity_current["data.aws_caller_identity.current"]
-      data_local_file_cryptomator_realm["data.local_file.cryptomator_realm"]
+      data_helm_template_katta_server["data.helm_template.katta_server"]
       aws_db_instance_hub_db["aws_db_instance.hub_db"]
       aws_db_instance_postgres["aws_db_instance.postgres"]
       aws_db_subnet_group_private_subnet_group["aws_db_subnet_group.private_subnet_group"]
@@ -253,7 +259,7 @@ flowchart TD
    aws_ecs_service_keycloak_ecs_service --> aws_lb_target_group_keycloak_ecs_target_group
    aws_ecs_task_definition_katta_server_ecs_task --> aws_db_instance_hub_db
    aws_ecs_task_definition_katta_server_ecs_task --> aws_ecs_service_keycloak_ecs_service
-   aws_ecs_task_definition_keycloak_ecs_task --> data_local_file_cryptomator_realm
+   aws_ecs_task_definition_keycloak_ecs_task --> data_helm_template_katta_server
    aws_ecs_task_definition_keycloak_ecs_task --> aws_db_instance_postgres
    aws_internet_gateway_public_igw --> aws_vpc_katta
    aws_lb_hub_public_alb --> aws_subnet_public

@@ -198,6 +198,19 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
         }
       ]
       secrets = [
+        # resolve the ${...} placeholders of the realm on import
+        {
+          name      = "HUB_ADMIN_PASSWORD"
+          valueFrom = "${aws_secretsmanager_secret.hub_admin.arn}:password::"
+        },
+        {
+          name      = "HUB_KEYCLOAK_SYSTEM_CLIENT_SECRET"
+          valueFrom = "${aws_secretsmanager_secret.hub_oidc_client_secrets_credentials.arn}:hub_keycloak_system_client_secret::"
+        },
+        {
+          name      = "HUB_KEYCLOAK_OIDC_CRYPTOMATOR_VAULTS_CLIENT_SECRET"
+          valueFrom = "${aws_secretsmanager_secret.hub_oidc_client_secrets_credentials.arn}:hub_keycloak_oidc_cryptomator_vaults_client_secret::"
+        },
         {
           name      = "KEYCLOAK_ADMIN"
           valueFrom = "${aws_secretsmanager_secret.keycloak_admin.arn}:username::"
@@ -242,7 +255,14 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
     Environment = terraform.workspace
   }
 
-  depends_on = [null_resource.prepopulate_ecr_cache]
+  # secrets are resolved on task start, so their values must exist before the task is deployed
+  depends_on = [
+    null_resource.prepopulate_ecr_cache,
+    aws_secretsmanager_secret_version.keycloak_admin_version,
+    aws_secretsmanager_secret_version.keycloak_db_credentials_version,
+    aws_secretsmanager_secret_version.hub_admin_version,
+    aws_secretsmanager_secret_version.hub_oidc_client_secrets_credentials_version
+  ]
 }
 
 resource "aws_ecs_service" "keycloak_ecs_service" {
@@ -442,9 +462,12 @@ resource "aws_ecs_task_definition" "katta_server_ecs_task" {
     Project     = var.project
     Environment = terraform.workspace
   }
+  # secrets are resolved on task start, so their values must exist before the task is deployed
   depends_on = [
     null_resource.prepopulate_ecr_cache,
-    aws_ecs_service.keycloak_ecs_service
+    aws_ecs_service.keycloak_ecs_service,
+    aws_secretsmanager_secret_version.hub_db_credentials_version,
+    aws_secretsmanager_secret_version.hub_oidc_client_secrets_credentials_version
   ]
 }
 

@@ -70,6 +70,7 @@ resource "aws_iam_policy" "secrets_manager_policy" {
           aws_secretsmanager_secret.keycloak_admin.arn,
           aws_secretsmanager_secret.hub_db_credentials.arn,
           aws_secretsmanager_secret.hub_oidc_client_secrets_credentials.arn,
+          aws_secretsmanager_secret.hub_admin.arn,
         ]
       }
     ]

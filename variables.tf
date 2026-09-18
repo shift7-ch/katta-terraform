@@ -81,10 +81,23 @@ variable "keycloak_admin_password" {
   sensitive   = true
 }
 
-variable "keycloak_action_redirect" {
-  description = "The custom URL scheme for Keycloak action redirects desktop application."
+variable "hub_admin_username" {
+  description = "The username for the Katta Server admin user in the realm."
   type        = string
-  default     = "x-katta-action:oauth"
+  default     = "admin"
+}
+
+variable "katta_chart_version" {
+  description = "Version of the Katta Server Helm chart to render the Keycloak realm from. Null for the latest release."
+  type        = string
+  # pinned to a pre-release build until Katta Server is released
+  default     = "0.0.0-f8ec668"
+}
+
+variable "hub_admin_password" {
+  description = "The initial password for the Katta Server admin user in the realm. It must be changed on first login."
+  type        = string
+  sensitive   = true
 }
 
 variable "github_token" {
