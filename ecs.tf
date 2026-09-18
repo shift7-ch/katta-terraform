@@ -255,7 +255,14 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
     Environment = terraform.workspace
   }
 
-  depends_on = [null_resource.prepopulate_ecr_cache]
+  # secrets are resolved on task start, so their values must exist before the task is deployed
+  depends_on = [
+    null_resource.prepopulate_ecr_cache,
+    aws_secretsmanager_secret_version.keycloak_admin_version,
+    aws_secretsmanager_secret_version.keycloak_db_credentials_version,
+    aws_secretsmanager_secret_version.hub_admin_version,
+    aws_secretsmanager_secret_version.hub_oidc_client_secrets_credentials_version
+  ]
 }
 
 resource "aws_ecs_service" "keycloak_ecs_service" {

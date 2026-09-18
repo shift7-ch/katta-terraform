@@ -212,7 +212,7 @@ flowchart TD
    subgraph Overview
       data_aws_availability_zones_available["data.aws_availability_zones.available"]
       data_aws_caller_identity_current["data.aws_caller_identity.current"]
-      data_local_file_cryptomator_realm["data.local_file.cryptomator_realm"]
+      data_helm_template_katta_server["data.helm_template.katta_server"]
       aws_db_instance_hub_db["aws_db_instance.hub_db"]
       aws_db_instance_postgres["aws_db_instance.postgres"]
       aws_db_subnet_group_private_subnet_group["aws_db_subnet_group.private_subnet_group"]
@@ -259,7 +259,7 @@ flowchart TD
    aws_ecs_service_keycloak_ecs_service --> aws_lb_target_group_keycloak_ecs_target_group
    aws_ecs_task_definition_katta_server_ecs_task --> aws_db_instance_hub_db
    aws_ecs_task_definition_katta_server_ecs_task --> aws_ecs_service_keycloak_ecs_service
-   aws_ecs_task_definition_keycloak_ecs_task --> data_local_file_cryptomator_realm
+   aws_ecs_task_definition_keycloak_ecs_task --> data_helm_template_katta_server
    aws_ecs_task_definition_keycloak_ecs_task --> aws_db_instance_postgres
    aws_internet_gateway_public_igw --> aws_vpc_katta
    aws_lb_hub_public_alb --> aws_subnet_public
