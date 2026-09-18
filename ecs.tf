@@ -198,6 +198,19 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
         }
       ]
       secrets = [
+        # resolve the ${...} placeholders of the realm on import
+        {
+          name      = "HUB_ADMIN_PASSWORD"
+          valueFrom = "${aws_secretsmanager_secret.hub_admin.arn}:password::"
+        },
+        {
+          name      = "HUB_KEYCLOAK_SYSTEM_CLIENT_SECRET"
+          valueFrom = "${aws_secretsmanager_secret.hub_oidc_client_secrets_credentials.arn}:hub_keycloak_system_client_secret::"
+        },
+        {
+          name      = "HUB_KEYCLOAK_OIDC_CRYPTOMATOR_VAULTS_CLIENT_SECRET"
+          valueFrom = "${aws_secretsmanager_secret.hub_oidc_client_secrets_credentials.arn}:hub_keycloak_oidc_cryptomator_vaults_client_secret::"
+        },
         {
           name      = "KEYCLOAK_ADMIN"
           valueFrom = "${aws_secretsmanager_secret.keycloak_admin.arn}:username::"

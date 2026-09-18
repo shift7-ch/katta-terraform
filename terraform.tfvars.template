@@ -30,6 +30,15 @@
 # The password for the Hub database
 #hub_db_password=
 
+# Katta Server admin user in the realm
+# The username for the Katta Server admin user
+#hub_admin_username=
+# The initial password for the Katta Server admin user, to be changed on first login
+#hub_admin_password=
+
+# Version of the Katta Server Helm chart to render the Keycloak realm from, null for the latest release
+#katta_chart_version=
+
 # Client secret for client "cryptomatorhub-system"
 # hub_keycloak_system_client_secret=
 # Client secret for client "cryptomatorvaults"
