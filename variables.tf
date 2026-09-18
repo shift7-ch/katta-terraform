@@ -135,3 +135,9 @@ variable "hub_keycloak_oidc_cryptomator_vaults_client_secret" {
   type        = string
   sensitive   = true
 }
+
+variable "hub_csp_additional_connect_src" {
+  description = "Additional connect-src sources for the Content-Security-Policy header, required for the S3 and STS endpoints of storage profiles the browser talks to directly. CSP source expressions are used verbatim, so host wildcards are allowed."
+  type        = list(string)
+  default     = []
+}

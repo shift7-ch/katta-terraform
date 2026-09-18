@@ -1,3 +1,16 @@
+locals {
+  # Every origin the browser talks to directly: AWS S3/STS, the Katta license API, Keycloak,
+  # plus the endpoints of any storage profile not hosted on AWS (var.hub_csp_additional_connect_src).
+  hub_csp_connect_src = join(" ", concat([
+    "'self'",
+    "*.amazonaws.com",
+    "api.katta.cloud",
+    "https://${var.keycloak_prefix}.${terraform.workspace}.${var.dns_suffix}/",
+  ], var.hub_csp_additional_connect_src))
+
+  hub_content_security_policy = "default-src 'self'; connect-src ${local.hub_csp_connect_src}; object-src 'none'; child-src 'self'; img-src * data:; frame-ancestors 'none'"
+}
+
 resource "aws_ecr_pull_through_cache_rule" "github" {
   ecr_repository_prefix = "${terraform.workspace}-ghcr"
   upstream_registry_url = "ghcr.io"
@@ -415,7 +428,7 @@ resource "aws_ecs_task_definition" "katta_server_ecs_task" {
         },
         {
           name  = "QUARKUS_HTTP_HEADER__CONTENT_SECURITY_POLICY__VALUE"
-          value = "value: default-src 'self'; connect-src 'self' *.amazonaws.com api.katta.cloud https://${var.keycloak_prefix}.${terraform.workspace}.${var.dns_suffix}/; object-src 'none'; child-src 'self'; img-src * data:; frame-ancestors 'none'"
+          value = local.hub_content_security_policy
         },
       ]
       secrets = [
