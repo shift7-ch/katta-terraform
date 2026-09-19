@@ -1,16 +1,12 @@
-# Katta: the secure and easy way to work in teams
+# Katta Terraform
 
-Katta brings zero-config storage management and zero-knowledge key management for teams and organizations.
+[![Terraform Validate](https://github.com/shift7-ch/katta-terraform/actions/workflows/terraform-validate.yml/badge.svg)](https://github.com/shift7-ch/katta-terraform/actions/workflows/terraform-validate.yml)
 
-## Katta Terraform
+> [Katta](https://katta.cloud/): transform your S3 storage into a secure, team-friendly workspace with client-side encryption.
 
-### TL;DR;
+Set up [Katta Server](https://github.com/shift7-ch/katta-server) in a custom AWS-hosted zone using [Terraform workflow for provisioning infrastructure](https://developer.hashicorp.com/terraform/cli/run).
 
-> [Terraform workflow for provisioning infrastructure](https://developer.hashicorp.com/terraform/cli/run)
-
-Set up Katta Hub in a custom AWS hosted zone.
-
-### Prerequisites
+## Prerequisites
 
 1. Register a domain `<dns_suffix>` such as `example.net` in AWS Route53 to be used. A subdomain `hub.katta.example.net` and
    `keycloak.katta.example.net` will be created for the Katta deployment when applying Terraform.
