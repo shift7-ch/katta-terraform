@@ -71,12 +71,12 @@ resource "aws_secretsmanager_secret" "hub_oidc_client_secrets_credentials" {
   }
 }
 
-# Realm imported into Keycloak, rendered from the realm template `chart/templates/_realm.tpl` of the Katta Server Helm chart.
+# Realm imported into Keycloak, rendered from the realm template `templates/_realm.tpl` of the Katta Server Helm chart in katta-helm.
 # Secrets are rendered as ${...} placeholders, which Keycloak resolves on import from the environment of the Keycloak
 # container, so that they stay in Secrets Manager.
 data "helm_template" "katta_server" {
   name       = "katta-server"
-  repository = "oci://ghcr.io/shift7-ch/charts"
+  repository = "oci://ghcr.io/shift7-ch/katta-helm"
   chart      = "katta-server"
   version    = var.katta_chart_version
   show_only  = ["templates/keycloak-secret.yaml"]
