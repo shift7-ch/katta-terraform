@@ -36,7 +36,7 @@
 # The initial password for the Katta Server admin user, to be changed on first login
 #hub_admin_password=
 
-# Version of the Katta Server Helm chart to render the Keycloak realm from, null for the latest release
+# Version or version range of the Katta Server Helm chart to render the Keycloak realm from, null for the latest version
 #katta_chart_version=
 
 # Client secret for client "cryptomatorhub-system"

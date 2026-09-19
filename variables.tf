@@ -88,10 +88,10 @@ variable "hub_admin_username" {
 }
 
 variable "katta_chart_version" {
-  description = "Version of the Katta Server Helm chart to render the Keycloak realm from. Null for the latest release."
+  description = "Version or version range of the Katta Server Helm chart to render the Keycloak realm from. Null for the latest version."
   type        = string
-  # pinned to a pre-release build until the chart is released
-  default = "0.0.0-e60d1d7"
+  # latest version of major version 1
+  default = "^1"
 }
 
 variable "hub_admin_password" {
