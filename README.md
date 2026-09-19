@@ -131,7 +131,8 @@ Images are cached in ECR with the prefix `<workspace>-ghcr/` and pulled automati
 - non-shared Keycloak
 - realm rendered with the Helm provider from the realm template
   `_realm.tpl` of the
-  Katta Server Helm chart in version `katta_chart_version` (pinned to a pre-release build until Katta Server is released,
+  Katta Server Helm chart from [katta-helm](https://github.com/shift7-ch/katta-helm) in version `katta_chart_version`
+  (pinned to a pre-release build until the chart is released,
   set to `null` for the latest release). Secrets are rendered as placeholders `HUB_ADMIN_PASSWORD`,
   `HUB_KEYCLOAK_SYSTEM_CLIENT_SECRET` and `HUB_KEYCLOAK_OIDC_CRYPTOMATOR_VAULTS_CLIENT_SECRET`, which Keycloak resolves on
   import from Secrets Manager.
