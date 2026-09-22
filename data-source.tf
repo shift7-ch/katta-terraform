@@ -31,7 +31,7 @@ resource "aws_db_instance" "postgres" {
 
   allocated_storage      = 20
   engine                 = "postgres"
-  engine_version         = "17.2"
+  engine_version         = "17"
   instance_class         = "db.t4g.micro"
   db_name                = var.keycloak_db_name
   username               = jsondecode(aws_secretsmanager_secret_version.keycloak_db_credentials_version.secret_string).username
@@ -55,7 +55,7 @@ resource "aws_db_instance" "hub_db" {
 
   allocated_storage      = 5
   engine                 = "postgres"
-  engine_version         = "17.2"
+  engine_version         = "17"
   instance_class         = "db.t4g.micro"
   db_name                = var.hub_db_name
   username               = jsondecode(aws_secretsmanager_secret_version.hub_db_credentials_version.secret_string).username
