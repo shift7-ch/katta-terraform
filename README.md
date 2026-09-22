@@ -116,8 +116,8 @@ deletion.
 Container images are automatically pulled from GitHub Container Registry (ghcr.io) via Amazon ECR pull-through cache
 rules. This eliminates the need to manually pull and push images to ECR.
 
-- Keycloak: `ghcr.io/cryptomator/keycloak:26.4.5`
-- Katta Hub: `ghcr.io/shift7-ch/katta-server:982baf0-amd64`
+- Keycloak: see `keycloak_version` in [variables.tf](variables.tf)
+- Katta Hub: see `hub_version` in [variables.tf](variables.tf)
 
 Images are cached in ECR with the prefix `<workspace>-ghcr/` and pulled automatically when ECS tasks start.
 
