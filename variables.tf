@@ -141,3 +141,16 @@ variable "hub_csp_additional_connect_src" {
   type        = list(string)
   default     = []
 }
+
+variable "hub_initial_license" {
+  description = "Initial license token for Katta Server (HUB_INITIAL_LICENSE). Null to start without a license."
+  type        = string
+  default     = null
+  sensitive   = true
+}
+
+variable "hub_initial_id" {
+  description = "Initial Hub ID matching the license (HUB_INITIAL_ID). Null to start without a license."
+  type        = string
+  default     = null
+}
