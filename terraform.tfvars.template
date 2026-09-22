@@ -39,7 +39,7 @@
 # Version or version range of the Katta Server Helm chart to render the Keycloak realm from, null for the latest version
 #katta_chart_version=
 
-# Initial license token and matching Hub ID for Katta Server, omit to start without a license
+# Initial license token and matching Hub ID for Katta Server, defaults to the shared test license, null to start without a license
 #hub_initial_license=
 #hub_initial_id=
 

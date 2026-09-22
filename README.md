@@ -47,7 +47,7 @@ Set up [Katta Server](https://github.com/shift7-ch/katta-server) in a custom AWS
     export TF_VAR_hub_admin_password=
     export TF_VAR_hub_keycloak_system_client_secret=top-secret
     export TF_VAR_hub_keycloak_oidc_cryptomator_vaults_client_secret=top-secret
-    # optional initial license and matching Hub ID
+    # optional initial license and matching Hub ID, defaults to the shared test license
     export TF_VAR_hub_initial_license=
     export TF_VAR_hub_initial_id=
     ```
