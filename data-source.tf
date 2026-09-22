@@ -29,19 +29,19 @@ resource "aws_security_group" "rds_sg" {
 resource "aws_db_instance" "postgres" {
   identifier = "${terraform.workspace}-database"
 
-  allocated_storage     = 20
-  engine                = "postgres"
-  engine_version        = "17.2"
-  instance_class        = "db.t4g.micro"
-  db_name               = var.keycloak_db_name
-  username              = jsondecode(aws_secretsmanager_secret_version.keycloak_db_credentials_version.secret_string).username
-  password              = jsondecode(aws_secretsmanager_secret_version.keycloak_db_credentials_version.secret_string).password
-  db_subnet_group_name  = aws_db_subnet_group.private_subnet_group.name
+  allocated_storage      = 20
+  engine                 = "postgres"
+  engine_version         = "17.2"
+  instance_class         = "db.t4g.micro"
+  db_name                = var.keycloak_db_name
+  username               = jsondecode(aws_secretsmanager_secret_version.keycloak_db_credentials_version.secret_string).username
+  password               = jsondecode(aws_secretsmanager_secret_version.keycloak_db_credentials_version.secret_string).password
+  db_subnet_group_name   = aws_db_subnet_group.private_subnet_group.name
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
-  publicly_accessible   = false
-  skip_final_snapshot   = true
-  deletion_protection   = false
-  copy_tags_to_snapshot = true
+  publicly_accessible    = false
+  skip_final_snapshot    = true
+  deletion_protection    = false
+  copy_tags_to_snapshot  = true
 
   tags = {
     Name        = "${terraform.workspace}-rds-db-instance"
@@ -53,19 +53,19 @@ resource "aws_db_instance" "postgres" {
 resource "aws_db_instance" "hub_db" {
   identifier = "${terraform.workspace}-hub-database"
 
-  allocated_storage     = 5
-  engine                = "postgres"
-  engine_version        = "17.2"
-  instance_class        = "db.t4g.micro"
-  db_name               = var.hub_db_name
-  username              = jsondecode(aws_secretsmanager_secret_version.hub_db_credentials_version.secret_string).username
-  password              = jsondecode(aws_secretsmanager_secret_version.hub_db_credentials_version.secret_string).password
-  db_subnet_group_name  = aws_db_subnet_group.private_subnet_group.name
+  allocated_storage      = 5
+  engine                 = "postgres"
+  engine_version         = "17.2"
+  instance_class         = "db.t4g.micro"
+  db_name                = var.hub_db_name
+  username               = jsondecode(aws_secretsmanager_secret_version.hub_db_credentials_version.secret_string).username
+  password               = jsondecode(aws_secretsmanager_secret_version.hub_db_credentials_version.secret_string).password
+  db_subnet_group_name   = aws_db_subnet_group.private_subnet_group.name
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
-  publicly_accessible   = false
-  skip_final_snapshot   = true
-  deletion_protection   = false
-  copy_tags_to_snapshot = true
+  publicly_accessible    = false
+  skip_final_snapshot    = true
+  deletion_protection    = false
+  copy_tags_to_snapshot  = true
 
   tags = {
     Name        = "${terraform.workspace}-rds-db-instance"

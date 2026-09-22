@@ -138,7 +138,7 @@ resource "aws_ecs_task_definition" "keycloak_ecs_task" {
   container_definitions = jsonencode([
     {
       name       = "${terraform.workspace}-container-${var.keycloak_prefix}",
-      image = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${terraform.workspace}-ghcr/shift7-ch/keycloak:${var.keycloak_version}"
+      image      = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${terraform.workspace}-ghcr/shift7-ch/keycloak:${var.keycloak_version}"
       entryPoint = ["/bin/sh"]
       command = [
         "-c",
@@ -300,7 +300,7 @@ resource "aws_ecs_service" "keycloak_ecs_service" {
   }
 
   network_configuration {
-    subnets          = aws_subnet.private.*.id
+    subnets          = aws_subnet.private[*].id
     assign_public_ip = false
     security_groups = [
       aws_security_group.ecs_cluster_sg.id,
@@ -506,7 +506,7 @@ resource "aws_ecs_service" "katta_server_ecs_service" {
   }
 
   network_configuration {
-    subnets          = aws_subnet.private.*.id
+    subnets          = aws_subnet.private[*].id
     assign_public_ip = false
     security_groups = [
       aws_security_group.ecs_cluster_sg.id,

@@ -2,6 +2,9 @@ name: Terraform Validate
 
 on:
   pull_request:
+  push:
+    branches: [main]
+  workflow_call:
 
 permissions:
   contents: read
@@ -14,8 +17,28 @@ jobs:
 
       - uses: hashicorp/setup-terraform@v3
 
+      - name: Terraform Format
+        run: terraform fmt -check -recursive -diff -no-color
+
       - name: Terraform Init
         run: terraform init -backend=false -input=false
 
       - name: Terraform Validate
         run: terraform validate -no-color
+
+      - uses: actions/cache@v4
+        with:
+          path: ~/.tflint.d/plugins
+          key: tflint-${{ hashFiles('.tflint.hcl') }}
+
+      - uses: terraform-linters/setup-tflint@v4
+        with:
+          tflint_version: v0.64.0
+
+      - name: TFLint Init
+        run: tflint --init
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: TFLint
+        run: tflint --format compact

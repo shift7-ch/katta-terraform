@@ -36,7 +36,7 @@ resource "aws_lb" "keycloak_public_alb" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb_sg.id]
-  subnets            = aws_subnet.public.*.id
+  subnets            = aws_subnet.public[*].id
 
   tags = {
     Name        = "${terraform.workspace}-alb"
@@ -50,7 +50,7 @@ resource "aws_lb" "hub_public_alb" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb_sg.id]
-  subnets            = aws_subnet.public.*.id
+  subnets            = aws_subnet.public[*].id
 
   tags = {
     Name        = "${terraform.workspace}-alb"
@@ -244,6 +244,10 @@ resource "aws_acm_certificate" "keycloak_cert" {
     Environment = terraform.workspace
     Project     = var.project
   }
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_acm_certificate" "hub_cert" {
@@ -254,6 +258,10 @@ resource "aws_acm_certificate" "hub_cert" {
   tags = {
     Environment = terraform.workspace
     Project     = var.project
+  }
+
+  lifecycle {
+    create_before_destroy = true
   }
 }
 

@@ -91,7 +91,7 @@ variable "katta_chart_version" {
   description = "Version of the Katta Server Helm chart to render the Keycloak realm from. Null for the latest release."
   type        = string
   # pinned to a pre-release build until Katta Server is released
-  default     = "0.0.0-f8ec668"
+  default = "0.0.0-f8ec668"
 }
 
 variable "hub_admin_password" {
@@ -115,7 +115,7 @@ variable "keycloak_version" {
 variable "hub_version" {
   description = "Docker image tag for ghcr.io/shift7-ch/katta-server."
   type        = string
-  default = "latest-amd64"
+  default     = "latest-amd64"
 }
 
 variable "ecs_enable_execute_command" {
