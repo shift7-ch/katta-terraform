@@ -440,6 +440,11 @@ resource "aws_ecs_task_definition" "katta_server_ecs_task" {
           name  = "HUB_INITIAL_ID"
           value = var.hub_initial_id
         },
+        ], var.hub_license_chain_required_cn == null ? [] : [
+        {
+          name  = "HUB_LICENSE_CHAIN_REQUIRED_CN"
+          value = var.hub_license_chain_required_cn
+        },
       ])
       secrets = [
         {

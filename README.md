@@ -50,6 +50,7 @@ Set up [Katta Server](https://github.com/shift7-ch/katta-server) in a custom AWS
     # optional initial license and matching Hub ID, defaults to the shared test license
     export TF_VAR_hub_initial_license=
     export TF_VAR_hub_initial_id=
+    export TF_VAR_hub_license_chain_required_cn=
     ```
 3. Add hosted zone for domain in AWS Route53 if missing:
 

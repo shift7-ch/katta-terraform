@@ -42,6 +42,8 @@
 # Initial license token and matching Hub ID for Katta Server, defaults to the shared test license, null to start without a license
 #hub_initial_license=
 #hub_initial_id=
+# Common name of the CA issuing the license certificate chain, defaults to the test CA matching the shared test license
+#hub_license_chain_required_cn=
 
 # Client secret for client "cryptomatorhub-system"
 # hub_keycloak_system_client_secret=
