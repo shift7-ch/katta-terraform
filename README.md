@@ -13,7 +13,14 @@ Set up [Katta Server](https://github.com/shift7-ch/katta-server) in a custom AWS
 
 2. Install [Docker](https://docs.docker.com/desktop/setup/install/mac-install/).
 
-3. Setup [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) and configure credentials in environment:
+3. Install the [Katta Admin CLI](https://github.com/shift7-ch/katta-admin-cli) `katta` in version 1.0.3 or later to set up
+   the default storage profile for AWS S3:
+    ```shell
+    brew tap shift7-ch/katta
+    brew install katta
+    ```
+
+4. Setup [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) and configure credentials in environment:
     ```shell
     export AWS_ACCESS_KEY_ID=
     export AWS_SECRET_ACCESS_KEY=
@@ -51,6 +58,9 @@ Set up [Katta Server](https://github.com/shift7-ch/katta-server) in a custom AWS
     export TF_VAR_hub_initial_license=
     export TF_VAR_hub_initial_id=
     export TF_VAR_hub_license_chain_required_cn=
+    # optional storage profile for AWS S3, see below
+    export TF_VAR_storage_profile_aws_enabled=true
+    export TF_VAR_storage_profile_aws_regions='["eu-central-1","eu-west-1"]'
     ```
 3. Add hosted zone for domain in AWS Route53 if missing:
 
@@ -96,7 +106,24 @@ Set up [Katta Server](https://github.com/shift7-ch/katta-server) in a custom AWS
     terraform apply --auto-approve
     ```
 
-7. Log in via Web Browser
+7. Storage profile for AWS S3
+
+   Unless disabled with `storage_profile_aws_enabled = false`, the deployment sets up AWS S3 as the default storage
+   backend using the `katta` CLI once Katta Hub is reachable:
+
+    * `katta setup aws` creates the OIDC identity provider for the Keycloak realm and the IAM roles
+      `<workspace>-create-bucket`, `<workspace>-access-bucket-web-identity-role` and
+      `<workspace>-access-bucket-tagged-session-role` restricting access to buckets with prefix
+      `<project>-<workspace>-`. AWS credentials are read from the environment or the profile `$AWS_PROFILE`.
+    * `katta storageprofile aws sts` uploads a storage profile using these roles to Katta Hub with an access token of the
+      service account of client `cryptomatorhub-system`. Buckets are created in `region` by default and can be created
+      in any of `storage_profile_aws_regions` (defaults to the regions enabled by default in AWS accounts, excluding
+      [opt-in regions](https://docs.aws.amazon.com/accounts/latest/reference/manage-acct-regions.html)).
+
+   Prefixes can be changed with `storage_profile_aws_role_name_prefix` and `storage_profile_aws_bucket_prefix`. The
+   identity provider and roles are not managed as Terraform resources but removed on destroy.
+
+8. Log in via Web Browser
 
 * Open `https://hub.<workspace>.<dns_suffix>` in browser to log in to _Katta Hub_ with the admin user (default `admin`)
   and password as `$TF_VAR_hub_admin_password`. You must change the password on first login.
@@ -112,6 +139,7 @@ deletion.
     ```shell
     terraform destroy --auto-approve
     ```
+   S3 buckets created for vaults are not deleted.
 
 ## Background
 
