@@ -377,7 +377,7 @@ resource "aws_ecs_task_definition" "katta_server_ecs_task" {
           protocol      = "tcp"
         },
       ]
-      environment = [
+      environment = concat([
         {
           name  = "HUB_KEYCLOAK_LOCAL_URL"
           value = "https://${var.keycloak_prefix}.${terraform.workspace}.${var.dns_suffix}"
@@ -430,7 +430,22 @@ resource "aws_ecs_task_definition" "katta_server_ecs_task" {
           name  = "QUARKUS_HTTP_HEADER__CONTENT_SECURITY_POLICY__VALUE"
           value = local.hub_content_security_policy
         },
-      ]
+        ], var.hub_initial_license == null ? [] : [
+        {
+          name  = "HUB_INITIAL_LICENSE"
+          value = var.hub_initial_license
+        },
+        ], var.hub_initial_id == null ? [] : [
+        {
+          name  = "HUB_INITIAL_ID"
+          value = var.hub_initial_id
+        },
+        ], var.hub_license_chain_required_cn == null ? [] : [
+        {
+          name  = "HUB_LICENSE_CHAIN_REQUIRED_CN"
+          value = var.hub_license_chain_required_cn
+        },
+      ])
       secrets = [
         {
           name      = "QUARKUS_DATASOURCE_USERNAME"

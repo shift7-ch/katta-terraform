@@ -141,3 +141,22 @@ variable "hub_csp_additional_connect_src" {
   type        = list(string)
   default     = []
 }
+
+variable "hub_initial_license" {
+  description = "Initial license token for Katta Server (HUB_INITIAL_LICENSE). Defaults to the shared test license. Null to start without a license."
+  type        = string
+  sensitive   = true
+  default     = "eyJ4NWMiOlsiTUlJQ0FUQ0NBYk9nQXdJQkFnSVVSc1ZlYUM5cDI5amhKelB4TXExSk13MVR6UWN3QlFZREsyVndNRDh4Q3pBSkJnTlZCQVlUQWtSRk1SWXdGQVlEVlFRS0RBMVRhM2x0WVhScFl5QkhiV0pJTVJnd0ZnWURWUVFEREE5TWFXTmxibk5sSUZKdmIzUWdRMEV3SGhjTk1qWXdOekE1TURnMU9USTVXaGNOTXpZd056QTJNRGcxT1RJNVdqQk1NUXN3Q1FZRFZRUUdFd0pFUlRFV01CUUdBMVVFQ2d3TlUydDViV0YwYVdNZ1IyMWlTREVsTUNNR0ExVUVBd3djU0hWaUlFeHBZMlZ1YzJVZ1NYTnpkV1Z5SUVOQklDaFVaWE4wS1RDQm16QVFCZ2NxaGtqT1BRSUJCZ1VyZ1FRQUl3T0JoZ0FFQVJOQlc5QjZIZ3EzQzRKd1FvbXNJTEhlU0lLN0c3TXBpR1M5Qm45bFluVDBEYmNBQ3RPUCtGVWFEaWhUQnZERHhaTUxxNDNjbXdIaFp2SmUwY0VVZk5iekFMZ0R6UmtneWtCWEpCNTFkcVlEYUtcL0JWMXMxVnRUY0lSa1wvOWxqdEY2a2txcE1lVWYwUDd2U0hYWGFNMlwvT3R2SmZXN2lKRXpycjN6MHRtWEg3UHpLSFRvMEl3UURBZEJnTlZIUTRFRmdRVW1idlI4KytmZ3B5OGV5SVZ6NGlcL0ljemRMd2t3SHdZRFZSMGpCQmd3Rm9BVWFFcFNIU01LMXJiQmZQR3RTVjBnR29IZ0hQY3dCUVlESzJWd0EwRUFNU3hlS2tpRHBpUkVnNmtFTkw5MUhSdUNsWHNCMWZ1MjlIYW5BYVVTSVd0Ynh3cnE5MnJPbE1BazRZejhtTEh5VzhVNTJtRllKRWZ5WkR5UXlQVDBDdz09Il0sImFsZyI6IkVTNTEyIn0.eyJhdWQiOiJDcnlwdG9tYXRvciBIdWIiLCJzdWIiOiJodWJAZXhhbXBsZS5jb20iLCJyZWZyZXNoVXJsIjoiaHR0cDpcL1wvbG9jYWxob3N0OjgwODFcL1wvaHViXC9yZWZyZXNoIiwia2lkIjoiRV9rU2xTOG5tR0wza0oxeHl6UG5TdG1fdVl1NndRX1h4VFFoN2h6T0k2USIsIm9yZy5jcnlwdG9tYXRvci5odWIuZW50aXRsZW1lbnRzIjp7InNlYXRzIjo1LCJzaG93VHJpYWxIaW50IjpmYWxzZSwiYXVkaXRMb2dSZXRlbnRpb25EYXlzIjowLCJlbWVyZ2VuY3lBY2Nlc3NFbmFibGVkIjpmYWxzZSwia2V5Y2xvYWtBY2Nlc3NFbmFibGVkIjp0cnVlfSwiaXNzIjoiaHR0cDpcL1wvbG9jYWxob3N0OjgwODFcLyIsImV4cCI6MzI1MDM2ODAwMDAsImlhdCI6MTc4MzU4ODY0NCwic2VhdHMiOjUsImp0aSI6IjQyIn0.AZrb7lULe-bvea6LyFsTq7dZZBozgXuqEnr8M5nua-3KyM6gZw_hygBVkmAZw-u4NMlG8u0GEpKlK9rmLUPOpF36AaTa3h9WCQIzmiqn30Rm_zRd9T3WrmWXjkmWKnv7YpfufZI_zT-lpcKGasGm1w3YVWu_nSa9gQd_0Pm1r3QSQWTX"
+}
+
+variable "hub_license_chain_required_cn" {
+  description = "Common name of the CA the license certificate chain must be issued by (HUB_LICENSE_CHAIN_REQUIRED_CN). Defaults to the test CA matching the shared test license. Null to use the server default \"Hub License Issuer CA (Prod)\"."
+  type        = string
+  default     = "Hub License Issuer CA (Test)"
+}
+
+variable "hub_initial_id" {
+  description = "Initial Hub ID matching the license (HUB_INITIAL_ID). Defaults to the ID of the shared test license. Null to start without a license."
+  type        = string
+  default     = "42"
+}
