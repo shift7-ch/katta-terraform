@@ -13,7 +13,7 @@ Set up [Katta Server](https://github.com/shift7-ch/katta-server) in a custom AWS
 
 2. Install [Docker](https://docs.docker.com/desktop/setup/install/mac-install/).
 
-3. Install the [Katta Admin CLI](https://github.com/shift7-ch/katta-admin-cli) `katta` in version 1.0.3 or later to set up
+3. Install the [Katta Admin CLI](https://github.com/shift7-ch/katta-admin-cli) `katta` in version 1.0.4 or later to set up
    the default storage profile for AWS S3:
     ```shell
     brew tap shift7-ch/katta
@@ -118,7 +118,8 @@ Set up [Katta Server](https://github.com/shift7-ch/katta-server) in a custom AWS
     * `katta storageprofile aws sts` uploads a storage profile using these roles to Katta Hub with an access token of the
       service account of client `cryptomatorhub-system`. Buckets are created in `region` by default and can be created
       in any of `storage_profile_aws_regions` (defaults to the regions enabled by default in AWS accounts, excluding
-      [opt-in regions](https://docs.aws.amazon.com/accounts/latest/reference/manage-acct-regions.html)).
+      [opt-in regions](https://docs.aws.amazon.com/accounts/latest/reference/manage-acct-regions.html)). With
+      `--skipIfExists`, no storage profile is uploaded when one with the same name already exists in Katta Hub.
 
    Prefixes can be changed with `storage_profile_aws_role_name_prefix` and `storage_profile_aws_bucket_prefix`. The
    identity provider and roles are not managed as Terraform resources but removed on destroy.

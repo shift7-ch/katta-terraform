@@ -83,6 +83,7 @@ resource "terraform_data" "storage_profile_aws" {
         --clientId cryptomatorhub-system \
         --clientSecret "$HUB_KEYCLOAK_SYSTEM_CLIENT_SECRET")
       katta storageprofile aws sts \
+        --skipIfExists \
         --hubUrl "${local.hub_url}" \
         --accessToken "$ACCESS_TOKEN" \
         --awsAccountId "${data.aws_caller_identity.current.account_id}" \
