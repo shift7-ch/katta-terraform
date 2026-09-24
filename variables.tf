@@ -160,3 +160,45 @@ variable "hub_initial_id" {
   type        = string
   default     = "42"
 }
+
+variable "storage_profile_aws_enabled" {
+  description = "Setup identity provider and roles in IAM with `katta setup aws` and upload a storage profile for AWS S3 using STS with `katta storageprofile aws sts`. Requires the katta CLI."
+  type        = bool
+  default     = true
+}
+
+variable "storage_profile_aws_role_name_prefix" {
+  description = "Prefix of the IAM role names for the AWS storage profile. Defaults to \"<workspace>-\"."
+  type        = string
+  default     = null
+}
+
+variable "storage_profile_aws_bucket_prefix" {
+  description = "Prefix of the S3 bucket names for vaults in the AWS storage profile, at most 27 characters. Defaults to \"<project>-<workspace>-\"."
+  type        = string
+  default     = null
+}
+
+variable "storage_profile_aws_regions" {
+  description = "Bucket regions for the AWS storage profile in addition to the region to create resources, which is the default. Defaults to the regions enabled by default in AWS accounts (not opt-in)."
+  type        = list(string)
+  default = [
+    "us-east-1",
+    "us-east-2",
+    "us-west-1",
+    "us-west-2",
+    "ca-central-1",
+    "sa-east-1",
+    "eu-central-1",
+    "eu-west-1",
+    "eu-west-2",
+    "eu-west-3",
+    "eu-north-1",
+    "ap-south-1",
+    "ap-northeast-1",
+    "ap-northeast-2",
+    "ap-northeast-3",
+    "ap-southeast-1",
+    "ap-southeast-2",
+  ]
+}
