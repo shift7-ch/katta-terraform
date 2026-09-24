@@ -83,46 +83,6 @@ resource "aws_iam_policy" "secrets_manager_policy" {
   }
 }
 
-resource "aws_iam_role" "app_autoscaling_role" {
-  name = "${terraform.workspace}-app-autoscaling-role"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Principal = {
-          Service = "application-autoscaling.amazonaws.com"
-        }
-        Action = "sts:AssumeRole"
-      },
-    ]
-  })
-}
-
-resource "aws_iam_role_policy" "app_autoscaling_policy" {
-  name = "${terraform.workspace}-app-autoscaling-policy"
-  role = aws_iam_role.app_autoscaling_role.id
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "ecs:UpdateService",
-          "ecs:DescribeServices",
-          "cloudwatch:DescribeAlarms",
-          "cloudwatch:GetMetricData",
-          "cloudwatch:PutMetricAlarm",
-          "cloudwatch:DeleteAlarms"
-        ]
-        Resource = "*"
-      },
-    ]
-  })
-}
-
 resource "aws_iam_policy" "ecr_ECSFargateAllowExecuteCommand" {
   count       = var.ecs_enable_execute_command ? 1 : 0
   name        = "${terraform.workspace}-ecr-ECSFargateAllowExecuteCommand"
