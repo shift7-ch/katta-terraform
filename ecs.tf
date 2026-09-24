@@ -595,8 +595,6 @@ resource "aws_appautoscaling_target" "ecs_autoscaling_target" {
   resource_id        = "service/${aws_ecs_cluster.katta_ecs_cluster.name}/${aws_ecs_service.keycloak_ecs_service.name}"
   scalable_dimension = "ecs:service:DesiredCount"
   service_namespace  = "ecs"
-
-  role_arn = aws_iam_role.app_autoscaling_role.arn
 }
 
 resource "aws_appautoscaling_policy" "cpu_scaling_policy" {
