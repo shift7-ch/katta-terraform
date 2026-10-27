@@ -26,7 +26,7 @@ jobs:
       - name: Terraform Validate
         run: terraform validate -no-color
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         with:
           path: ~/.tflint.d/plugins
           key: tflint-${{ hashFiles('.tflint.hcl') }}
