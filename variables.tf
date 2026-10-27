@@ -107,9 +107,9 @@ variable "github_token" {
 }
 
 variable "keycloak_version" {
-  description = "Docker image tag for ghcr.io/shift-7/keycloak."
+  description = "Docker image tag for ghcr.io/shift7-ch/keycloak."
   type        = string
-  default     = "26.7.1"
+  default     = "26.7.5"
 }
 
 variable "hub_version" {
